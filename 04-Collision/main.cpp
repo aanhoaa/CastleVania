@@ -69,6 +69,12 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	if (KeyCode == DIK_ESCAPE)
 		DestroyWindow(hWnd);
+
+	if (KeyCode == DIK_Q)
+		simon->SetPosition(SIMON_POSITION_DEFAULT);
+
+	if (KeyCode == DIK_SPACE)
+		simon->Jump();
 }
 
 void CSampleKeyHander::OnKeyUp(int KeyCode)
@@ -80,7 +86,6 @@ void CSampleKeyHander::KeyState(BYTE *states)
 {
 	if (game->IsKeyDown(DIK_DOWN))
 	{
-		simon->Stop();
 		simon->Sit();
 
 		if (game->IsKeyDown(DIK_RIGHT))

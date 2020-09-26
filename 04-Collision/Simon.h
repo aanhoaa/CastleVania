@@ -1,14 +1,16 @@
 ﻿#ifndef __SIMON_H__
 #define __SIMON_H__
 
+#define SIMON_POSITION_DEFAULT  50.0f, 0
 
 #define SIMON_BBOX_WIDTH 60
-#define SIMON_BBOX_HEIGHT 64
+#define SIMON_BBOX_HEIGHT 66
 #define SIMON_BBOX_SITTING_HEIGHT 48
 
 
 
-#define SIMON_GRAVITY 0.01f
+#define SIMON_GRAVITY 0.005f
+#define SIMON_VJUMP 0.8f
 
 #define SIMON_WALKING_SPEED 0.15f 
 
@@ -33,7 +35,7 @@
 #include "GameObject.h"
 class Simon : public CGameObject
 {
-protected:
+public:
 
 	bool isWalking;
 	bool isJumping;
@@ -60,11 +62,8 @@ public:
 	void Right(); // set lại hướng của simon
 	void Go();
 	void Sit();
-
-
-
+	void Jump();
 	void Stop();
-
 };
 
 
