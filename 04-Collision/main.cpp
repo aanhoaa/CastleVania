@@ -1,4 +1,4 @@
-/* =============================================================
+﻿/* =============================================================
 	INTRODUCTION TO GAME PROGRAMMING SE102
 	
 	SAMPLE 04 - COLLISION
@@ -25,19 +25,17 @@
 #include "debug.h"
 #include "Game.h"
 #include "GameObject.h"
-#include "Textures.h"
 
-#include "Mario.h"
+#include "define.h"
+#include "Map.h"
+
 #include "Brick.h"
-#include "Goomba.h"
 #include "Simon.h"
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"04 - Collision"
 
-#define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
-#define SCREEN_WIDTH 512
-#define SCREEN_HEIGHT 448
+#define BACKGROUND_COLOR D3DCOLOR_XRGB(0, 0, 0)
 
 #define MAX_FRAME_RATE 60
 
@@ -48,8 +46,8 @@
 HWND hWnd;
 CGame *game;
 
-CMario *mario;
-CGoomba *goomba;
+Map * TileMap;
+
 Simon* simon;
 
 LPDIRECT3DTEXTURE9 texture_title;
@@ -74,7 +72,10 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 		simon->SetPosition(SIMON_POSITION_DEFAULT);
 
 	if (KeyCode == DIK_SPACE)
-		simon->Jump();
+	{
+		if (simon->isJumping == false)
+			simon->Jump();
+	}
 }
 
 void CSampleKeyHander::OnKeyUp(int KeyCode)
@@ -138,12 +139,14 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 */
 void LoadResources()
 {
+	TileMap = new Map();
+
 	simon = new Simon();
-	simon->SetPosition(0, 10);
+	simon->SetPosition(0, 0);
 	objects.push_back(simon);
 
 
-	Brick * brick = new Brick(30, 300, 400, 32);
+	Brick * brick = new Brick(0, 320, 1536, 32);
 	objects.push_back(brick);
 	
 }
@@ -184,10 +187,14 @@ void Render()
 		d3ddv->ColorFill(bb, NULL, BACKGROUND_COLOR);
 
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
+
+		// back ground nên để trước khi obj render ra
+		TileMap->DrawMap();
+		
 		
 		for (int i = 0; i < objects.size(); i++)
 			objects[i]->Render();
-
+		
 		spriteHandler->End();
 		d3ddv->EndScene();
 	}
@@ -284,7 +291,7 @@ int Run()
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	HWND hWnd = CreateGameWindow(hInstance, nCmdShow, SCREEN_WIDTH, SCREEN_HEIGHT);
+	HWND hWnd = CreateGameWindow(hInstance, nCmdShow, Window_Width, Window_Height);
 
 	game = CGame::GetInstance();
 	game->Init(hWnd);
@@ -294,7 +301,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	LoadResources();
 
-	SetWindowPos(hWnd, 0, 0, 0, SCREEN_WIDTH*2, SCREEN_HEIGHT*2, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
+	SetWindowPos(hWnd, 0, 0, 0, Window_Width, Window_Height, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 
 	Run();
 

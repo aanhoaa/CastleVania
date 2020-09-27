@@ -10,12 +10,23 @@ using namespace std;
 
 #define WINDOW_WIDTH 512
 #define WINDOW_HEIGHT 448
+#define SCREEN_WIDTH 512
+#define SCREEN_HEIGHT 448
 
 #define COLOR_BLACK D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)  
 #define COLOR_KEY D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f) 
 
 
 #define SHOWBOX_PINK 0
+
+extern int Window_Width;
+extern int Window_Height;
+
+extern int MapWidth;
+extern int MapHeight;
+
+extern int ScreenColumn;
+extern int ScreenRow;
 
 // ID của Sprite, object
 enum def_ID

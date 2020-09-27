@@ -1,5 +1,5 @@
 ﻿#include "Simon.h"
-
+#include "debug.h"
 
 
 Simon::Simon()
@@ -8,10 +8,10 @@ Simon::Simon()
 	sprite = new Load_resources(texture, 100);
 	type_obj = def_ID::SIMON;
 
-	isWalking = 0;
-	isJumping = 0;
-	isSitting = 0;
-
+	// states have ready
+	isWalking = false; 
+	isJumping = false;
+	isSitting = false;
 }
 
 
@@ -30,12 +30,11 @@ void Simon::GetBoundingBox(float & left, float & top, float & right, float & bot
 	}
 	else
 	{
-		left = x;
-		top = y;
-		right = x + SIMON_BBOX_WIDTH;
-		bottom = y + SIMON_BBOX_HEIGHT;
+		left = x - 12;
+		top = y - 1;
+		right = x + SIMON_BBOX_WIDTH - 17;
+		bottom = y + SIMON_BBOX_HEIGHT - 3;
 	}
-
 }
 
 void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -44,21 +43,37 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	int index = sprite->GetIndex();
 
-	if (isSitting == 1)
+	if (isSitting == true)
 	{
 		sprite->SelectIndex(SIMON_ANI_SITTING);
 	}
 	else
-		if (isWalking == 1) // đang di chuyển
+		if (isWalking == true) // đang di chuyển
 		{
-			if (index < SIMON_ANI_BEGIN_WALKING || index >= SIMON_ANI_END_WALKING)
-				sprite->SelectIndex(1);
+			if (isJumping == false) // ko nhảy
+			{
+				if (index < SIMON_ANI_BEGIN_WALKING || index >= SIMON_ANI_END_WALKING)
+					sprite->SelectIndex(1);
 
-			//cập nhật frame mới
-			sprite->Update(dt); // dt này được cập nhật khi gọi update; 
+				//cập nhật frame mới
+				sprite->Update(dt); // dt này được cập nhật khi gọi update; 
+			}
+			else
+			{
+				sprite->SelectIndex(SIMON_ANI_JUMPING);
+			}
 		}
 		else
-			sprite->SelectIndex(SiMON_ANI_IDLE);		// SIMON đứng yên
+		{
+			if (isJumping == true) // đang nhảy không ấn phím qua lại
+			{
+				sprite->SelectIndex(SIMON_ANI_JUMPING);
+			}
+			else
+			{
+				sprite->SelectIndex(SiMON_ANI_IDLE);		// (khi nhảy + phím di chuyển => reset lại lúc đứng yên)
+			}
+		}
 
 
 	/* Update về sprite */
@@ -75,6 +90,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	CalcPotentialCollisions(coObjects, coEvents); // Lấy danh sách các va chạm
 
 												  // No collision occured, proceed normally
+	//DebugOut(L"[INFO] So luong obj collision: %d\n", coEvents.size());
+
 	if (coEvents.size() == 0)
 	{
 		x += dx;
@@ -82,19 +99,25 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else
 	{
-		float min_tx, min_ty, nx = 0, ny;
+		float min_tx, min_ty, nx, ny;
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
 		// block 
-		//x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		//y += min_ty * dy + ny * 0.4f;
+		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+		y += min_ty * dy + ny * 0.4f;
 
+		// nếu mà nx, ny <>0  thì nó va chạm rồi. mà chạm rồi thì dừng vận tốc cho nó đừng chạy nữa
 		if (nx != 0)
-			vx = 0; // nếu mà nx, ny <>0  thì nó va chạm rồi. mà chạm rồi thì dừng vận tốc cho nó đừng chạy nữa
+		{
+			vx = 0;
+		}
 
 		if (ny != 0)
+		{
 			vy = 0;
+			isJumping = false; // reset jumping
+		}
 	}
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
@@ -168,14 +191,14 @@ void Simon::Stop()
 {
 	if (vx != 0)
 		vx -= dt * SIMON_GRAVITY*0.1*nx;
-	if (nx == 1 && vx < 0) vx = 0;
-	if (nx == -1 && vx > 0) vx = 0;
+
+	nx != 0 ? (vx != 0 ? vx = 0 : vx = vx) : nx;
 
 	isWalking = 0;
 	if (isSitting == true) // nếu simon đang ngồi
 	{
 		isSitting = 0; // hủy trạng thái ngồi
-		y = y - 18; // kéo simon lên
+		y = y - 25; // kéo simon lên
 	}
 
 }
