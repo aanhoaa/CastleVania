@@ -7,6 +7,7 @@
 #include "Load_img_file.h"
 #include "Load_resources.h"
 #include "define.h"
+#include "Camera.h"
 
 #include <fstream>
 #include <iostream>
@@ -31,6 +32,7 @@ private:
 	int RowTile;// số lượng dòng tile trong texture
 	int CountTileFrame; // tổng số lương tile trong texture 
 	int TileMap[500][500];
+	int AutoFit;
 
 	int row; // dòng hiện tại camera đang đứng
 	int column; //cột hiện tại camera đang đứng
@@ -42,7 +44,7 @@ public:
 	~Map();
 	void LoadMap();
 	void ReadMapTXT(char * filename);
-	void DrawMap();
+	void DrawMap(Camera * camera);
 };
 
 #endif 

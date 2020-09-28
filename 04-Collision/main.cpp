@@ -28,6 +28,7 @@
 
 #include "define.h"
 #include "Map.h"
+#include "Camera.h"
 
 #include "Brick.h"
 #include "Simon.h"
@@ -47,6 +48,7 @@ HWND hWnd;
 CGame *game;
 
 Map * TileMap;
+Camera *camera;
 
 Simon* simon;
 
@@ -141,6 +143,9 @@ void LoadResources()
 {
 	TileMap = new Map();
 
+	camera = new Camera(Window_Width, Window_Height);
+	camera->SetPosition(0, 0);
+
 	simon = new Simon();
 	simon->SetPosition(0, 0);
 	objects.push_back(simon);
@@ -159,17 +164,24 @@ void Update(DWORD dt)
 {
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
+
 	
+
 	vector<LPGAMEOBJECT> coObjects;
 	for (int i = 1; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);   // cap nhat danh sach va cham voi mario
 	}
 
+//	DebugOut(L"[INFO] Cam_y: %d\n", camera->GetViewport().y); // 0
+	camera->SetPosition(simon->x - Window_Width / 2 + 30, camera->GetViewport().y); // cho camera chạy theo simon
+	camera->Update();
+
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt,&coObjects);
 	}
+
 }
 
 /*
@@ -189,11 +201,11 @@ void Render()
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
 		// back ground nên để trước khi obj render ra
-		TileMap->DrawMap();
+		TileMap->DrawMap(camera);
 		
 		
 		for (int i = 0; i < objects.size(); i++)
-			objects[i]->Render();
+			objects[i]->Render(camera);
 		
 		spriteHandler->End();
 		d3ddv->EndScene();

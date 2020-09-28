@@ -1,5 +1,5 @@
 #include "Load_img_file.h"
-
+#include "debug.h"
 
 
 Load_img_file::Load_img_file(char* _fileName, int cols, int rows, int count, int Showbox)
@@ -47,6 +47,9 @@ void Load_img_file::Load(int ShowBox)
 
 	FrameWidth = info.Width / Cols;
 	FrameHeight = info.Height / Rows;
+
+	DebugOut(L"[INFO] FrameWidth: %d\n", FrameWidth);
+	DebugOut(L"[INFO] FrameHeight: %d\n", FrameHeight);
 
 	if (result != D3D_OK)
 	{
