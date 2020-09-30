@@ -165,23 +165,20 @@ void Update(DWORD dt)
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 
+	camera->SetPosition(simon->x - Window_Width / 2 + 30, camera->GetViewport().y); // cho camera chạy theo simon khi simon ra giua cam
+	camera->Update();
 	
-
 	vector<LPGAMEOBJECT> coObjects;
 	for (int i = 1; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);   // cap nhat danh sach va cham voi mario
 	}
-
-//	DebugOut(L"[INFO] Cam_y: %d\n", camera->GetViewport().y); // 0
-	camera->SetPosition(simon->x - Window_Width / 2 + 30, camera->GetViewport().y); // cho camera chạy theo simon
-	camera->Update();
-
+	
+	
 	for (int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt,&coObjects);
 	}
-
 }
 
 /*

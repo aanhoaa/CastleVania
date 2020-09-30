@@ -39,12 +39,13 @@ void Simon::GetBoundingBox(float & left, float & top, float & right, float & bot
 
 void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	
 	// không cho S đi khỏi cam
 	if (x < -10) // khi xuất hiện sang trái sẽ ngăn lại
 			x = -10;
 	if (x + SIMON_BBOX_WIDTH > MapWidth)
 			x = MapWidth - SIMON_BBOX_WIDTH; // phải tương tự
-
+	//DebugOut(L"[INFO] Y: %.6f\n", y);
 	/* Update về sprite */
 
 	int index = sprite->GetIndex();
@@ -84,7 +85,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	/* Update về sprite */
 
-	CGameObject::Update(dt);  	// Calculate dx, dy 
+	CGameObject::Update  (dt);  	// Calculate dx, dy 
 
 	vy += SIMON_GRAVITY * dt;
 
@@ -132,7 +133,10 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Simon::Render(Camera* camera)
 {
-	D3DXVECTOR2 pos = camera->Transform(x, y);
+	DebugOut(L"[INFO] x_cam: %.6f\n", camera->GetViewport().x);
+	D3DXVECTOR2 pos = camera->Translate(x, y);
+	DebugOut(L"[INFO] x_s: %.6f\n", x);
+	
 
 	if (nx == -1)
 		sprite->Draw(pos.x, pos.y);

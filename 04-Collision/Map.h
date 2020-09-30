@@ -30,7 +30,7 @@ private:
 
 	int ColTile; // số lượng cột tile trong texture
 	int RowTile;// số lượng dòng tile trong texture
-	int CountTileFrame; // tổng số lương tile trong texture 
+	int CountTileFrame; // tổng số lượng tile trong texture 
 	int TileMap[500][500];
 	int AutoFit;
 

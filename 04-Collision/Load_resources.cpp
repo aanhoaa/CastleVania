@@ -1,4 +1,5 @@
-#include "Load_resources.h" 
+﻿#include "Load_resources.h" 
+#include "debug.h"
 
 Load_resources::Load_resources()
 {
@@ -211,8 +212,8 @@ void Load_resources::DrawRaw(int X, int Y)
 {
 	RECT srect;
 	LPD3DXSPRITE spriteHandler = CGame::GetInstance()->GetSpriteHandler();
-
-
+	
+	// tính toán các chỉ số diện tích hiển thị
 	srect.left = (_index % _texture->Cols)*(_texture->FrameWidth);
 	srect.top = (_index / _texture->Cols)*(_texture->FrameHeight);
 	srect.right = srect.left + _texture->FrameWidth;
@@ -224,7 +225,7 @@ void Load_resources::DrawRaw(int X, int Y)
 	position.y = Y;
 	spriteHandler->Draw(
 		_texture->Texture,
-		&srect,
+		&srect, // diện tích cần hiển thị 
 		&center,
 		&position,
 		D3DCOLOR_XRGB(R, G, B)  //color

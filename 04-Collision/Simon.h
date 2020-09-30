@@ -7,20 +7,13 @@
 #define SIMON_BBOX_HEIGHT 66
 #define SIMON_BBOX_SITTING_HEIGHT 48
 
-
-
 #define SIMON_GRAVITY 0.005f
 #define SIMON_VJUMP 0.8f
 
 #define SIMON_WALKING_SPEED 0.15f 
 
-
-
-
 #define SIMON_STATE_IDLE 0
 #define SIMON_STATE_WALKING 1
-
-
 
 #define SIMON_ANI_BEGIN_WALKING 1
 #define SIMON_ANI_END_WALKING 3
@@ -30,9 +23,8 @@
 #define SIMON_ANI_SITTING 4
 
 
-
-
 #include "GameObject.h"
+
 class Simon : public CGameObject
 {
 public:

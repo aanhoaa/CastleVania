@@ -48,9 +48,6 @@ void Load_img_file::Load(int ShowBox)
 	FrameWidth = info.Width / Cols;
 	FrameHeight = info.Height / Rows;
 
-	DebugOut(L"[INFO] FrameWidth: %d\n", FrameWidth);
-	DebugOut(L"[INFO] FrameHeight: %d\n", FrameHeight);
-
 	if (result != D3D_OK)
 	{
 		//	GLMessage("Can not load texture");

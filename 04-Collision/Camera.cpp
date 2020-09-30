@@ -11,7 +11,7 @@ Camera::~Camera()
 {
 }
 
-D3DXVECTOR2 Camera::Transform(int x, int y)
+D3DXVECTOR2 Camera::Translate(int x, int y)
 {
 	return D3DXVECTOR2(x - viewport.x, y - viewport.y);
 }
@@ -29,6 +29,7 @@ D3DXVECTOR2 Camera::GetViewport()
 
 void Camera::Update()
 {
+
 	if (viewport.x < 0)
 			viewport.x = 0;
 

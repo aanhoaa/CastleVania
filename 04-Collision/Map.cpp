@@ -68,8 +68,6 @@ void Map::DrawMap(Camera *camera)
 	y = -(int(camera->GetViewport().y) % TileTexture->FrameHeight); // xác định vị trí y bắt đầu vẽ các tile theo loop
 
 	//DebugOut(L"[INFO] X: %d\n", x); 
-	//DebugOut(L"[INFO] X: %d\n", y); 
-	//DebugOut(L"[INFO] Row: %d\n", row); 
 	//DebugOut(L"[INFO] Column: %d\n", column); // -18
 
 	// render các tiled lên màn hình cam
@@ -77,12 +75,12 @@ void Map::DrawMap(Camera *camera)
 	{
 		//if (y + TileTexture->FrameWidth * i >=  AutoFit)
 		{
-			for (int j = 0; j < ScreenColumn + 1; j++) // sC+1 để load 1 col sau cam, khi cam tới sẽ có hình luôn(nếu k sẽ đen)
+			for (int j = 0; j < ScreenColumn +1; j++) // sC+1 để load 1 col sau cam, khi cam tới sẽ có hình luôn(nếu k sẽ đen)
 			{
 				// dk cho phần cuối map
 				if (!(row + i < 0 /*nằm ngoài cam*/|| row + i>RowMatrix  /* vượt quá row trong txt*/|| j + column < 0 || j + column > ColumnMatrix))
 				{
-					//DebugOut(L"[INFO] I ne: %d\n", i); // 0
+				//	DebugOut(L"[INFO] Res ne: %d\n", x + TileTexture->FrameWidth*j); // 0
 					TileSprite->SelectIndex(TileMap[row + i][column + j]);
 					TileSprite->DrawRaw(x + TileTexture->FrameWidth*j, y + TileTexture->FrameHeight*i + AutoFit);
 				}
