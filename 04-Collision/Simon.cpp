@@ -5,16 +5,19 @@
 Simon::Simon()
 {
 	texture = new Load_img_file("Resources\\simon.png", 8, 3, 24, SHOWBOX_PINK);
-	sprite = new Load_resources(texture, 100);
-	type_obj = def_ID::SIMON;
+	sprite = new Load_resources(texture, 200);
+	obj_type = def_ID::SIMON;
 
 	// states have ready
 	isWalking = false; 
 	isJumping = false;
 	isSitting = false;
+	isAttacking = false;
 	life = 16; // 16 mạng
-}
 
+	ListWeapon.clear();
+	ListWeapon.push_back(new MorningStar());
+}
 
 Simon::~Simon()
 {
@@ -40,10 +43,9 @@ void Simon::GetBoundingBox(float & left, float & top, float & right, float & bot
 
 void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	
 	// không cho S đi khỏi cam
-	if (x < -10) // khi xuất hiện sang trái sẽ ngăn lại
-			x = -10;
+	if (x < 0) // khi xuất hiện sang trái sẽ ngăn lại
+			x = 0;
 	if (x + SIMON_BBOX_WIDTH > MapWidth)
 			x = MapWidth - SIMON_BBOX_WIDTH; // phải tương tự
 	//DebugOut(L"[INFO] Y: %.6f\n", y);
@@ -53,15 +55,41 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (isSitting == true)
 	{
-		sprite->SelectIndex(SIMON_ANI_SITTING);
+		if (isAttacking == true) // tấn công
+		{
+			if (index < SIMON_ANI_SITTING_ATTACKING_BEGIN || index >= SIMON_ANI_SITTING_ATTACKING_END)
+			{
+				sprite->SelectIndex(SIMON_ANI_SITTING_ATTACKING_BEGIN);
+			}
+			else
+			{
+				//cập nhật frame mới
+				sprite->Update(dt); // dt này được cập nhật khi gọi update; 
+			}
+		}
+		else
+			sprite->SelectIndex(SIMON_ANI_SITTING);
 	}
 	else
+		if (isAttacking == true)
+		{
+			if (index < SIMON_ANI_STANDING_ATTACKING_BEGIN || index >= SIMON_ANI_STANDING_ATTACKING_END)
+			{
+				sprite->SelectIndex(SIMON_ANI_STANDING_ATTACKING_BEGIN);
+			}
+			else
+			{
+				//cập nhật frame mới
+				sprite->Update(dt); // dt này được cập nhật khi gọi update; 
+			}
+		}
+		else
 		if (isWalking == true) // đang di chuyển
 		{
 			if (isJumping == false) // ko nhảy
 			{
-				if (index < SIMON_ANI_BEGIN_WALKING || index >= SIMON_ANI_END_WALKING)
-					sprite->SelectIndex(1);
+				if (index < SIMON_ANI_WALKING_BEGIN || index >= SIMON_ANI_WALKING_END)
+					sprite->SelectIndex(SIMON_ANI_WALKING_BEGIN);
 
 				//cập nhật frame mới
 				sprite->Update(dt); // dt này được cập nhật khi gọi update; 
@@ -83,86 +111,58 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 		}
 
-
 	/* Update về sprite */
+
+
+	/* Xử lý va chạm*/
 
 	CGameObject::Update  (dt);  	// Calculate dx, dy 
 
-	vy += SIMON_GRAVITY * dt;
+	vy += SIMON_GRAVITY * dt; 
 
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
+	vector<LPGAMEOBJECT> coObjects_Brick; // obj brick
+	coObjects_Brick.clear();
 
-	coEvents.clear();
+	for (int i = 0; i < coObjects->size(); i++)
+		if (coObjects->at(i)->GetType() == def_ID::BRICK)
+				coObjects_Brick.push_back(coObjects->at(i)); // lấy các obj là brick va cham voi simon (trong cam)
 
-	CalcPotentialCollisions(coObjects, coEvents); // Lấy danh sách các va chạm
+	CollisionWithBrick(&coObjects_Brick); // check Collision and update x, y for simon
 
-												  // No collision occured, proceed normally
-	//DebugOut(L"[INFO] So luong obj collision: %d\n", coEvents.size());
-
-	if (coEvents.size() == 0)
+	if (isAttacking == true) //  update postion roi sau vì kiểm tra va chạm bên trên có thể khiến x,y của simon thay đổi, gây lệch vị trí roi với simon
 	{
-		x += dx;
-		y += dy;
-	}
-	else
-	{
-		float min_tx, min_ty, nx, ny;
-
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
-
-		// block 
-		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
-		y += min_ty * dy + ny * 0.4f;
-
-		// nếu mà nx, ny <>0  thì nó va chạm rồi. mà chạm rồi thì dừng vận tốc cho nó đừng chạy nữa
-		if (nx != 0)
+		if (ListWeapon[0]->GetFinish() == false) // nếu MorningStar đang đánh
 		{
-			vx = 0;
-		}
+			ListWeapon[0]->SetPosition(this->x, this->y);
+			ListWeapon[0]->UpdatePositionFitSimon();
+			ListWeapon[0]->Update(dt);
 
-		if (ny != 0)
-		{
-			vy = 0;
-			isJumping = false; // reset jumping
+			if (ListWeapon[0]->GetFinish() == true) 
+				isAttacking = false;
 		}
 	}
-	for (UINT i = 0; i < coEvents.size(); i++)
-		delete coEvents[i];
-
 }
 
 void Simon::Render(Camera* camera)
 {
-	DebugOut(L"[INFO] y_cam: %.6f\n", camera->GetViewport().y);
-	D3DXVECTOR2 pos = camera->Translate(x, y);
-	DebugOut(L"[INFO] y_s: %.6f\n", y);
-	
+	if (IS_DEBUG_RENDER_BBOX)
+		RenderBoundingBox(camera);
 
+	D3DXVECTOR2 pos = camera->Translate(x, y);
+	//DebugOut(L"[INFO] y_s: %.6f\n", y);
+	
+	// render simon
 	if (nx == -1)
 		sprite->Draw(pos.x, pos.y);
 	else
 		sprite->DrawFlipX(pos.x, pos.y);
-}
 
-void Simon::SetState(int state)
-{
-
-	CGameObject::SetState(state);
-
-	switch (state)
-	{
-	case SIMON_STATE_IDLE:
-		vx = 0;
-		break;
-	case SIMON_STATE_WALKING:
-		vx = SIMON_WALKING_SPEED;
-		break;
-
-
-	default:
-		break;
-	}
+	// render weapons
+	for (int i = 0; i<ListWeapon.size(); i++)
+		if (ListWeapon[i]->GetFinish() == false)
+		{
+			ListWeapon[i]->Draw(camera); 
+		}
 }
 
 void Simon::Left()
@@ -177,8 +177,17 @@ void Simon::Right()
 
 void Simon::Go()
 {
-	vx = SIMON_WALKING_SPEED * nx;
-	isWalking = 1;
+	if (isAttacking == true)
+	{
+		DebugOut(L"[INFO] test: %d\n", 123);
+		vx = 0;
+		return;
+	}
+	else {
+		vx = SIMON_WALKING_SPEED * nx;
+		isWalking = 1;
+	}
+	
 }
 
 void Simon::Sit()
@@ -194,18 +203,30 @@ void Simon::Sit()
 
 void Simon::Jump()
 {
+	if (isJumping == true)
+		return;
+
 	if (isSitting == true)
 		return;
-	vy -= SIMON_VJUMP;
+
+	if (isAttacking == true)
+		return;
+
 	isJumping = true;
+	vy -= SIMON_VJUMP;
 }
 
 void Simon::Stop()
 {
-	if (vx != 0)
+	if (isAttacking == true)
+		return;
+
+	vx = 0;
+
+	/*if (vx != 0)
 		vx -= dt * SIMON_GRAVITY*0.1*nx;
 
-	nx != 0 ? (vx != 0 ? vx = 0 : vx = vx) : nx;
+	nx != 0 ? (vx != 0 ? vx = 0 : vx = vx) : nx;*/
 
 	isWalking = 0;
 	if (isSitting == true) // nếu simon đang ngồi
@@ -213,5 +234,52 @@ void Simon::Stop()
 		isSitting = 0; // hủy trạng thái ngồi
 		y = y - 25; // kéo simon lên
 	}
+}
 
+void Simon::CollisionWithBrick(vector<LPGAMEOBJECT>* coObjects)
+{
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
+
+	CalcPotentialCollisions(coObjects, coEvents); // Lấy danh sách các va chạm
+
+												  // No collision occured, proceed normally
+	if (coEvents.size() == 0)
+	{
+		x += dx;
+		y += dy;
+	}
+	else
+	{
+		float min_tx, min_ty, nx = 0, ny; // cái này của brick
+
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+
+		// block 
+		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
+		y += min_ty * dy + ny * 0.4f; // ny = -1 thì hướng từ trên xuống....
+
+		if (nx != 0)
+			vx = 0; // nếu mà nx, ny <>0  thì nó va chạm rồi. mà chạm rồi thì dừng vận tốc cho nó đừng chạy nữa
+
+		if (ny != 0)
+		{
+			vy = 0;
+			isJumping = false; // kết thúc nhảy
+		}
+	}
+
+	for (UINT i = 0; i < coEvents.size(); i++)
+		delete coEvents[i];
+}
+
+void Simon::Attack(Weapons * weapon)
+{
+	if (isAttacking == true) // đang tấn công thì bỏ qua
+		return;
+
+	isAttacking = true; // set trang thái tấn công
+	weapon->Create(this->x, this->y, this->nx); // set vị trí weapon theo simon
 }

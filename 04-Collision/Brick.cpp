@@ -3,13 +3,13 @@
 
 Brick::Brick(int X, int Y, int W, int H)
 {
-	type_obj = def_ID::BRICK;
 	texture = new Load_img_file("Resources\\ground\\2.png", 1, 1, 1, 0);
 	sprite = new Load_resources(texture, 1000);
 	this->x = X;
 	this->y = Y;
 	this->width = W;
 	this->height = H;
+	obj_type = def_ID::BRICK;
 }
 
 void Brick::Render(Camera * camera)
@@ -20,6 +20,8 @@ void Brick::Render(Camera * camera)
 		for (int j = 0; j < (int)ceil(height / BRICK_FRAME_HEIGHT); j++)
 			sprite->Draw(pos.x + i * BRICK_FRAME_WIDTH, pos.y + j * BRICK_FRAME_HEIGHT);
 
+	if (IS_DEBUG_RENDER_BBOX)
+		RenderBoundingBox(camera);
 }
 
 void Brick::GetBoundingBox(float &l, float &t, float &r, float &b)

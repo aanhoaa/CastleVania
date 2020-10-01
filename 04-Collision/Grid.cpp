@@ -49,7 +49,7 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 		for (int col = colLeft; col <= colRight; col++) // hiện tại với w và h thì nên để col < colRight (thêm <= sẽ lấy thêm obj ngoài cam)
 		{
 			//DebugOut(L"[INFO] Row thu: %d\n", row);
-			DebugOut(L"[INFO] So luong obj: %d\n", cells[row][col].size());
+			//DebugOut(L"[INFO] So luong obj: %d\n", cells[row][col].size());
 			
 			for (int i = 0; i < cells[row][col].size(); i++) // có đánh dấu 
 			{

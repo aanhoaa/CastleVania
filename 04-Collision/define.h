@@ -19,6 +19,9 @@ using namespace std;
 
 #define SHOWBOX_PINK 0
 
+#define IS_DEBUG_RENDER_BBOX 1
+
+
 extern int Window_Width;
 extern int Window_Height;
 

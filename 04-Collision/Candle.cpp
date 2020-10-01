@@ -8,7 +8,7 @@ Candle::Candle(int X, int Y)
 	sprite = new Load_resources(texture, 100);
 	this->x = X;
 	this->y = Y;
-	type_obj = def_ID::CANDLE;
+	obj_type = def_ID::CANDLE;
 	life = 1;
 }
 
@@ -33,6 +33,9 @@ void Candle::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Candle::Render(Camera * camera)
 {
+	if (IS_DEBUG_RENDER_BBOX)
+		RenderBoundingBox(camera);
+
 	D3DXVECTOR2 pos = camera->Translate(x, y);
 	sprite->Draw(pos.x, pos.y);
 }

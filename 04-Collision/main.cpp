@@ -80,8 +80,13 @@ void CSampleKeyHander::OnKeyDown(int KeyCode)
 
 	if (KeyCode == DIK_SPACE)
 	{
-		if (simon->isJumping == false)
 			simon->Jump();
+	}
+
+	if (KeyCode == DIK_X)
+	{
+		//DebugOut(L"[SIMON] X = %f , Y = %f \n", simon->x + 10, simon->y);
+		simon->Attack(simon->ListWeapon[0]);
 	}
 }
 
@@ -154,7 +159,7 @@ void LoadResources()
 	simon = new Simon();
 	simon->SetPosition(0, 0);
 
-	gridGame = new Grid;
+	gridGame = new Grid();
 	gridGame->ReadFileToGrid("Resources\\map\\Obj_1.txt"); // đọc các object từ file vào Grid
 }
 

@@ -8,6 +8,7 @@
 #include "Load_img_file.h";
 #include "Load_resources.h";
 #include "Camera.h"
+#include "BBOX.h"
 
 using namespace std;
 
@@ -36,9 +37,9 @@ class CGameObject
 {
 protected:
 	int life;
+	def_ID obj_type; // loại obj
 public:
 	int id; // id obj
-	def_ID type_obj; // loại obj
 	float x; 
 	float y;
 
@@ -67,12 +68,12 @@ public:
 	int GetLife();
 	int GetHeight();
 	int GetWidth();
+	def_ID GetType();
 	void SetDirect(int nx);
 	void SetId(int ID);
 
 	int GetState() { return this->state; }
-
-	void RenderBoundingBox();
+	void RenderBoundingBox(Camera * camera);
 
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);

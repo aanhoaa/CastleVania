@@ -16,7 +16,7 @@ void Map::LoadMap()
 {
 	ReadMapTXT("Resources/map/1.txt");
 	TileTexture = new Load_img_file("Resources/map/1.png", ColTile, RowTile, CountTileFrame);
-	TileSprite = new Load_resources(TileTexture, 0);
+	TileSprite = new Load_resources(TileTexture, 100);
 
 	MapWidth = (TileTexture->FrameWidth)*(ColumnMatrix);  // Chiều dài của MAP
 	MapHeight = (TileTexture->FrameHeight)*(RowMatrix); //  chiều cao của MAP

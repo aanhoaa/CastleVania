@@ -15,15 +15,22 @@
 #define SIMON_STATE_IDLE 0
 #define SIMON_STATE_WALKING 1
 
-#define SIMON_ANI_BEGIN_WALKING 1
-#define SIMON_ANI_END_WALKING 3
+#define SIMON_ANI_WALKING_BEGIN 1
+#define SIMON_ANI_WALKING_END 3
+
+#define SIMON_ANI_STANDING_ATTACKING_BEGIN 5
+#define SIMON_ANI_STANDING_ATTACKING_END 7
 
 #define SiMON_ANI_IDLE 0
 #define SIMON_ANI_JUMPING 4
 #define SIMON_ANI_SITTING 4
 
+#define SIMON_ANI_SITTING_ATTACKING_BEGIN 15
+#define SIMON_ANI_SITTING_ATTACKING_END 17
 
 #include "GameObject.h"
+#include "Weapons.h"
+#include "MorningStar.h"
 
 class Simon : public CGameObject
 {
@@ -32,23 +39,17 @@ public:
 	bool isWalking;
 	bool isJumping;
 	bool isSitting;
+	bool isAttacking;
 
+	vector<Weapons*> ListWeapon;
 
 public:
 	Simon();
 	~Simon();
 
-
-
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
-
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
-
-
 	virtual void Render(Camera * camera);
-
-	void SetState(int state);
-
 
 	void Left();  // set lại hướng của simon
 	void Right(); // set lại hướng của simon
@@ -56,6 +57,10 @@ public:
 	void Sit();
 	void Jump();
 	void Stop();
+
+	void CollisionWithBrick(vector<LPGAMEOBJECT> *coObjects = NULL);
+
+	void Attack(Weapons *weapon);
 };
 
 

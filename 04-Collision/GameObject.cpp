@@ -111,14 +111,11 @@ void CGameObject::FilterCollision( //
 }
 
 
-void CGameObject::RenderBoundingBox()
+void CGameObject::RenderBoundingBox(Camera * camera)
 {
-	/*D3DXVECTOR3 p(x, y, 0);
 	RECT rect;
 
-	LPDIRECT3DTEXTURE9 bbox = CTextures::GetInstance()->Get(ID_TEX_BBOX);
-
-	float l,t,r,b; 
+	float l, t, r, b;
 
 	GetBoundingBox(l, t, r, b);
 	rect.left = 0;
@@ -126,7 +123,11 @@ void CGameObject::RenderBoundingBox()
 	rect.right = (int)r - (int)l;
 	rect.bottom = (int)b - (int)t;
 
-	CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);*/
+	D3DXVECTOR2 pos = camera->Translate(l, t);
+
+	LPDIRECT3DTEXTURE9  _Texture = BBox::GetInstance()->GetTexture();
+
+	CGame::GetInstance()->Draw(pos.x, pos.y, _Texture, rect.left, rect.top, rect.right, rect.bottom, 100);
 }
 
 int CGameObject::GetLife()
@@ -142,6 +143,10 @@ int CGameObject::GetHeight()
 int CGameObject::GetWidth()
 {
 	return texture->FrameWidth;
+}
+
+def_ID CGameObject::GetType() {
+	return obj_type;
 }
 
 void CGameObject::SetDirect(int nx)
