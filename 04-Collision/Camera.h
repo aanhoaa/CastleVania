@@ -10,7 +10,6 @@ protected:
 	int _width;
 	int _height;
 
-
 public:
 	Camera(int w, int h);
 	~Camera();
@@ -19,6 +18,8 @@ public:
 	void SetPosition(int x, int y);
 	D3DXVECTOR2 GetViewport();
 	void Update();
+	int GetWidth();
+	int GetHeight();
 };
 
 #endif

@@ -12,6 +12,7 @@ Simon::Simon()
 	isWalking = false; 
 	isJumping = false;
 	isSitting = false;
+	life = 16; // 16 mạng
 }
 
 
@@ -133,9 +134,9 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Simon::Render(Camera* camera)
 {
-	DebugOut(L"[INFO] x_cam: %.6f\n", camera->GetViewport().x);
+	DebugOut(L"[INFO] y_cam: %.6f\n", camera->GetViewport().y);
 	D3DXVECTOR2 pos = camera->Translate(x, y);
-	DebugOut(L"[INFO] x_s: %.6f\n", x);
+	DebugOut(L"[INFO] y_s: %.6f\n", y);
 	
 
 	if (nx == -1)

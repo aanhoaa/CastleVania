@@ -30,6 +30,8 @@
 #include "Map.h"
 #include "Camera.h"
 
+#include "Grid.h"
+
 #include "Brick.h"
 #include "Simon.h"
 
@@ -49,6 +51,9 @@ CGame *game;
 
 Map * TileMap;
 Camera *camera;
+
+Grid * gridGame;
+vector<LPGAMEOBJECT> ListObj; // list obj trong vùng cam
 
 Simon* simon;
 
@@ -148,12 +153,9 @@ void LoadResources()
 
 	simon = new Simon();
 	simon->SetPosition(0, 0);
-	objects.push_back(simon);
 
-
-	Brick * brick = new Brick(0, 320, 1536, 32);
-	objects.push_back(brick);
-	
+	gridGame = new Grid;
+	gridGame->ReadFileToGrid("Resources\\map\\Obj_1.txt"); // đọc các object từ file vào Grid
 }
 
 /*
@@ -168,16 +170,20 @@ void Update(DWORD dt)
 	camera->SetPosition(simon->x - Window_Width / 2 + 30, camera->GetViewport().y); // cho camera chạy theo simon khi simon ra giua cam
 	camera->Update();
 	
-	vector<LPGAMEOBJECT> coObjects;
-	for (int i = 1; i < objects.size(); i++)
-	{
-		coObjects.push_back(objects[i]);   // cap nhat danh sach va cham voi mario
-	}
+	//vector<LPGAMEOBJECT> coObjects;
+	//for (int i = 1; i < objects.size(); i++)
+	//{
+	//	coObjects.push_back(objects[i]);   // cap nhat danh sach va cham voi mario
+	//}
+
+	gridGame->GetListObject(ListObj, camera); // lấy hết các object trong vùng camera;
+
+	simon->Update(dt, &ListObj);
 	
 	
-	for (int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < ListObj.size(); i++)
 	{
-		objects[i]->Update(dt,&coObjects);
+		ListObj[i]->Update(dt,&ListObj);
 	}
 }
 
@@ -200,10 +206,13 @@ void Render()
 		// back ground nên để trước khi obj render ra
 		TileMap->DrawMap(camera);
 		
-		
-		for (int i = 0; i < objects.size(); i++)
-			objects[i]->Render(camera);
-		
+		// render obj
+		for (int i = 0; i < ListObj.size(); i++)
+			ListObj[i]->Render(camera);
+
+		// render Simon
+		simon->Render(camera);
+
 		spriteHandler->End();
 		d3ddv->EndScene();
 	}

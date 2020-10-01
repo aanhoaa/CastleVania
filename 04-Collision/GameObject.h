@@ -1,10 +1,9 @@
-#pragma once
+﻿#pragma once
 
 #include <Windows.h>
 #include <d3dx9.h>
 #include <vector>
 
-#include "Sprites.h"
 #include "define.h"
 #include "Load_img_file.h";
 #include "Load_resources.h";
@@ -35,9 +34,11 @@ struct CCollisionEvent
 
 class CGameObject
 {
+protected:
+	int life;
 public:
-
-	def_ID type_obj;
+	int id; // id obj
+	def_ID type_obj; // loại obj
 	float x; 
 	float y;
 
@@ -50,6 +51,7 @@ public:
 	int nx;	 
 
 	int state;
+	bool isPush; // xét xem obj đó đã dc cho vào list chưa (xử lý với tình huống 1 obj nằm trên 2 cells trở lên)
 
 	DWORD dt; 
 
@@ -57,13 +59,16 @@ public:
 	Load_img_file* texture;
 	Load_resources* sprite;
 
-	vector<LPANIMATION> animations;
-
 public: 
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
 	void GetPosition(float &x, float &y) { x = this->x; y = this->y; }
 	void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }
+	int GetLife();
+	int GetHeight();
+	int GetWidth();
+	void SetDirect(int nx);
+	void SetId(int ID);
 
 	int GetState() { return this->state; }
 
@@ -78,8 +83,6 @@ public:
 		float &min_ty, 
 		float &nx, 
 		float &ny);
-
-	void AddAnimation(int aniId);
 
 	CGameObject();
 

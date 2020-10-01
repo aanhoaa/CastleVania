@@ -1,18 +1,16 @@
-#include <d3dx9.h>
+﻿#include <d3dx9.h>
 #include <algorithm>
 
-
 #include "debug.h"
-#include "Textures.h"
 #include "Game.h"
 #include "GameObject.h"
-#include "Sprites.h"
 
 CGameObject::CGameObject()
 {
 	x = y = 0;
 	vx = vy = 0;
 	nx = 1;	
+	life = 1; // đang sống
 }
 
 void CGameObject::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -115,7 +113,7 @@ void CGameObject::FilterCollision( //
 
 void CGameObject::RenderBoundingBox()
 {
-	D3DXVECTOR3 p(x, y, 0);
+	/*D3DXVECTOR3 p(x, y, 0);
 	RECT rect;
 
 	LPDIRECT3DTEXTURE9 bbox = CTextures::GetInstance()->Get(ID_TEX_BBOX);
@@ -128,17 +126,37 @@ void CGameObject::RenderBoundingBox()
 	rect.right = (int)r - (int)l;
 	rect.bottom = (int)b - (int)t;
 
-	CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);*/
 }
 
-void CGameObject::AddAnimation(int aniId)
+int CGameObject::GetLife()
 {
-	LPANIMATION ani = CAnimations::GetInstance()->Get(aniId);
-	animations.push_back(ani);
+	return life;
+}
+
+int CGameObject::GetHeight()
+{
+	return texture->FrameHeight;
+}
+
+int CGameObject::GetWidth()
+{
+	return texture->FrameWidth;
+}
+
+void CGameObject::SetDirect(int nx)
+{
+	this->nx = nx;
+}
+
+void CGameObject::SetId(int ID)
+{
+	this->id = ID;
 }
 
 
 CGameObject::~CGameObject()
 {
-
+	SAFE_DELETE(texture);
+	SAFE_DELETE(sprite);
 }

@@ -11,6 +11,16 @@ Camera::~Camera()
 {
 }
 
+int Camera::GetWidth()
+{
+	return _width;
+}
+
+int Camera::GetHeight()
+{
+	return _height;
+}
+
 D3DXVECTOR2 Camera::Translate(int x, int y)
 {
 	return D3DXVECTOR2(x - viewport.x, y - viewport.y);
@@ -37,3 +47,4 @@ void Camera::Update()
 			viewport.x = MapWidth - Window_Width;
 
 }
+
