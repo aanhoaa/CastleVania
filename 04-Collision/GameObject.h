@@ -61,16 +61,18 @@ public:
 	Load_resources* sprite;
 
 public: 
-	void SetPosition(float x, float y) { this->x = x, this->y = y; }
-	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
 	void GetPosition(float &x, float &y) { x = this->x; y = this->y; }
+	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }
+	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
 	int GetLife();
 	int GetHeight();
 	int GetWidth();
 	def_ID GetType();
 	void SetDirect(int nx);
 	void SetId(int ID);
+
+	void LoseLife(int health);
 
 	int GetState() { return this->state; }
 	void RenderBoundingBox(Camera * camera);

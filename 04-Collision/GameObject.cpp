@@ -159,6 +159,12 @@ void CGameObject::SetId(int ID)
 	this->id = ID;
 }
 
+void CGameObject::LoseLife(int health)
+{
+	life -= health;
+	if (life < 0)
+		life = 0;
+}
 
 CGameObject::~CGameObject()
 {

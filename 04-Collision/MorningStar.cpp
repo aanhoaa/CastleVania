@@ -1,14 +1,12 @@
 ﻿#include "MorningStar.h"
 
 
-
 MorningStar::MorningStar()
 {
 	texture = new Load_img_file("Resources\\weapon\\morningstar.png", 4, 3, 12, 0);
 	sprite = new Load_resources(texture, 100);
 	this->level = 0;
 }
-
 
 MorningStar::~MorningStar()
 {
@@ -28,15 +26,6 @@ void MorningStar::Create(float simon_X, float simon_Y, int simon_nx)
 
 void MorningStar::Update(int dt)
 {
-	//if (isFinish == false)
-	//{
-	//	if (level == 0 && sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL0_END) // nếu nó chạy frame cuối rồi
-	//	{
-	//		isFinish = true;
-	//		return;
-	//	} 
-	//}
-
 	isFinish = (sprite->GetIndex() == 3) + (sprite->GetIndex() == 7) + (sprite->GetIndex() == 11); // index 1 trong 3 index 3-7-11 thì dừng đánh (sprite roi cuối)
 	//DebugOut(L"[INFO] Finish: %d\n", isFinish);
 
@@ -86,3 +75,30 @@ void MorningStar::UpdatePositionFitSimon()
 	}
 }
 
+void MorningStar::CollisionWithObject(DWORD dt, vector<LPGAMEOBJECT>* listObj)
+{
+	RECT object, other;
+	float l_obj, t_obj, r_obj, b_obj;
+	float l_oth, t_oth, r_oth, b_oth;
+
+	GetBoundingBox(l_obj, t_obj, r_obj, b_obj);
+	object.left = (int)l_obj;
+	object.top = (int)t_obj;
+	object.right = (int)r_obj;
+	object.bottom = (int)b_obj;
+
+	for (int i = 0; i< listObj->size(); i++)
+		if (listObj->at(i)->GetLife()>0 && listObj->at(i)->GetType() == def_ID::CANDLE)
+		{
+			listObj->at(i)->GetBoundingBox(l_oth, t_oth, r_oth, b_oth);
+			other.left = (int)l_oth;
+			other.top = (int)t_oth;
+			other.right = (int)r_oth;
+			other.bottom = (int)b_oth;
+
+			if (CGame::GetInstance()->CollisionAABB(object, other))
+			{
+				listObj->at(i)->LoseLife(1);
+			}
+		}
+}

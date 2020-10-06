@@ -210,6 +210,11 @@ CGame::~CGame()
 	if (d3d != NULL) d3d->Release();
 }
 
+bool CGame::CollisionAABB(RECT a, RECT b)
+{
+	return !(a.right <= b.left || a.left >= b.right || a.top >= b.bottom || a.bottom <= b.top);
+}
+
 /*
 	SweptAABB 
 */

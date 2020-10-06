@@ -1,5 +1,5 @@
 #include "Candle.h"
-
+#include "debug.h"
 
 
 Candle::Candle(int X, int Y)
@@ -11,7 +11,6 @@ Candle::Candle(int X, int Y)
 	obj_type = def_ID::CANDLE;
 	life = 1;
 }
-
 
 Candle::~Candle()
 {

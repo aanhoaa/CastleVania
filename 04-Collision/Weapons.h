@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <vector>
+
 #include "define.h"
 #include "Camera.h"
 #include "Load_img_file.h"
@@ -33,17 +35,17 @@ public:
 	int GetDirect();
 	void SetDirect(int nx);
 	int GetFinish();
+	void SetFinish(bool b);
+	void RenderBoundingBox(Camera * camera);
 
 	virtual void Create(float simon_X, float simon_Y, int simon_nx);
 	virtual void Update(int dt);
 	virtual void Draw(Camera *camera);
-
 	virtual void SetPosition(float X, float Y);
-	void RenderBoundingBox(Camera * camera);
-	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
-
-	void SetFinish(bool b);
 	virtual void UpdatePositionFitSimon();
+	
+	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
+	virtual void CollisionWithObject(DWORD dt, vector<LPGAMEOBJECT>* listObj) = 0;
 
 	def_ID GetType();
 };

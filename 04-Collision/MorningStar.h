@@ -3,7 +3,7 @@
 #define MORNINGSTAR_ANI_LEVEL0_START 0
 #define MORNINGSTAR_ANI_LEVEL0_END 3
 
-
+#include "GameObject.h"
 #include "Weapons.h"
 
 class MorningStar : public Weapons
@@ -18,5 +18,6 @@ public:
 	void Update(int dt);
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void UpdatePositionFitSimon();
+	void CollisionWithObject(DWORD dt, vector<LPGAMEOBJECT>* listObj);
 
 };

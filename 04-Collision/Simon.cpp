@@ -139,7 +139,9 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 			if (ListWeapon[0]->GetFinish() == true) 
 				isAttacking = false;
-		}
+
+			ListWeapon[0]->CollisionWithObject(dt, coObjects);
+		}	
 	}
 }
 
@@ -179,15 +181,13 @@ void Simon::Go()
 {
 	if (isAttacking == true)
 	{
-		DebugOut(L"[INFO] test: %d\n", 123);
 		vx = 0;
 		return;
 	}
 	else {
 		vx = SIMON_WALKING_SPEED * nx;
 		isWalking = 1;
-	}
-	
+	}	
 }
 
 void Simon::Sit()

@@ -51,6 +51,9 @@ public:
 	int IsKeyDown(int KeyCode);
 	void ProcessKeyboard();
 
+	//AABB
+	bool CollisionAABB(RECT a, RECT b);
+
 	static void SweptAABB(
 		float ml,			// move left 
 		float mt,			// move top

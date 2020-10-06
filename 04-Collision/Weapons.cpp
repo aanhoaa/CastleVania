@@ -1,13 +1,10 @@
 #include "Weapons.h"
 
 
-
-
 Weapons::Weapons()
 {
 	isFinish = 1;
 }
-
 
 Weapons::~Weapons()
 {
@@ -42,6 +39,7 @@ void Weapons::Draw(Camera * camera)
 {
 	if (IS_DEBUG_RENDER_BBOX)
 		RenderBoundingBox(camera);
+	
 	//DebugOut(L"Weapons: index = %d \n", sprite->GetIndex());
 	D3DXVECTOR2 pos = camera->Translate(x, y);
 	if (nx == -1)

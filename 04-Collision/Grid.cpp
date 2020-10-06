@@ -38,9 +38,9 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 	ResetListObj();
 
 	// lấy tọa độ của cam hiện tại để thiết lập các cells 
-	int rowBottom = floor((camera->GetViewport().y + camera->GetHeight()) / (float)GRID_CELL_HEIGHT);
 	int rowTop = floor((camera->GetViewport().y) / (float)GRID_CELL_HEIGHT);
-
+	int rowBottom = floor((camera->GetViewport().y + camera->GetHeight()) / (float)GRID_CELL_HEIGHT);
+	
 	int colLeft = floor((camera->GetViewport().x) / (float)GRID_CELL_WIDTH);
 	int colRight = floor((camera->GetViewport().x + camera->GetWidth()) / (float)GRID_CELL_WIDTH);
 
@@ -76,7 +76,6 @@ void Grid::GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj)
 	int colLeft = floor((obj->x) / (float)GRID_CELL_WIDTH);
 	int colRight = floor((obj->x + obj->GetWidth()) / (float)GRID_CELL_WIDTH);
 
-
 	for (int row = rowTop; row <= rowBottom; row++)
 		for (int col = colLeft; col <= colRight; col++)
 		{
@@ -94,7 +93,6 @@ void Grid::GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj)
 		}
 }
 
-
 void Grid::ResetListObj()
 {
 	for (int i = 0; i < listObjectGame.size(); i++)
@@ -105,13 +103,6 @@ void Grid::ResetListObj()
 
 void Grid::Insert(int id, int type, int nx, float x, float y, float w, float h)
 {
-	// lập cells cho obj load từ file
-	int Top = floor(y / (float)GRID_CELL_HEIGHT);
-	int Bottom = floor((y + h) / (float)GRID_CELL_HEIGHT);
-
-	int Left = floor(x / (float)GRID_CELL_WIDTH);
-	int Right = floor((x + w) / (float)GRID_CELL_WIDTH);
-
 	CGameObject * dataObject = GetNewObject(type, x, y, w, h); // sau khi load info từ file, xác định obj ->vẽ ra màn hình
 	if (dataObject == NULL)
 	{
@@ -124,6 +115,12 @@ void Grid::Insert(int id, int type, int nx, float x, float y, float w, float h)
 
 	listObjectGame.push_back(dataObject); // thêm vào list obj 
 
+	int Top = floor(y / (float)GRID_CELL_HEIGHT);
+	int Bottom = floor((y + h) / (float)GRID_CELL_HEIGHT);
+
+	int Left = floor(x / (float)GRID_CELL_WIDTH);
+	int Right = floor((x + w) / (float)GRID_CELL_WIDTH);
+
 	for (int row = Top; row <= Bottom; row++)
 	{
 		for (int col = Left; col <= Right; col++)
@@ -131,7 +128,6 @@ void Grid::Insert(int id, int type, int nx, float x, float y, float w, float h)
 			cells[row][col].push_back(dataObject); // thêm vào grid
 		}
 	}
-
 }
 
 // check type_obj để vẽ ra màn hình
