@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BBox.h" />
+    <ClInclude Include="BigHeart.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Candle.h" />
@@ -131,6 +132,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="Items.h" />
     <ClInclude Include="Load_img_file.h" />
     <ClInclude Include="Load_resources.h" />
     <ClInclude Include="Map.h" />
@@ -140,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BBox.cpp" />
+    <ClCompile Include="BigHeart.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Candle.cpp" />
@@ -148,6 +151,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="Items.cpp" />
     <ClCompile Include="Load_img_file.cpp" />
     <ClCompile Include="Load_resources.cpp" />
     <ClCompile Include="main.cpp" />
