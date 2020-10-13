@@ -19,7 +19,7 @@ using namespace std;
 
 #define SHOWBOX_PINK 0
 
-#define IS_DEBUG_RENDER_BBOX 1
+#define IS_DEBUG_RENDER_BBOX 0
 
 
 extern int Window_Width;
@@ -38,7 +38,11 @@ enum def_ID
 
 	BRICK = 21,
 
-	CANDLE = 41
+	CANDLE = 41,
+
+	MORNINGSTAR = 61,
+
+	BIGHEART = 81
 };
 
 enum eDirection

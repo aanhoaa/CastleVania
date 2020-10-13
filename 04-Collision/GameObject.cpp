@@ -149,6 +149,11 @@ def_ID CGameObject::GetType() {
 	return obj_type;
 }
 
+int CGameObject::GetDirect()
+{
+	return nx;
+}
+
 void CGameObject::SetDirect(int nx)
 {
 	this->nx = nx;

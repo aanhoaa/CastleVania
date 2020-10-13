@@ -129,6 +129,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CollisionWithBrick(&coObjects_Brick); // check Collision and update x, y for simon
 
+	CollisionWithItem();
+
 	if (isAttacking == true) //  update postion roi sau vì kiểm tra va chạm bên trên có thể khiến x,y của simon thay đổi, gây lệch vị trí roi với simon
 	{
 		if (ListWeapon[0]->GetFinish() == false) // nếu MorningStar đang đánh
@@ -147,8 +149,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Simon::Render(Camera* camera)
 {
-	if (IS_DEBUG_RENDER_BBOX)
-		RenderBoundingBox(camera);
+	/*if (IS_DEBUG_RENDER_BBOX)
+		RenderBoundingBox(camera);*/
 
 	D3DXVECTOR2 pos = camera->Translate(x, y);
 	//DebugOut(L"[INFO] y_s: %.6f\n", y);
@@ -163,7 +165,7 @@ void Simon::Render(Camera* camera)
 	for (int i = 0; i<ListWeapon.size(); i++)
 		if (ListWeapon[i]->GetFinish() == false)
 		{
-			ListWeapon[i]->Draw(camera); 
+			ListWeapon[i]->Render(camera);
 		}
 }
 
@@ -273,6 +275,77 @@ void Simon::CollisionWithBrick(vector<LPGAMEOBJECT>* coObjects)
 
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
+}
+
+void Simon::CollisionWithItem()
+{
+	Data *_data = Data::GetInstance();
+	vector<LPGAMEOBJECT> listObj;
+	listObj.clear();
+
+
+	/*Xóa những Item đã kết thúc*/
+	vector<Items*>::iterator it;
+	for (it = _data->ListItem.begin(); it != _data->ListItem.end(); )
+	{
+		if ((*it)->GetFinish() == true)
+		{
+			it = _data->ListItem.erase(it);
+		}
+		else
+			++it;
+	}
+	
+	float l, t, r, b;
+	float l1, t1, r1, b1;
+	GetBoundingBox(l, t, r, b);  // lấy BBOX của simon
+
+	// xét va chạm khi simon đứng ngay vị trí candle => lúc này là AABB
+	for (int i = 0; i < _data->ListItem.size(); i++) // check trước bằng AABB xem có va chạm không?
+	{
+		_data->ListItem.at(i)->GetBoundingBox(l1, t1, r1, b1);
+		if (CGame::GetInstance()->CollisionAABB(l, t, r, b, l1, t1, r1, b1) == true)
+		{
+			_data->ListItem.at(i)->SetReward();
+			_data->ListItem.at(i)->SetFinish(true);
+		}
+	}
+
+	// xét va chạm khi simon có khoảng cách với candle => lúc này ăn item thì sẽ là swept AABB
+	for (int i = 0; i < _data->ListItem.size(); i++)
+		if (_data->ListItem[i]->GetFinish() == false) // chưa kết thúc thì xét
+		{
+			listObj.push_back(_data->ListItem[i]);
+		}
+
+
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
+
+	CalcPotentialCollisions(&listObj, coEvents); // Lấy danh sách các va chạm
+
+												 // No collision occured, proceed normally
+	if (coEvents.size() != 0)
+	{
+		float min_tx, min_ty, nx = 0, ny;
+
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+			Items *items = dynamic_cast<Items *>(e->obj); // Chắc chắn là Item nên ép kiểu luôn
+
+			items->SetReward();
+			items->SetFinish(true);
+		}
+	}
+
+	for (UINT i = 0; i < coEvents.size(); i++)
+		delete coEvents[i];
+
 }
 
 void Simon::Attack(Weapons * weapon)

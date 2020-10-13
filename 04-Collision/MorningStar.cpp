@@ -6,6 +6,7 @@ MorningStar::MorningStar()
 	texture = new Load_img_file("Resources\\weapon\\morningstar.png", 4, 3, 12, 0);
 	sprite = new Load_resources(texture, 100);
 	this->level = 0;
+	obj_type = def_ID::MORNINGSTAR;
 }
 
 MorningStar::~MorningStar()
@@ -24,7 +25,7 @@ void MorningStar::Create(float simon_X, float simon_Y, int simon_nx)
 	}
 }
 
-void MorningStar::Update(int dt)
+void MorningStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	isFinish = (sprite->GetIndex() == 3) + (sprite->GetIndex() == 7) + (sprite->GetIndex() == 11); // index 1 trong 3 index 3-7-11 thì dừng đánh (sprite roi cuối)
 	//DebugOut(L"[INFO] Finish: %d\n", isFinish);
@@ -46,19 +47,22 @@ void MorningStar::GetBoundingBox(float & left, float & top, float & right, float
 {
 	if (level == 0)
 	{
-		if (nx == 1)
-		{
-			left = x + 50;
-			top = y + 15;
-			right = x + texture->FrameWidth - 30;
-			bottom = y + texture->FrameHeight - 15;
-		}
-		else
-		{
-			left = x + 30;
-			top = y + 15;
-			right = x + texture->FrameWidth - 50;
-			bottom = y + texture->FrameHeight - 15;
+		if (sprite->GetIndex() >= 2) { // sprite simon đánh thì mới set boundingbox
+			if (nx == 1)
+			{
+				left = x + (sprite->GetIndex() >= 2) * 80; // đánh roi thì left = x + 50
+				top = y + 15;
+				// Là 2 frame đầu thì right = x - 110
+				right = x + texture->FrameWidth
+					- 30 - (sprite->GetIndex() == 0 || sprite->GetIndex() == 1) * 80;
+				bottom = y + texture->FrameHeight - 15;
+			}
+			else {
+				left = x + 30 + (sprite->GetIndex() == 0 || sprite->GetIndex() == 1) * 80;
+				top = y + 15;
+				right = x + texture->FrameWidth - (sprite->GetIndex() >= 2) * 80;
+				bottom = y + texture->FrameHeight - 15;
+			}
 		}
 	}
 }
@@ -87,18 +91,23 @@ void MorningStar::CollisionWithObject(DWORD dt, vector<LPGAMEOBJECT>* listObj)
 	object.right = (int)r_obj;
 	object.bottom = (int)b_obj;
 
-	for (int i = 0; i< listObj->size(); i++)
-		if (listObj->at(i)->GetLife()>0 && listObj->at(i)->GetType() == def_ID::CANDLE)
+	for (int i = 0; i < listObj->size(); i++)
+		if (dynamic_cast<CGameObject*>(listObj->at(i)))
 		{
-			listObj->at(i)->GetBoundingBox(l_oth, t_oth, r_oth, b_oth);
-			other.left = (int)l_oth;
-			other.top = (int)t_oth;
-			other.right = (int)r_oth;
-			other.bottom = (int)b_oth;
-
-			if (CGame::GetInstance()->CollisionAABB(object, other))
+			CGameObject *obj = dynamic_cast<CGameObject*>(listObj->at(i));
+			if (obj->GetLife() > 0 && listObj->at(i)->GetType() == def_ID::CANDLE)
 			{
-				listObj->at(i)->LoseLife(1);
+				listObj->at(i)->GetBoundingBox(l_oth, t_oth, r_oth, b_oth);
+				other.left = (int)l_oth;
+				other.top = (int)t_oth;
+				other.right = (int)r_oth;
+				other.bottom = (int)b_oth;
+
+				if (CGame::GetInstance()->CollisionAABB(object, other))
+				{
+					listObj->at(i)->LoseLife(1);
+					Data::GetInstance()->ListItem.push_back(new BigHeart(listObj->at(i)->x, listObj->at(i)->y));
+				}
 			}
 		}
 }

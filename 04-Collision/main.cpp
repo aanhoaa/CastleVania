@@ -31,6 +31,9 @@
 #include "Camera.h"
 
 #include "Grid.h"
+#include "Items.h"
+#include "Scenes.h"
+#include "Data.h"
 
 #include "Brick.h"
 #include "Simon.h"
@@ -47,6 +50,7 @@
 #define ID_TEX_MISC 20
 
 HWND hWnd;
+Scenes * MainScene;
 CGame *game;
 
 Map * TileMap;
@@ -59,6 +63,9 @@ Simon* simon;
 
 LPDIRECT3DTEXTURE9 texture_title;
 vector<LPGAMEOBJECT> objects;
+
+Data *_data;
+
 
 class CSampleKeyHander: public CKeyEventHandler
 {
@@ -161,6 +168,10 @@ void LoadResources()
 
 	gridGame = new Grid();
 	gridGame->ReadFileToGrid("Resources\\map\\Obj_1.txt"); // đọc các object từ file vào Grid
+
+	_data = Data::GetInstance();
+	_data->ListItem.clear();
+
 }
 
 /*
@@ -190,6 +201,11 @@ void Update(DWORD dt)
 	{
 		ListObj[i]->Update(dt,&ListObj);
 	}
+	//DebugOut(L"[INFO] Count item: %d\n", _data->ListItem.size());
+	for (int i = 0; i < _data->ListItem.size(); i++) 
+	{
+		_data->ListItem[i]->Update(dt, &ListObj);
+	}
 }
 
 /*
@@ -214,6 +230,9 @@ void Render()
 		// render obj
 		for (int i = 0; i < ListObj.size(); i++)
 			ListObj[i]->Render(camera);
+
+		for (int i = 0; i < _data->ListItem.size(); i++) // Render các item
+			_data->ListItem[i]->Render(camera);
 
 		// render Simon
 		simon->Render(camera);

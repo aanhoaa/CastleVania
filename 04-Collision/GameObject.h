@@ -4,6 +4,7 @@
 #include <d3dx9.h>
 #include <vector>
 
+#include "Object.h"
 #include "define.h"
 #include "Load_img_file.h";
 #include "Load_resources.h";
@@ -69,6 +70,7 @@ public:
 	int GetHeight();
 	int GetWidth();
 	def_ID GetType();
+	int GetDirect();
 	void SetDirect(int nx);
 	void SetId(int ID);
 
@@ -98,3 +100,32 @@ public:
 	~CGameObject();
 };
 
+
+//class CGameObject : public Object
+//{
+//protected:
+//	int Health;
+//
+//public:
+//	int id; // ID của object
+//
+//	int trend;	// hướng -1 : trái, 1: phải
+//
+//	bool isTake;
+//
+//public:
+//
+//
+//	CGameObject();
+//
+//	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
+//	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
+//	virtual void Render(Camera * camera) = 0;
+//
+//	int GetHealth();
+//	void SubHealth(int th);
+//	void SetTrend(int Trend);
+//	void SetId(int ID);
+//
+//	~CGameObject();
+//};

@@ -8,19 +8,17 @@ Weapons::Weapons()
 
 Weapons::~Weapons()
 {
-	SAFE_DELETE(texture);
-	SAFE_DELETE(sprite);
 }
 
-int Weapons::GetDirect()
-{
-	return nx;
-}
-
-void Weapons::SetDirect(int nx)
-{
-	this->nx = nx;
-}
+//int Weapons::GetDirect()
+//{
+//	return nx;
+//}
+//
+//void Weapons::SetDirect(int nx)
+//{
+//	this->nx = nx;
+//}
 
 void Weapons::Create(float simon_X, float simon_Y, int simon_nx)
 {
@@ -30,12 +28,12 @@ void Weapons::Create(float simon_X, float simon_Y, int simon_nx)
 	isFinish = 0;
 }
 
-void Weapons::Update(int dt)
+void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	sprite->Update(dt);
 }
 
-void Weapons::Draw(Camera * camera)
+void Weapons::Render(Camera * camera)
 {
 	if (IS_DEBUG_RENDER_BBOX)
 		RenderBoundingBox(camera);
@@ -63,31 +61,27 @@ int Weapons::GetFinish()
 	return isFinish;
 }
 
-void Weapons::SetFinish(bool b)
+void Weapons::SetFinish(bool _isFinish)
 {
-	isFinish = b;
+	isFinish = _isFinish;
 }
 
-def_ID Weapons::GetType()
-{
-	return wea_type;
-}
 
-void Weapons::RenderBoundingBox(Camera * camera)
-{
-	RECT rect;
-
-	float l, t, r, b;
-
-	GetBoundingBox(l, t, r, b);
-	rect.left = 0;
-	rect.top = 0;
-	rect.right = (int)r - (int)l;
-	rect.bottom = (int)b - (int)t;
-
-	D3DXVECTOR2 pos = camera->Translate(l, t);
-
-	LPDIRECT3DTEXTURE9  _Texture = BBox::GetInstance()->GetTexture();
-
-	CGame::GetInstance()->Draw(pos.x, pos.y, _Texture, rect.left, rect.top, rect.right, rect.bottom, 100);
-}
+//void Weapons::RenderBoundingBox(Camera * camera)
+//{
+//	RECT rect;
+//
+//	float l, t, r, b;
+//
+//	GetBoundingBox(l, t, r, b);
+//	rect.left = 0;
+//	rect.top = 0;
+//	rect.right = (int)r - (int)l;
+//	rect.bottom = (int)b - (int)t;
+//
+//	D3DXVECTOR2 pos = camera->Translate(l, t);
+//
+//	LPDIRECT3DTEXTURE9  _Texture = BBox::GetInstance()->GetTexture();
+//
+//	CGame::GetInstance()->Draw(pos.x, pos.y, _Texture, rect.left, rect.top, rect.right, rect.bottom, 100);
+//}

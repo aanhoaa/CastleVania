@@ -59,7 +59,7 @@ public:
 	void Stop();
 
 	void CollisionWithBrick(vector<LPGAMEOBJECT> *coObjects = NULL);
-
+	void CollisionWithItem();
 	void Attack(Weapons *weapon);
 };
 

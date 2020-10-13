@@ -215,6 +215,11 @@ bool CGame::CollisionAABB(RECT a, RECT b)
 	return !(a.right <= b.left || a.left >= b.right || a.top >= b.bottom || a.bottom <= b.top);
 }
 
+bool CGame::CollisionAABB(float l1, float t1, float r1, float b1, float l2, float t2, float r2, float b2)
+{
+	return !(r1 <= l2 || l1 >= r2 || /*b1.top < b2.bottom || b1.bottom > b2.top*/ t1 >= b2 || b1 <= t2);
+}
+
 /*
 	SweptAABB 
 */
