@@ -58,10 +58,11 @@ public:
 	Load_resources* sprite;
 
 public: 
-	void GetPosition(float &x, float &y) { x = this->x; y = this->y; }
-	void SetPosition(float x, float y) { this->x = x, this->y = y; }
-	void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }
-	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
+	CGameObject(def_ID type);
+	void GetPosition(float &x, float &y);
+	void SetPosition(float x, float y);
+	void GetSpeed(float &vx, float &vy);
+	void SetSpeed(float vx, float vy);
 	int GetLife();
 	int GetHeight();
 	int GetWidth();

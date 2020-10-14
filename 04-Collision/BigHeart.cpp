@@ -73,8 +73,8 @@ void BigHeart::Update(DWORD dt, vector<LPGAMEOBJECT> * listObject)
 
 void BigHeart::SetReward()
 {
-	Data::GetInstance()->HeartCollect += 5;
-	DebugOut(L"[ITEM] +5 Heart. Tong = %d \n", Data::GetInstance()->HeartCollect);
+	//Data::GetInstance()->HeartCollect += 5;
+	//DebugOut(L"[ITEM] +5 Heart. Tong = %d \n", Data::GetInstance()->HeartCollect);
 }
 
 BigHeart::~BigHeart()

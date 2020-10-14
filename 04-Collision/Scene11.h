@@ -19,7 +19,7 @@ public:
 	Grid * gridGame;
 
 	BoardGame * board;
-	Data * _data;
+	//Data * _data;
 
 	vector<LPGAMEOBJECT> ListObj;
 public:

@@ -8,7 +8,6 @@
 
 #include "GameObject.h"
 #include "Weapons.h"
-#include "Data.h"
 #include "BigHeart.h"
 
 class MorningStar : public Weapons

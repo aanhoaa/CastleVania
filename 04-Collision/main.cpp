@@ -30,7 +30,7 @@
 
 #define BACKGROUND_COLOR D3DCOLOR_XRGB(0, 0, 0)
 
-#define MAX_FRAME_RATE 60
+#define MAX_FRAME_RATE 90
 
 #define ID_TEX_MARIO 0
 #define ID_TEX_ENEMY 10
@@ -40,7 +40,7 @@ HWND hWnd;
 Scenes * MainScene;
 CGame *game;
 
-SceneManager * _sceneManager;
+SceneManager * sceneManager;
 
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -64,7 +64,7 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 */
 void LoadResources()
 {
-	_sceneManager->LoadResources();
+	sceneManager->LoadResources();
 
 }
 
@@ -77,7 +77,7 @@ void Update(DWORD dt)
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 
-	_sceneManager->Update(dt);
+	sceneManager->Update(dt);
 }
 
 /*
@@ -97,7 +97,7 @@ void Render()
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
 		// back ground nên để trước khi obj render ra
-		_sceneManager->Render();
+		sceneManager->Render();
 
 		spriteHandler->End();
 		d3ddv->EndScene();
@@ -200,10 +200,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	game = CGame::GetInstance();
 	game->Init(hWnd);
 
-	_sceneManager = SceneManager::GetInstance();
+	sceneManager = SceneManager::GetInstance();
 
 
-	_sceneManager->SetScene(new Scene_1()); // vào màn 1
+	sceneManager->SetScene(new Scene_1()); // vào màn 1
 
 	game->InitKeyboard();
 	

@@ -135,6 +135,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="HeartPoint.h" />
     <ClInclude Include="Items.h" />
     <ClInclude Include="Load_img_file.h" />
     <ClInclude Include="Load_resources.h" />
@@ -161,6 +162,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="HeartPoint.cpp" />
     <ClCompile Include="Items.cpp" />
     <ClCompile Include="Load_img_file.cpp" />
     <ClCompile Include="Load_resources.cpp" />

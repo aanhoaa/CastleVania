@@ -4,6 +4,8 @@
 #include "Camera.h"
 #include "FontGame.h"
 #include "define.h"
+#include "Simon.h"
+#include "HeartPoint.h"
 
 class BoardGame
 {
@@ -14,10 +16,9 @@ private:
 	int x, y;
 
 	FontGame font;
-	string information;
-
+	HeartPoint heartPoint;
 public:
 	BoardGame(int X, int Y);
-	void Render(Camera *camera);
+	void Render(Camera *camera, Simon *simon);
 	~BoardGame();
 };

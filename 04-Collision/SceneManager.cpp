@@ -57,3 +57,4 @@ void SceneManager::Render()
 {
 	scenes->Render();
 }
+

@@ -87,6 +87,9 @@
     <ClInclude Include="Scene11.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HeartPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug.cpp">
@@ -162,6 +165,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Scene11.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HeartPoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

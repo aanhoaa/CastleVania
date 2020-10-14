@@ -13,6 +13,11 @@ CGameObject::CGameObject()
 	life = 1; // đang sống
 }
 
+CGameObject::CGameObject(def_ID type)
+{
+	this->obj_type = type;
+}
+
 void CGameObject::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	this->dt = dt;
@@ -128,6 +133,30 @@ void CGameObject::RenderBoundingBox(Camera * camera)
 	LPDIRECT3DTEXTURE9  _Texture = BBox::GetInstance()->GetTexture();
 
 	CGame::GetInstance()->Draw(pos.x, pos.y, _Texture, rect.left, rect.top, rect.right, rect.bottom, 100);
+}
+
+void CGameObject::SetPosition(float x, float y)
+{
+	this->x = x;
+	this->y = y;
+}
+
+void CGameObject::GetPosition(float &x, float &y)
+{
+	x = this->x;
+	y = this->y;
+}
+
+void CGameObject::SetSpeed(float vx, float vy)
+{
+	this->vx = vx;
+	this->vy = vy;
+}
+
+void CGameObject::GetSpeed(float &vx, float &vy)
+{
+	vx = this->vx;
+	vy = this->vy;
 }
 
 int CGameObject::GetLife()

@@ -120,6 +120,9 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	vy += SIMON_GRAVITY * dt; 
 
+	if (isJumping == true && isWalking == true)
+		vx += 0.0012f * dt *nx;
+
 	vector<LPGAMEOBJECT> coObjects_Brick; // obj brick
 	coObjects_Brick.clear();
 
@@ -183,13 +186,10 @@ void Simon::Go()
 {
 	if (isAttacking == true)
 	{
-		vx = 0;
 		return;
 	}
-	else {
-		vx = SIMON_WALKING_SPEED * nx;
-		isWalking = 1;
-	}	
+	vx = SIMON_WALKING_SPEED * nx;
+	isWalking = 1;
 }
 
 void Simon::Sit()
@@ -214,8 +214,8 @@ void Simon::Jump()
 	if (isAttacking == true)
 		return;
 
-	isJumping = true;
 	vy -= SIMON_VJUMP;
+	isJumping = true;
 }
 
 void Simon::Stop()
@@ -279,13 +279,13 @@ void Simon::CollisionWithBrick(vector<LPGAMEOBJECT>* coObjects)
 
 void Simon::CollisionWithItem()
 {
-	Data *_data = Data::GetInstance();
+	//Data *_data = Data::GetInstance();
 	vector<LPGAMEOBJECT> listObj;
 	listObj.clear();
 
 
 	/*Xóa những Item đã kết thúc*/
-	vector<Items*>::iterator it;
+	/*vector<Items*>::iterator it;
 	for (it = _data->ListItem.begin(); it != _data->ListItem.end(); )
 	{
 		if ((*it)->GetFinish() == true)
@@ -294,29 +294,29 @@ void Simon::CollisionWithItem()
 		}
 		else
 			++it;
-	}
+	}*/
 	
 	float l, t, r, b;
 	float l1, t1, r1, b1;
 	GetBoundingBox(l, t, r, b);  // lấy BBOX của simon
 
 	// xét va chạm khi simon đứng ngay vị trí candle => lúc này là AABB
-	for (UINT i = 0; i < _data->ListItem.size(); i++) // check trước bằng AABB xem có va chạm không?
-	{
-		_data->ListItem.at(i)->GetBoundingBox(l1, t1, r1, b1);
-		if (CGame::GetInstance()->CollisionAABB(l, t, r, b, l1, t1, r1, b1) == true)
-		{
-			_data->ListItem.at(i)->SetReward();
-			_data->ListItem.at(i)->SetFinish(true);
-		}
-	}
+	//for (UINT i = 0; i < _data->ListItem.size(); i++) // check trước bằng AABB xem có va chạm không?
+	//{
+	//	_data->ListItem.at(i)->GetBoundingBox(l1, t1, r1, b1);
+	//	if (CGame::GetInstance()->CollisionAABB(l, t, r, b, l1, t1, r1, b1) == true)
+	//	{
+	//		_data->ListItem.at(i)->SetReward();
+	//		_data->ListItem.at(i)->SetFinish(true);
+	//	}
+	//}
 
 	// xét va chạm khi simon có khoảng cách với candle => lúc này ăn item thì sẽ là swept AABB
-	for (UINT i = 0; i < _data->ListItem.size(); i++)
-		if (_data->ListItem[i]->GetFinish() == false) // chưa kết thúc thì xét
-		{
-			listObj.push_back(_data->ListItem[i]);
-		}
+	//for (UINT i = 0; i < _data->ListItem.size(); i++)
+	//	if (_data->ListItem[i]->GetFinish() == false) // chưa kết thúc thì xét
+	//	{
+	//		listObj.push_back(_data->ListItem[i]);
+	//	}
 
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -355,4 +355,14 @@ void Simon::Attack(Weapons * weapon)
 
 	isAttacking = true; // set trang thái tấn công
 	weapon->Create(this->x, this->y, this->nx); // set vị trí weapon theo simon
+}
+
+void Simon::SetHeartCollect(int HeartP)
+{
+	HeartPoint = HeartP;
+}
+
+int Simon::GetHeartCollect()
+{
+	return HeartPoint;
 }

@@ -123,7 +123,7 @@ void MorningStar::CollisionWithObject(DWORD dt, vector<LPGAMEOBJECT>* listObj)
 				if (CGame::GetInstance()->CollisionAABB(object, other))
 				{
 					listObj->at(i)->LoseLife(1);
-					Data::GetInstance()->ListItem.push_back(Weapons::GetItem(obj->id, obj->GetType(), listObj->at(i)->x, listObj->at(i)->y));
+					//Data::GetInstance()->ListItem.push_back(Weapons::GetItem(obj->id, obj->GetType(), listObj->at(i)->x, listObj->at(i)->y));
 				}
 			}
 		}

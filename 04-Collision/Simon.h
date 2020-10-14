@@ -8,7 +8,7 @@
 #define SIMON_BBOX_SITTING_HEIGHT 48
 
 #define SIMON_GRAVITY 0.005f
-#define SIMON_VJUMP 0.8f
+#define SIMON_VJUMP 0.9f
 
 #define SIMON_WALKING_SPEED 0.15f 
 
@@ -35,17 +35,17 @@
 class Simon : public CGameObject
 {
 public:
-
+	int HeartPoint; // số lượng heart nhặt được
 	bool isWalking;
 	bool isJumping;
 	bool isSitting;
 	bool isAttacking;
 
-	vector<Weapons*> ListWeapon;
-
 public:
 	Simon();
 	~Simon();
+
+	vector<Weapons*> ListWeapon;
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
@@ -61,6 +61,9 @@ public:
 	void CollisionWithBrick(vector<LPGAMEOBJECT> *coObjects = NULL);
 	void CollisionWithItem();
 	void Attack(Weapons *weapon);
+
+	void SetHeartCollect(int h);
+	int GetHeartCollect();
 };
 
 
