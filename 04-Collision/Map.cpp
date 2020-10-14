@@ -47,25 +47,11 @@ void Map::ReadMapTXT(char * filename)
 
 void Map::DrawMap(Camera *camera)
 {
-	/*row = int(camera->GetViewport().y) / TileTexture->FrameHeight;
-	column = int(camera->GetViewport().x) / TileTexture->FrameHeight;
+	row = int(camera->GetY_cam()) / TileTexture->FrameHeight;
+	column = int(camera->GetX_cam()) / TileTexture->FrameWidth;
 
-	for (int i = 0; i < (ScreenRow); i++)
-	{
-		for (int j = 0; j < (ScreenColumn); j++)
-		{
-			TileSprite->SelectIndex(TileMap[i][j + column]);
-			TileSprite->Draw(0 + j * TILE_FRAME_HEIGHT, 0 + i * TILE_FRAME_WIDTH);
-		}
-	}*/
-	//TileSprite->SelectIndex(TileMap[0][0]);
-	//TileSprite->Draw(0, 0);
-
-	row = int(camera->GetViewport().y) / TileTexture->FrameHeight;
-	column = int(camera->GetViewport().x) / TileTexture->FrameWidth; 
-
-	x = -(int(camera->GetViewport().x) % TileTexture->FrameWidth); // xác định vị trí x bắt đầu vẽ các tile theo loop 
-	y = -(int(camera->GetViewport().y) % TileTexture->FrameHeight); // xác định vị trí y bắt đầu vẽ các tile theo loop
+	x = -(int(camera->GetX_cam()) % TileTexture->FrameWidth); // xác định vị trí x bắt đầu vẽ các tile theo loop 
+	y = -(int(camera->GetY_cam()) % TileTexture->FrameHeight); // xác định vị trí y bắt đầu vẽ các tile theo loop
 
 	//DebugOut(L"[INFO] X: %d\n", x); 
 	//DebugOut(L"[INFO] Column: %d\n", column); // -18

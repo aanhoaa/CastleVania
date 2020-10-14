@@ -5,7 +5,17 @@
 
 #include <d3d9.h>
 #include <d3dx9.h>
-#include <map> 
+#include <map>
+#include "debug.h"
+#include <vector>
+#include <Windows.h> 
+#include <algorithm>
+#include <stdio.h>
+#include <fstream>
+#include <iostream>
+#include <stdlib.h>
+#include <iostream>
+#include <iomanip>
 using namespace std;
 
 #define WINDOW_WIDTH 512

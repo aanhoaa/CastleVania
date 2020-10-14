@@ -1,11 +1,6 @@
 ﻿#ifndef __GRID_H__
 #define	__GRID_H__
 
-#include <vector>
-#include <stdlib.h>
-#include <iostream>
-#include <fstream>
-#include <iomanip>
 #include "Game.h" 
 #include "Load_img_file.h" 
 #include "Map.h"
@@ -33,7 +28,7 @@ public:
 	void GetListObject(vector<CGameObject*>& ListObj, Camera * camera);
 	void GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj);
 
-	void Insert(int id, int type, int nx, float x, float y, float w, float h); //Thêm object vào grid
+	void Insert(int id, int type, int nx, int x, int y, int w, int h); //Thêm object vào grid
 
 	CGameObject * GetNewObject(int type, int x, int y, int w, int h);
 

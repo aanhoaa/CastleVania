@@ -6,8 +6,8 @@ Candle::Candle(int X, int Y)
 {
 	texture = new Load_img_file("Resources\\ground\\0.png", 2, 1, 2, 0);
 	sprite = new Load_resources(texture, 100);
-	this->x = X;
-	this->y = Y;
+	this->x = (float)X;
+	this->y = (float)Y;
 	obj_type = def_ID::CANDLE;
 	life = 1;
 }
@@ -36,5 +36,5 @@ void Candle::Render(Camera * camera)
 		RenderBoundingBox(camera);
 
 	D3DXVECTOR2 pos = camera->Translate(x, y);
-	sprite->Draw(pos.x, pos.y);
+	sprite->Draw((int)pos.x, (int)pos.y);
 }

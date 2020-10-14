@@ -3,6 +3,7 @@
 #include "Load_resources.h"
 #include "Camera.h"
 #include "FontGame.h"
+#include "define.h"
 
 class BoardGame
 {

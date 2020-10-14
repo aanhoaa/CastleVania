@@ -5,7 +5,6 @@
 #include "Load_resources.h"
 #include "debug.h"
 #include "BBox.h"
-#include "Game.h"
 #include "GameObject.h"
 
 #define UPGRADEMORNINGSTAR_GRAVITY 0.25f

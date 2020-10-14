@@ -1,6 +1,6 @@
 #pragma once
 #include "define.h"
-#include "Load_img_file.h";
+#include "Load_img_file.h"
 
 class BBox
 {

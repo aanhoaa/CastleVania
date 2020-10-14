@@ -24,21 +24,7 @@
 
 #include "debug.h"
 #include "Game.h"
-#include "GameObject.h"
-
-#include "define.h"
-#include "Map.h"
-#include "Camera.h"
-
-#include "Grid.h"
-#include "Items.h"
-#include "Scenes.h"
-#include "BoardGame.h"
-#include "Data.h"
-
-#include "Brick.h"
-#include "Simon.h"
-
+#include "Scene11.h"
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"04 - Collision"
 
@@ -54,91 +40,8 @@ HWND hWnd;
 Scenes * MainScene;
 CGame *game;
 
-Map * TileMap;
-Camera *camera;
+SceneManager * _sceneManager;
 
-Grid * gridGame;
-vector<LPGAMEOBJECT> ListObj; // list obj trong vùng cam
-
-BoardGame * board;
-
-Simon* simon;
-
-LPDIRECT3DTEXTURE9 texture_title;
-vector<LPGAMEOBJECT> objects;
-
-Data *_data;
-
-
-class CSampleKeyHander: public CKeyEventHandler
-{
-	virtual void KeyState(BYTE *states);
-	virtual void OnKeyDown(int KeyCode);
-	virtual void OnKeyUp(int KeyCode);
-};
-
-CSampleKeyHander * keyHandler; 
-
-void CSampleKeyHander::OnKeyDown(int KeyCode)
-{
-	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
-	if (KeyCode == DIK_ESCAPE)
-		DestroyWindow(hWnd);
-
-	if (KeyCode == DIK_Q)
-		simon->SetPosition(SIMON_POSITION_DEFAULT);
-
-	if (KeyCode == DIK_SPACE)
-	{
-			simon->Jump();
-	}
-
-	if (KeyCode == DIK_X)
-	{
-		//DebugOut(L"[SIMON] X = %f , Y = %f \n", simon->x + 10, simon->y);
-		simon->Attack(simon->ListWeapon[0]);
-	}
-}
-
-void CSampleKeyHander::OnKeyUp(int KeyCode)
-{
-	DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
-}
-
-void CSampleKeyHander::KeyState(BYTE *states)
-{
-	if (game->IsKeyDown(DIK_DOWN))
-	{
-		simon->Sit();
-
-		if (game->IsKeyDown(DIK_RIGHT))
-			simon->Right();
-
-		if (game->IsKeyDown(DIK_LEFT))
-			simon->Left();
-
-		return;
-	}
-	else
-		simon->Stop();
-
-
-	if (game->IsKeyDown(DIK_RIGHT))
-	{
-		simon->Right();
-		simon->Go();
-	}
-	else
-		if (game->IsKeyDown(DIK_LEFT))
-		{
-			simon->Left();
-			simon->Go();
-		}
-		else
-		{
-			simon->Stop();
-		}
-}	
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -161,21 +64,7 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 */
 void LoadResources()
 {
-	TileMap = new Map();
-
-	camera = new Camera(Window_Width, Window_Height);
-	camera->SetPosition(0, 0);
-
-	board = new BoardGame(0, 0);
-
-	simon = new Simon();
-	simon->SetPosition(0, 0);
-
-	gridGame = new Grid();
-	gridGame->ReadFileToGrid("Resources\\map\\Obj_1.txt"); // đọc các object từ file vào Grid
-
-	_data = Data::GetInstance();
-	_data->ListItem.clear();
+	_sceneManager->LoadResources();
 
 }
 
@@ -188,29 +77,7 @@ void Update(DWORD dt)
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 
-	camera->SetPosition(simon->x - Window_Width / 2 + 30, camera->GetViewport().y); // cho camera chạy theo simon khi simon ra giua cam
-	camera->Update();
-	
-	//vector<LPGAMEOBJECT> coObjects;
-	//for (int i = 1; i < objects.size(); i++)
-	//{
-	//	coObjects.push_back(objects[i]);   // cap nhat danh sach va cham voi mario
-	//}
-
-	gridGame->GetListObject(ListObj, camera); // lấy hết các object trong vùng camera;
-
-	simon->Update(dt, &ListObj);
-	
-	
-	for (int i = 0; i < ListObj.size(); i++)
-	{
-		ListObj[i]->Update(dt,&ListObj);
-	}
-	//DebugOut(L"[INFO] Count item: %d\n", _data->ListItem.size());
-	for (int i = 0; i < _data->ListItem.size(); i++) 
-	{
-		_data->ListItem[i]->Update(dt, &ListObj);
-	}
+	_sceneManager->Update(dt);
 }
 
 /*
@@ -230,19 +97,7 @@ void Render()
 		spriteHandler->Begin(D3DXSPRITE_ALPHABLEND);
 
 		// back ground nên để trước khi obj render ra
-		TileMap->DrawMap(camera);
-		
-		board->Render(camera);
-
-		// render obj
-		for (int i = 0; i < ListObj.size(); i++)
-			ListObj[i]->Render(camera);
-
-		for (int i = 0; i < _data->ListItem.size(); i++) // Render các item
-			_data->ListItem[i]->Render(camera);
-
-		// render Simon
-		simon->Render(camera);
+		_sceneManager->Render();
 
 		spriteHandler->End();
 		d3ddv->EndScene();
@@ -345,8 +200,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	game = CGame::GetInstance();
 	game->Init(hWnd);
 
-	keyHandler = new CSampleKeyHander();
-	game->InitKeyboard(keyHandler);
+	_sceneManager = SceneManager::GetInstance();
+
+
+	_sceneManager->SetScene(new Scene_1()); // vào màn 1
+
+	game->InitKeyboard();
 	
 	LoadResources();
 

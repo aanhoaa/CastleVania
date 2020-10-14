@@ -42,7 +42,7 @@ void Load_img_file::Load(int ShowBox)
 
 	LPDIRECT3DDEVICE9 d3ddv = CGame::GetInstance()->GetDirect3DDevice();
 
-	RECT s = { 0, 0, info.Width, info.Height };
+	RECT s = { (LONG)0, (LONG)0, (LONG)info.Width, (LONG)info.Height };
 	this->Size = s;
 
 	FrameWidth = info.Width / Cols;
@@ -92,7 +92,7 @@ void Load_img_file::Load(int R, int G, int B)
 
 	result = D3DXGetImageInfoFromFileA(fileName, &info);
 
-	RECT s = { 0, 0, info.Width, info.Height };
+	RECT s = { (LONG)0, (LONG)0, (LONG)info.Width, (LONG)info.Height };
 	this->Size = s;
 
 	FrameWidth = info.Width / Cols;

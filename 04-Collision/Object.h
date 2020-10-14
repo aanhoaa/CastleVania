@@ -1,16 +1,10 @@
 ﻿#pragma once
 
-#include <Windows.h>
-#include <d3dx9.h>
-#include <vector>
-
-
 #include "define.h"
 #include "Load_img_file.h"
 #include "Load_resources.h"
 #include "Camera.h"
 #include "BBox.h"
-#include <algorithm>
 
 using namespace std;
 

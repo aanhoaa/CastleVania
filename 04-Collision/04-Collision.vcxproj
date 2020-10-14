@@ -141,6 +141,8 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="MorningStar.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Scene11.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Scenes.h" />
     <ClInclude Include="Simon.h" />
     <ClInclude Include="Weapons.h" />
@@ -166,6 +168,8 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MorningStar.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Scene11.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="Simon.cpp" />
     <ClCompile Include="Weapons.cpp" />

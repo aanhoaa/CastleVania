@@ -37,7 +37,7 @@ void BigHeart::Update(DWORD dt, vector<LPGAMEOBJECT> * listObject)
 	vector<LPGAMEOBJECT> listObject_Brick;
 	listObject_Brick.clear();
 
-	for (int i = 0; i < listObject->size(); i++)
+	for (UINT i = 0; i < listObject->size(); i++)
 		if (listObject->at(i)->GetType() == def_ID::BRICK)
 			listObject_Brick.push_back(listObject->at(i));
 

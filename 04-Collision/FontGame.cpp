@@ -16,9 +16,9 @@ FontGame::~FontGame()
 	SAFE_DELETE(sprite);
 }
 
-void FontGame::Draw(float x, float y, string s)
+void FontGame::Draw(int x, int y, string s)
 {
-	for (int i = 0; i < s.size(); i++)
+	for (UINT i = 0; i < s.size(); i++)
 	{
 		if (s[i] == ' ')
 			continue;

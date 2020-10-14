@@ -83,7 +83,19 @@ int CGame::IsKeyDown(int KeyCode)
 	return (keyStates[KeyCode] & 0x80) > 0;
 }
 
-void CGame::InitKeyboard(LPKEYEVENTHANDLER handler)
+void CGame::KeyState(BYTE * state)
+{
+}
+
+void CGame::OnKeyDown(int KeyCode)
+{
+}
+
+void CGame::OnKeyUp(int KeyCode)
+{
+}
+
+void CGame::InitKeyboard()
 {
 	HRESULT
 		hr = DirectInput8Create
@@ -147,7 +159,7 @@ void CGame::InitKeyboard(LPKEYEVENTHANDLER handler)
 		return;
 	}
 
-	this->keyHandler = handler;
+	//this->keyHandler = handler;
 
 	DebugOut(L"[INFO] Keyboard has been initialized successfully\n");
 }
@@ -177,7 +189,8 @@ void CGame::ProcessKeyboard()
 		}
 	}
 
-	keyHandler->KeyState((BYTE *)&keyStates);
+	//keyHandler->KeyState((BYTE *)&keyStates);
+	SceneManager::GetInstance()->KeyState((BYTE *)&keyStates);
 
 
 
@@ -196,10 +209,15 @@ void CGame::ProcessKeyboard()
 		int KeyCode = keyEvents[i].dwOfs;
 		int KeyState = keyEvents[i].dwData;
 		if ((KeyState & 0x80) > 0)
-			keyHandler->OnKeyDown(KeyCode);
+			SceneManager::GetInstance()->OnKeyDown(KeyCode);
 		else
-			keyHandler->OnKeyUp(KeyCode);
+			SceneManager::GetInstance()->OnKeyUp(KeyCode);
 	}
+}
+
+HWND CGame::GetWindowHandle()
+{
+	return hWnd;
 }
 
 CGame::~CGame()
@@ -278,8 +296,8 @@ void CGame::SweptAABB(
 
 	if (dx == 0)
 	{
-		tx_entry = -99999999999;
-		tx_exit = 99999999999;
+		tx_entry = -99999999999.0f;
+		tx_exit = 99999999999.0f;
 	}
 	else
 	{
@@ -289,8 +307,8 @@ void CGame::SweptAABB(
 	
 	if (dy == 0)
 	{
-		ty_entry = -99999999999;
-		ty_exit = 99999999999;
+		ty_entry = -99999999999.0f;
+		ty_exit = 99999999999.0f;
 	}
 	else
 	{

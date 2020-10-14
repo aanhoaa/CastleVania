@@ -14,13 +14,11 @@ Grid::~Grid()
 void Grid::ReadFileToGrid(char * filename)
 {
 	listObjectGame.clear();
-	int i, j;
 
 	ifstream inp;
 	inp.open(filename, ios::in);
 
-	int id, type, nx;
-	float x, y, w, h;
+	int id, type, nx, x, y, w, h;
 
 	if (inp)
 	{
@@ -38,11 +36,11 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 	ResetListObj();
 
 	// lấy tọa độ của cam hiện tại để thiết lập các cells 
-	int rowTop = floor((camera->GetViewport().y) / (float)GRID_CELL_HEIGHT);
-	int rowBottom = floor((camera->GetViewport().y + camera->GetHeight()) / (float)GRID_CELL_HEIGHT);
+	int rowTop = (int)floor((camera->GetY_cam()) / (float)GRID_CELL_HEIGHT);
+	int rowBottom = (int)floor((camera->GetY_cam() + camera->GetHeight()) / (float)GRID_CELL_HEIGHT);
 	
-	int colLeft = floor((camera->GetViewport().x) / (float)GRID_CELL_WIDTH);
-	int colRight = floor((camera->GetViewport().x + camera->GetWidth()) / (float)GRID_CELL_WIDTH);
+	int colLeft = (int)floor((camera->GetX_cam()) / (float)GRID_CELL_WIDTH);
+	int colRight = (int)floor((camera->GetX_cam() + camera->GetWidth()) / (float)GRID_CELL_WIDTH);
 
 	// loop check  trong cells các obj dc đánh dấu, có thì cho vào list
 	for (int row = rowTop; row <= rowBottom; row++)
@@ -52,7 +50,7 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 			//DebugOut(L"[INFO] Row thu: %d\n", row);
 			//DebugOut(L"[INFO] So luong obj: %d\n", cells[row][col].size());
 
-			for (int i = 0; i < cells[row][col].size(); i++) // có đánh dấu 
+			for (UINT i = 0; i < cells[row][col].size(); i++) // có đánh dấu 
 			{
 				if (cells[row][col].at(i)->GetLife() > 0) // còn tồn tại
 				{
@@ -72,17 +70,17 @@ void Grid::GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj)
 	ListObj.clear(); // clear list
 	ResetListObj();
 
-	int rowBottom = floor((obj->y + obj->GetHeight()) / (float)GRID_CELL_HEIGHT);
-	int rowTop = floor((obj->y) / (float)GRID_CELL_HEIGHT);
+	int rowBottom = (int)floor((obj->y + obj->GetHeight()) / (float)GRID_CELL_HEIGHT);
+	int rowTop = (int)floor((obj->y) / (float)GRID_CELL_HEIGHT);
 
-	int colLeft = floor((obj->x) / (float)GRID_CELL_WIDTH);
-	int colRight = floor((obj->x + obj->GetWidth()) / (float)GRID_CELL_WIDTH);
+	int colLeft = (int)floor((obj->x) / (float)GRID_CELL_WIDTH);
+	int colRight = (int)floor((obj->x + obj->GetWidth()) / (float)GRID_CELL_WIDTH);
 
 	for (int row = rowTop; row <= rowBottom; row++)
 	{
 		for (int col = colLeft; col <= colRight; col++)
 		{
-			for (int i = 0; i < cells[row][col].size(); i++)
+			for (UINT i = 0; i < cells[row][col].size(); i++)
 			{
 				if (cells[row][col].at(i)->GetLife() > 0) // còn tồn tại
 				{
@@ -99,13 +97,13 @@ void Grid::GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj)
 
 void Grid::ResetListObj()
 {
-	for (int i = 0; i < listObjectGame.size(); i++)
+	for (UINT i = 0; i < listObjectGame.size(); i++)
 	{
 		listObjectGame[i]->isPush = false;
 	}
 }
 
-void Grid::Insert(int id, int type, int nx, float x, float y, float w, float h)
+void Grid::Insert(int id, int type, int nx, int x, int y, int w, int h)
 {
 	CGameObject * dataObject = GetNewObject(type, x, y, w, h); // sau khi load info từ file, xác định obj ->vẽ ra màn hình
 	if (dataObject == NULL)
@@ -119,11 +117,11 @@ void Grid::Insert(int id, int type, int nx, float x, float y, float w, float h)
 
 	listObjectGame.push_back(dataObject); // thêm vào list obj 
 
-	int Top = floor(y / (float)GRID_CELL_HEIGHT);
-	int Bottom = floor((y + h) / (float)GRID_CELL_HEIGHT);
+	int Top = (int)floor(y / (float)GRID_CELL_HEIGHT);
+	int Bottom = (int)floor((y + h) / (float)GRID_CELL_HEIGHT);
 
-	int Left = floor(x / (float)GRID_CELL_WIDTH);
-	int Right = floor((x + w) / (float)GRID_CELL_WIDTH);
+	int Left = (int)floor(x / (float)GRID_CELL_WIDTH);
+	int Right = (int)floor((x + w) / (float)GRID_CELL_WIDTH);
 
 	for (int row = Top; row <= Bottom; row++)
 	{

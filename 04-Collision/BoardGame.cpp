@@ -14,9 +14,9 @@ void BoardGame::Render(Camera * camera)
 
 	font.Draw(x, y + 15, "SCORE-");
 	font.Draw(x, y + 33, "PLAYER");
-	font.Draw(x-2, y + 51, "ENEMY");
+	font.Draw(x, y + 51, "ENEMY");
 	font.Draw(x + 210, y + 15, "TIME");
-	font.Draw(x + 400, y + 15, "STAGE");
+	font.Draw((x + 400), y + 15, "STAGE");
 }
 
 

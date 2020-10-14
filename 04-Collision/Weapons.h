@@ -23,7 +23,7 @@ public:
 
 	//int GetDirect();
 	//void SetDirect(int nx);
-	int GetFinish();
+	bool GetFinish();
 	void SetFinish(bool b);
 	static Items * GetItem(int Id, def_ID Type, float X, float Y);
 

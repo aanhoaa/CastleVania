@@ -3,7 +3,7 @@
 #include <d3dx9.h>
 
 #include "Load_img_file.h"
-#include "Game.h"
+
 
 
 

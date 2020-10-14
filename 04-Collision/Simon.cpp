@@ -45,9 +45,9 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	// không cho S đi khỏi cam
 	if (x < 0) // khi xuất hiện sang trái sẽ ngăn lại
-			x = 0;
+			x = 0.0f;
 	if (x + SIMON_BBOX_WIDTH > MapWidth)
-			x = MapWidth - SIMON_BBOX_WIDTH; // phải tương tự
+			x = (float)(MapWidth - SIMON_BBOX_WIDTH); // phải tương tự
 	//DebugOut(L"[INFO] Y: %.6f\n", y);
 	/* Update về sprite */
 
@@ -123,7 +123,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vector<LPGAMEOBJECT> coObjects_Brick; // obj brick
 	coObjects_Brick.clear();
 
-	for (int i = 0; i < coObjects->size(); i++)
+	for (UINT i = 0; i < coObjects->size(); i++)
 		if (coObjects->at(i)->GetType() == def_ID::BRICK)
 				coObjects_Brick.push_back(coObjects->at(i)); // lấy các obj là brick va cham voi simon (trong cam)
 
@@ -157,12 +157,12 @@ void Simon::Render(Camera* camera)
 	
 	// render simon
 	if (nx == -1)
-		sprite->Draw(pos.x, pos.y);
+		sprite->Draw((int)pos.x, (int)pos.y);
 	else
-		sprite->DrawFlipX(pos.x, pos.y);
+		sprite->DrawFlipX((int)pos.x, (int)pos.y);
 
 	// render weapons
-	for (int i = 0; i<ListWeapon.size(); i++)
+	for (UINT i = 0; i<ListWeapon.size(); i++)
 		if (ListWeapon[i]->GetFinish() == false)
 		{
 			ListWeapon[i]->Render(camera);
@@ -301,7 +301,7 @@ void Simon::CollisionWithItem()
 	GetBoundingBox(l, t, r, b);  // lấy BBOX của simon
 
 	// xét va chạm khi simon đứng ngay vị trí candle => lúc này là AABB
-	for (int i = 0; i < _data->ListItem.size(); i++) // check trước bằng AABB xem có va chạm không?
+	for (UINT i = 0; i < _data->ListItem.size(); i++) // check trước bằng AABB xem có va chạm không?
 	{
 		_data->ListItem.at(i)->GetBoundingBox(l1, t1, r1, b1);
 		if (CGame::GetInstance()->CollisionAABB(l, t, r, b, l1, t1, r1, b1) == true)
@@ -312,7 +312,7 @@ void Simon::CollisionWithItem()
 	}
 
 	// xét va chạm khi simon có khoảng cách với candle => lúc này ăn item thì sẽ là swept AABB
-	for (int i = 0; i < _data->ListItem.size(); i++)
+	for (UINT i = 0; i < _data->ListItem.size(); i++)
 		if (_data->ListItem[i]->GetFinish() == false) // chưa kết thúc thì xét
 		{
 			listObj.push_back(_data->ListItem[i]);

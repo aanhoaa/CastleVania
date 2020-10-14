@@ -21,30 +21,35 @@ int Camera::GetHeight()
 	return _height;
 }
 
-D3DXVECTOR2 Camera::Translate(float x, float y)
+D3DXVECTOR2 Camera::Translate(float x_w, float y_w)
 {
-	return D3DXVECTOR2(x - viewport.x, y - viewport.y);
+	return D3DXVECTOR2(x_w - x_cam, y_w - y_cam);
 }
 
-void Camera::SetPosition(int x, int y)
+void Camera::SetPosition(float x, float y)
 {
-	viewport.x = x;
-	viewport.y = y;
+	x_cam = x;
+	y_cam = y;
 }
 
-D3DXVECTOR2 Camera::GetViewport()
+float Camera::GetX_cam()
 {
-	return viewport;
+	return x_cam;
+}
+
+float Camera::GetY_cam()
+{
+	return y_cam;
 }
 
 void Camera::Update()
 {
 
-	if (viewport.x < 0)
-			viewport.x = 0;
+	if (x_cam < 0)
+		x_cam = 0;
 
-	if (viewport.x > MapWidth - Window_Width) // khi cam đến cuối map thì S sẽ đi đến cuối, cam đứng yên k render nữa (giu nguyen render cũ)
-			viewport.x = MapWidth - Window_Width;
+	if (x_cam > MapWidth - Window_Width) // khi cam đến cuối map thì S sẽ đi đến cuối, cam đứng yên k render nữa (giu nguyen render cũ)
+		x_cam = (float)(MapWidth - Window_Width);
 
 }
 

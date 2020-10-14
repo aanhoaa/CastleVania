@@ -1,6 +1,5 @@
 #pragma once
 #include "Items.h"
-#include "GameObject.h"
 #include "Data.h"
 
 #define LARGEHEART_GRAVITY 0.25f

@@ -1,36 +1,19 @@
 #pragma once
-#include <windows.h>
-#include <d3d9.h>
-#include <d3dx9.h>
 
-#include "debug.h"
-#include "Game.h"
-#include "GameObject.h"
-
-#include "Brick.h"
-
-#include "Simon.h"
 #include "define.h"
-#include "Map.h"
-#include "Camera.h"
-#include "Grid.h"
-#include "Items.h"
 
 class Scenes
 {
 public:
-	static Scenes * __Instance;
-	vector <Scenes*> listScenes;
-
 	Scenes();
 	~Scenes();
 
-	static Scenes* GetInstance();
+	virtual void KeyState(BYTE *state) = 0;
+	virtual void OnKeyDown(int KeyCode) = 0;
+	virtual void OnKeyUp(int KeyCode) = 0;
 
-	void LoadResources();
-	void Update(DWORD dt);
-	void Render();
-	void ChangeScene(Scenes * scene);
-
+	virtual void LoadResources() = 0;
+	virtual void Update(DWORD dt) = 0;
+	virtual void Render() = 0;
 };
 

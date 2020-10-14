@@ -41,9 +41,9 @@ void Weapons::Render(Camera * camera)
 	//DebugOut(L"Weapons: index = %d \n", sprite->GetIndex());
 	D3DXVECTOR2 pos = camera->Translate(x, y);
 	if (nx == -1)
-		sprite->Draw(pos.x, pos.y);
+		sprite->Draw((int)pos.x, (int)pos.y);
 	else
-		sprite->DrawFlipX(pos.x, pos.y);
+		sprite->DrawFlipX((int)pos.x, (int)pos.y);
 }
 
 void Weapons::SetPosition(float X, float Y)
@@ -56,7 +56,7 @@ void Weapons::UpdatePositionFitSimon()
 {
 }
 
-int Weapons::GetFinish()
+bool Weapons::GetFinish()
 {
 	return isFinish;
 }
@@ -74,6 +74,6 @@ Items * Weapons::GetItem(int Id, def_ID Type, float X, float Y)
 			return new BigHeart(X, Y);
 		if (Id == 2 || Id == 3)
 			return new Whip(X, Y);
-		return new BigHeart(X, Y);
 	}
+	return new BigHeart(X, Y);
 }

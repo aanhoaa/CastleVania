@@ -108,7 +108,7 @@ void MorningStar::CollisionWithObject(DWORD dt, vector<LPGAMEOBJECT>* listObj)
 	object.right = (int)r_obj;
 	object.bottom = (int)b_obj;
 
-	for (int i = 0; i < listObj->size(); i++)
+	for (UINT i = 0; i < listObj->size(); i++)
 		if (listObj->at(i)->GetType() == def_ID::CANDLE)
 		{
 			CGameObject *obj = dynamic_cast<CGameObject*>(listObj->at(i));
