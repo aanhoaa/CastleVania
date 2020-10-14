@@ -8,6 +8,10 @@
 #include "Game.h"
 #include "GameObject.h"
 
+#define UPGRADEMORNINGSTAR_GRAVITY 0.25f
+
+#define UPGRADEMORNINGSTAR_TIMEDISPLAYMAX 3000
+
 class Items : public CGameObject
 {
 protected:
@@ -28,3 +32,15 @@ public:
 	void SetFinish(bool _isFinish);
 };
 
+class Whip : public Items
+{
+public:
+	Whip();
+	Whip(float X, float Y);
+
+	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	void Update(DWORD dt, vector<LPGAMEOBJECT> *listObject = NULL);
+	void SetReward();
+
+	~Whip();
+};

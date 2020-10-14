@@ -23,6 +23,11 @@ void MorningStar::Create(float simon_X, float simon_Y, int simon_nx)
 	{
 		sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL0_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
 	}
+
+	if (level == 1)
+	{
+		sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL1_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
+	}
 }
 
 void MorningStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -41,13 +46,25 @@ void MorningStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL0_START); // ban đầu sẽ vào đây từ hàm set sprite
 		}
 	}
+
+	if (level == 1)
+	{
+		if (MORNINGSTAR_ANI_LEVEL1_START <= sprite->GetIndex() && sprite->GetIndex() < MORNINGSTAR_ANI_LEVEL1_END)
+		{
+			sprite->Update(dt);
+		}
+		else
+		{
+			sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL1_START);
+		}
+	}
 }
 
 void MorningStar::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-	if (level == 0)
+	//if (level == 0)
 	{
-		if (sprite->GetIndex() >= 2) { // sprite simon đánh thì mới set boundingbox
+		if (sprite->GetIndex() == 2 || sprite->GetIndex() == 5) { // sprite simon đánh thì mới set boundingbox
 			if (nx == 1)
 			{
 				left = x + (sprite->GetIndex() >= 2) * 80; // đánh roi thì left = x + 50
@@ -92,10 +109,10 @@ void MorningStar::CollisionWithObject(DWORD dt, vector<LPGAMEOBJECT>* listObj)
 	object.bottom = (int)b_obj;
 
 	for (int i = 0; i < listObj->size(); i++)
-		if (dynamic_cast<CGameObject*>(listObj->at(i)))
+		if (listObj->at(i)->GetType() == def_ID::CANDLE)
 		{
 			CGameObject *obj = dynamic_cast<CGameObject*>(listObj->at(i));
-			if (obj->GetLife() > 0 && listObj->at(i)->GetType() == def_ID::CANDLE)
+			if (obj->GetLife() > 0 )
 			{
 				listObj->at(i)->GetBoundingBox(l_oth, t_oth, r_oth, b_oth);
 				other.left = (int)l_oth;
@@ -106,8 +123,15 @@ void MorningStar::CollisionWithObject(DWORD dt, vector<LPGAMEOBJECT>* listObj)
 				if (CGame::GetInstance()->CollisionAABB(object, other))
 				{
 					listObj->at(i)->LoseLife(1);
-					Data::GetInstance()->ListItem.push_back(new BigHeart(listObj->at(i)->x, listObj->at(i)->y));
+					Data::GetInstance()->ListItem.push_back(Weapons::GetItem(obj->id, obj->GetType(), listObj->at(i)->x, listObj->at(i)->y));
 				}
 			}
 		}
+}
+
+void MorningStar::UpgradeLevel()
+{
+	if (level >= 2)
+		return;
+	level++;
 }

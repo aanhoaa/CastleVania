@@ -8,7 +8,6 @@ Scenes::Scenes()
 	listScenes.clear();
 }
 
-
 Scenes::~Scenes()
 {
 }
@@ -40,7 +39,6 @@ void Scenes::ChangeScene(Scenes * Scene)
 	Scenes * Scenes_current = listScenes.back();
 	listScenes.pop_back();
 	SAFE_DELETE(Scenes_current);
-
 
 	listScenes.push_back(Scene);
 }

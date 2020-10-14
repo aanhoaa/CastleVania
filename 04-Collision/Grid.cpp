@@ -46,11 +46,12 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 
 	// loop check  trong cells các obj dc đánh dấu, có thì cho vào list
 	for (int row = rowTop; row <= rowBottom; row++)
+	{
 		for (int col = colLeft; col <= colRight; col++) // hiện tại với w và h thì nên để col < colRight (thêm <= sẽ lấy thêm obj ngoài cam)
 		{
 			//DebugOut(L"[INFO] Row thu: %d\n", row);
 			//DebugOut(L"[INFO] So luong obj: %d\n", cells[row][col].size());
-			
+
 			for (int i = 0; i < cells[row][col].size(); i++) // có đánh dấu 
 			{
 				if (cells[row][col].at(i)->GetLife() > 0) // còn tồn tại
@@ -63,6 +64,7 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 				}
 			}
 		}
+	}
 }
 
 void Grid::GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj)
@@ -77,6 +79,7 @@ void Grid::GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj)
 	int colRight = floor((obj->x + obj->GetWidth()) / (float)GRID_CELL_WIDTH);
 
 	for (int row = rowTop; row <= rowBottom; row++)
+	{
 		for (int col = colLeft; col <= colRight; col++)
 		{
 			for (int i = 0; i < cells[row][col].size(); i++)
@@ -90,7 +93,8 @@ void Grid::GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj)
 					}
 				}
 			}
-		}
+		}	
+	}
 }
 
 void Grid::ResetListObj()

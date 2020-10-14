@@ -21,7 +21,7 @@ int Camera::GetHeight()
 	return _height;
 }
 
-D3DXVECTOR2 Camera::Translate(int x, int y)
+D3DXVECTOR2 Camera::Translate(float x, float y)
 {
 	return D3DXVECTOR2(x - viewport.x, y - viewport.y);
 }

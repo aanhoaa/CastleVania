@@ -42,7 +42,8 @@ enum def_ID
 
 	MORNINGSTAR = 61,
 
-	BIGHEART = 81
+	BIGHEART = 81,
+	UPGRADEMORNINGSTAR = 82
 };
 
 enum eDirection

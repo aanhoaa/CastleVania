@@ -124,12 +124,14 @@
   <ItemGroup>
     <ClInclude Include="BBox.h" />
     <ClInclude Include="BigHeart.h" />
+    <ClInclude Include="BoardGame.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Candle.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="FontGame.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Grid.h" />
@@ -146,12 +148,14 @@
   <ItemGroup>
     <ClCompile Include="BBox.cpp" />
     <ClCompile Include="BigHeart.cpp" />
+    <ClCompile Include="BoardGame.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Candle.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="define.cpp" />
+    <ClCompile Include="FontGame.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Grid.cpp" />

@@ -14,7 +14,7 @@ public:
 	Camera(int w, int h);
 	~Camera();
 
-	D3DXVECTOR2 Translate(int x, int y);
+	D3DXVECTOR2 Translate(float x, float y);
 	void SetPosition(int x, int y);
 	D3DXVECTOR2 GetViewport();
 	void Update();

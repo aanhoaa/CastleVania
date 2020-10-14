@@ -3,6 +3,9 @@
 #define MORNINGSTAR_ANI_LEVEL0_START 0
 #define MORNINGSTAR_ANI_LEVEL0_END 3
 
+#define MORNINGSTAR_ANI_LEVEL1_START 4
+#define MORNINGSTAR_ANI_LEVEL1_END 7
+
 #include "GameObject.h"
 #include "Weapons.h"
 #include "Data.h"
@@ -21,5 +24,5 @@ public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void UpdatePositionFitSimon();
 	void CollisionWithObject(DWORD dt, vector<LPGAMEOBJECT>* listObj);
-
+	void UpgradeLevel();
 };

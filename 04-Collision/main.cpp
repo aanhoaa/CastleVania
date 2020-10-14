@@ -33,6 +33,7 @@
 #include "Grid.h"
 #include "Items.h"
 #include "Scenes.h"
+#include "BoardGame.h"
 #include "Data.h"
 
 #include "Brick.h"
@@ -58,6 +59,8 @@ Camera *camera;
 
 Grid * gridGame;
 vector<LPGAMEOBJECT> ListObj; // list obj trong vùng cam
+
+BoardGame * board;
 
 Simon* simon;
 
@@ -163,6 +166,8 @@ void LoadResources()
 	camera = new Camera(Window_Width, Window_Height);
 	camera->SetPosition(0, 0);
 
+	board = new BoardGame(0, 0);
+
 	simon = new Simon();
 	simon->SetPosition(0, 0);
 
@@ -227,6 +232,8 @@ void Render()
 		// back ground nên để trước khi obj render ra
 		TileMap->DrawMap(camera);
 		
+		board->Render(camera);
+
 		// render obj
 		for (int i = 0; i < ListObj.size(); i++)
 			ListObj[i]->Render(camera);

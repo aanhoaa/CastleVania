@@ -66,22 +66,14 @@ void Weapons::SetFinish(bool _isFinish)
 	isFinish = _isFinish;
 }
 
-
-//void Weapons::RenderBoundingBox(Camera * camera)
-//{
-//	RECT rect;
-//
-//	float l, t, r, b;
-//
-//	GetBoundingBox(l, t, r, b);
-//	rect.left = 0;
-//	rect.top = 0;
-//	rect.right = (int)r - (int)l;
-//	rect.bottom = (int)b - (int)t;
-//
-//	D3DXVECTOR2 pos = camera->Translate(l, t);
-//
-//	LPDIRECT3DTEXTURE9  _Texture = BBox::GetInstance()->GetTexture();
-//
-//	CGame::GetInstance()->Draw(pos.x, pos.y, _Texture, rect.left, rect.top, rect.right, rect.bottom, 100);
-//}
+Items * Weapons::GetItem(int Id, def_ID Type, float X, float Y)
+{
+	if (Type == def_ID::CANDLE)
+	{
+		if (Id == 1 || Id == 4)
+			return new BigHeart(X, Y);
+		if (Id == 2 || Id == 3)
+			return new Whip(X, Y);
+		return new BigHeart(X, Y);
+	}
+}

@@ -9,6 +9,8 @@
 #include "BBox.h"
 #include "Game.h"
 #include "GameObject.h"
+#include "Items.h"
+#include "BigHeart.h"
 
 class Weapons : public CGameObject
 {
@@ -23,7 +25,7 @@ public:
 	//void SetDirect(int nx);
 	int GetFinish();
 	void SetFinish(bool b);
-	//void RenderBoundingBox(Camera * camera);
+	static Items * GetItem(int Id, def_ID Type, float X, float Y);
 
 	virtual void Create(float simon_X, float simon_Y, int simon_nx);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);

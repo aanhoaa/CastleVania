@@ -32,7 +32,7 @@ void Map::ReadMapTXT(char * filename)
 
 	if (fileIn)
 	{
-		fileIn >> RowMatrix >> ColumnMatrix >> ColTile >> RowTile >> CountTileFrame >> AutoFit;
+		fileIn >> RowMatrix >> ColumnMatrix >> ColTile >> RowTile >> CountTileFrame >> BoardHeight;
 		//DebugOut(L"[INFO] So luong CountTitle: %d\n", CountTileFrame);
 		for (int i = 0; i < RowMatrix; i++)
 		{
@@ -82,7 +82,7 @@ void Map::DrawMap(Camera *camera)
 				{
 				//	DebugOut(L"[INFO] Res ne: %d\n", x + TileTexture->FrameWidth*j); // 0
 					TileSprite->SelectIndex(TileMap[row + i][column + j]);
-					TileSprite->DrawRaw(x + TileTexture->FrameWidth*j, y + TileTexture->FrameHeight*i + AutoFit);
+					TileSprite->DrawRaw(x + TileTexture->FrameWidth*j, y + TileTexture->FrameHeight*i + BoardHeight);
 				}
 			}
 		}
