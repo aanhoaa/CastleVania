@@ -22,7 +22,6 @@ void Candle::GetBoundingBox(float & left, float & top, float & right, float & bo
 	top = y;
 	right = x + texture->FrameWidth;
 	bottom = y + texture->FrameHeight;
-
 }
 
 void Candle::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

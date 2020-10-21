@@ -30,7 +30,7 @@ using namespace std;
 
 #define SHOWBOX_PINK 0
 
-#define IS_DEBUG_RENDER_BBOX 0
+#define IS_DEBUG_RENDER_BBOX 1
 
 
 extern int Window_Width;
@@ -46,15 +46,14 @@ extern int ScreenRow;
 enum def_ID
 {
 	SIMON = 01,
-
 	BRICK = 21,
-
 	CANDLE = 41,
-
 	MORNINGSTAR = 61,
+	DAGGER = 62,
 
 	BIGHEART = 81,
-	UPGRADEMORNINGSTAR = 82
+	UPGRADEMORNINGSTAR = 82,
+	iDAGGER = 83,
 };
 
 enum eDirection
@@ -65,8 +64,6 @@ enum eDirection
 	RIGHT = (1 << 2),
 	BOTTOM = (1 << 3)
 };
-
-
 
 typedef D3DXVECTOR3 GVector3;
 typedef D3DXVECTOR2 GVector2;

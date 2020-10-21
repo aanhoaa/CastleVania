@@ -33,8 +33,10 @@ struct CCollisionEvent
 class CGameObject
 {
 protected:
+	int hp;
 	int life;
 	def_ID obj_type; // loại obj
+	bool isPush; // xét xem obj đó đã dc cho vào list chưa (xử lý với tình huống 1 obj nằm trên 2 cells trở lên)
 public:
 	int id; // id obj
 	float x; 
@@ -49,7 +51,6 @@ public:
 	int nx;	 
 
 	int state;
-	bool isPush; // xét xem obj đó đã dc cho vào list chưa (xử lý với tình huống 1 obj nằm trên 2 cells trở lên)
 
 	DWORD dt; 
 
@@ -63,7 +64,15 @@ public:
 	void SetPosition(float x, float y);
 	void GetSpeed(float &vx, float &vy);
 	void SetSpeed(float vx, float vy);
+
+	int GetObj_id();
+
+	int GetHP();
 	int GetLife();
+
+	bool GetIsPush();
+	void SetIsPush(int _isPush);
+
 	int GetHeight();
 	int GetWidth();
 	def_ID GetType();
@@ -75,6 +84,8 @@ public:
 
 	int GetState() { return this->state; }
 	void RenderBoundingBox(Camera * camera);
+
+	bool isCollitionAll(CGameObject *obj); 	// AABB và Sweept AABB check all
 
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
@@ -92,7 +103,6 @@ public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
 	virtual void Render(Camera * camera) = 0;
 	virtual void SetState(int state) { this->state = state; }
-
 
 	~CGameObject();
 };

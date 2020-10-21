@@ -31,6 +31,9 @@ public:
 	//chọn ID của 1 frame
 	void SelectIndex(int index);
 
+	// lấy index hiện tại
+	int GetIndex();
+
 	//update animation
 	void Update(int ellapseTime);
 
@@ -39,19 +42,12 @@ public:
 
 	//Render with scale (-1, 1)
 	void DrawFlipX(int x, int y);
-
-	//render with scale (1, -1)
-	void DrawFlipY(int x, int y);
+	void DrawFlipXByIndex(int index, int x, int y);
 
 	//Render Rect of texture at (x,y)
 	void DrawRect(int X, int Y, RECT SrcRect);
 
 	void DrawIndex(int index, int X, int Y);
-
-	void DrawRaw(int X, int Y);
-	int GetIndex();
-
-	void DrawApart(int x, int y, int w);
 	~Load_resources();
 
 	//=======================================================================================================================

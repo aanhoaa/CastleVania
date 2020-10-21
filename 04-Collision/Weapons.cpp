@@ -65,15 +65,3 @@ void Weapons::SetFinish(bool _isFinish)
 {
 	isFinish = _isFinish;
 }
-
-Items * Weapons::GetItem(int Id, def_ID Type, float X, float Y)
-{
-	if (Type == def_ID::CANDLE)
-	{
-		if (Id == 1 || Id == 4)
-			return new BigHeart(X, Y);
-		if (Id == 2 || Id == 3)
-			return new Whip(X, Y);
-	}
-	return new BigHeart(X, Y);
-}

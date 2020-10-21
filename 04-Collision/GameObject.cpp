@@ -25,6 +25,25 @@ void CGameObject::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	dy = vy*dt;
 }
 
+bool CGameObject::isCollitionAll(CGameObject * obj)
+{
+	float l, t, r, b;
+	float l1, t1, r1, b1;
+	this->GetBoundingBox(l, t, r, b);
+	obj->GetBoundingBox(l1, t1, r1, b1); // bbox obj
+
+	// xem xét chuyển aabb về GObj
+	// nếu va chạm AABB
+	if (CGame::GetInstance()->CollisionAABB(l, t, r, b, l1, t1, r1, b1)) 
+		return true;
+	// va chạm sweaptAABB
+	LPCOLLISIONEVENT e = SweptAABBEx(obj); 
+	bool result = e->t > 0 && e->t <= 1.0f; // ĐK va chạm
+	SAFE_DELETE(e);
+
+	return result;
+}
+
 /*
 	Extension of original SweptAABB to deal with two moving objects
 */
@@ -102,11 +121,11 @@ void CGameObject::FilterCollision( //
 	{
 		LPCOLLISIONEVENT c = coEvents[i];
 
-		if (c->t < min_tx && c->nx != 0) {
+		if (c->t <= min_tx && c->nx != 0) {
 			min_tx = c->t; nx = c->nx; min_ix = i;
 		}
 
-		if (c->t < min_ty  && c->ny != 0) {
+		if (c->t <= min_ty  && c->ny != 0) {
 			min_ty = c->t; ny = c->ny; min_iy = i;
 		}
 	}
@@ -159,9 +178,29 @@ void CGameObject::GetSpeed(float &vx, float &vy)
 	vy = this->vy;
 }
 
+int CGameObject::GetObj_id()
+{
+	return id;
+}
+
 int CGameObject::GetLife()
 {
 	return life;
+}
+
+int CGameObject::GetHP()
+{
+	return hp;
+}
+
+bool CGameObject::GetIsPush()
+{
+	return isPush;
+}
+
+void CGameObject::SetIsPush(int _isPush)
+{
+	isPush = _isPush;
 }
 
 int CGameObject::GetHeight()

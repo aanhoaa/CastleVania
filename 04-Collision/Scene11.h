@@ -9,6 +9,8 @@
 #include "Grid.h"
 #include "Items.h" 
 #include "BoardGame.h"
+#include "Dagger.h"
+#include "HitEffect.h"
 
 class Scene_1 : public Scenes
 {
@@ -21,7 +23,10 @@ public:
 	BoardGame * board;
 	//Data * _data;
 
-	vector<LPGAMEOBJECT> ListObj;
+	vector<LPGAMEOBJECT> listObj;
+	vector <Items*> listItem;
+	vector <HitEffect*> listEffect;
+
 public:
 	Scene_1();
 	~Scene_1();
@@ -33,5 +38,11 @@ public:
 	void LoadResources();
 	void Update(DWORD dt);
 	void Render();
+
+	void CheckCollision();
+	void CheckCollisionWeapon();
+	void CheckCollisionSimonWithItem();
+
+	Items * GetNewItem(int Id, def_ID Type, float X, float Y);
 };
 

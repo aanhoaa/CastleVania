@@ -6,6 +6,9 @@
 #define MORNINGSTAR_ANI_LEVEL1_START 4
 #define MORNINGSTAR_ANI_LEVEL1_END 7
 
+#define MORNINGSTAR_ANI_LEVEL2_START 8
+#define MORNINGSTAR_ANI_LEVEL2_END 11
+
 #include "GameObject.h"
 #include "Weapons.h"
 #include "BigHeart.h"
@@ -14,7 +17,6 @@ class MorningStar : public Weapons
 {
 protected:
 	int level;
-	float xBackup, yBackup;
 public:
 	MorningStar();
 	~MorningStar();
@@ -22,6 +24,7 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void UpdatePositionFitSimon();
-	void CollisionWithObject(DWORD dt, vector<LPGAMEOBJECT>* listObj);
+	bool isCollision(CGameObject* obj);
 	void UpgradeLevel();
+	void RenderItem(int X, int Y);
 };

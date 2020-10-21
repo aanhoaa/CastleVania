@@ -36,6 +36,7 @@ class Simon : public CGameObject
 {
 public:
 	int HeartPoint; // số lượng heart nhặt được
+	int point;
 	bool isWalking;
 	bool isJumping;
 	bool isSitting;
@@ -45,7 +46,8 @@ public:
 	Simon();
 	~Simon();
 
-	vector<Weapons*> ListWeapon;
+	Weapons* mainWeapon;
+	Weapons* subWeapon;
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
@@ -59,11 +61,16 @@ public:
 	void Stop();
 
 	void CollisionWithBrick(vector<LPGAMEOBJECT> *coObjects = NULL);
-	void CollisionWithItem();
 	void Attack(Weapons *weapon);
+
+	bool isCollisionWithItem(Items * item);
 
 	void SetHeartCollect(int h);
 	int GetHeartCollect();
+
+	void SetLife(int l);
+	int GetPoint();
+	void SetPoint(int s);
 };
 
 

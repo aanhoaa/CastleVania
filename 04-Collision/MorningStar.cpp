@@ -19,52 +19,47 @@ void MorningStar::Create(float simon_X, float simon_Y, int simon_nx)
 
 	UpdatePositionFitSimon();
 
-	if (level == 0)
+	switch (level)
 	{
-		sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL0_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
-	}
-
-	if (level == 1)
-	{
+	case 0:
+			sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL0_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
+			break;
+	case 1:
 		sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL1_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
+		break;
+	case 2:
+		sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL2_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
+		break;
 	}
 }
 
 void MorningStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	isFinish = (sprite->GetIndex() == 3) + (sprite->GetIndex() == 7) + (sprite->GetIndex() == 11); // index 1 trong 3 index 3-7-11 thì dừng đánh (sprite roi cuối)
-	//DebugOut(L"[INFO] Finish: %d\n", isFinish);
+	this->dt = dt;
+	this->dx = vx * dt;
+	this->dy = vy * dt;
 
-	if (level == 0)
-	{
-		if (MORNINGSTAR_ANI_LEVEL0_START <= sprite->GetIndex() && sprite->GetIndex() < MORNINGSTAR_ANI_LEVEL0_END)
-		{
-			sprite->Update(dt);
-		}
-		else
-		{
-			sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL0_START); // ban đầu sẽ vào đây từ hàm set sprite
-		}
-	}
+	// index 1 trong 3 index 3-7-11 thì dừng đánh (sprite roi cuối)
+	//DebugOut(L"[INFO] Level: %d\n", level);
+	isFinish = (sprite->GetIndex() == 3 && level == 0) + (sprite->GetIndex() == 7 && level == 1) + (sprite->GetIndex() == 11 && level == 2);
 
-	if (level == 1)
-	{
-		if (MORNINGSTAR_ANI_LEVEL1_START <= sprite->GetIndex() && sprite->GetIndex() < MORNINGSTAR_ANI_LEVEL1_END)
-		{
-			sprite->Update(dt);
-		}
-		else
-		{
-			sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL1_START);
-		}
-	}
+	int StartFrame = MORNINGSTAR_ANI_LEVEL0_START + 4 * level; // ánh xạ chỉ số frame bằng level thay vì ifelse 
+	int EndFrame = MORNINGSTAR_ANI_LEVEL0_END + 4 * level;
+
+	if (StartFrame <= sprite->GetIndex() && sprite->GetIndex() < EndFrame)
+		sprite->Update(dt);
+	else
+		sprite->SelectIndex(StartFrame);
 }
 
 void MorningStar::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-	//if (level == 0)
+	switch (level)
 	{
-		if (sprite->GetIndex() == 2 || sprite->GetIndex() == 5) { // sprite simon đánh thì mới set boundingbox
+	case 0:
+	case 1:
+	case 2:
+		//if (sprite->GetIndex() == 2 || sprite->GetIndex() == 5) { // sprite simon đánh thì mới set boundingbox
 			if (nx == 1)
 			{
 				left = x + (sprite->GetIndex() >= 2) * 80; // đánh roi thì left = x + 50
@@ -80,7 +75,11 @@ void MorningStar::GetBoundingBox(float & left, float & top, float & right, float
 				right = x + texture->FrameWidth - (sprite->GetIndex() >= 2) * 80;
 				bottom = y + texture->FrameHeight - 15;
 			}
-		}
+		//}
+		break;
+	//case 2:
+	default:
+			break;
 	}
 }
 
@@ -96,42 +95,31 @@ void MorningStar::UpdatePositionFitSimon()
 	}
 }
 
-void MorningStar::CollisionWithObject(DWORD dt, vector<LPGAMEOBJECT>* listObj)
-{
-	RECT object, other;
-	float l_obj, t_obj, r_obj, b_obj;
-	float l_oth, t_oth, r_oth, b_oth;
-
-	GetBoundingBox(l_obj, t_obj, r_obj, b_obj);
-	object.left = (int)l_obj;
-	object.top = (int)t_obj;
-	object.right = (int)r_obj;
-	object.bottom = (int)b_obj;
-
-	for (UINT i = 0; i < listObj->size(); i++)
-		if (listObj->at(i)->GetType() == def_ID::CANDLE)
-		{
-			CGameObject *obj = dynamic_cast<CGameObject*>(listObj->at(i));
-			if (obj->GetLife() > 0 )
-			{
-				listObj->at(i)->GetBoundingBox(l_oth, t_oth, r_oth, b_oth);
-				other.left = (int)l_oth;
-				other.top = (int)t_oth;
-				other.right = (int)r_oth;
-				other.bottom = (int)b_oth;
-
-				if (CGame::GetInstance()->CollisionAABB(object, other))
-				{
-					listObj->at(i)->LoseLife(1);
-					//Data::GetInstance()->ListItem.push_back(Weapons::GetItem(obj->id, obj->GetType(), listObj->at(i)->x, listObj->at(i)->y));
-				}
-			}
-		}
-}
-
 void MorningStar::UpgradeLevel()
 {
 	if (level >= 2)
 		return;
 	level++;
+}
+
+bool MorningStar::isCollision(CGameObject * obj)
+{
+	if (level == 0 && sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL0_START || sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL0_START + 1)
+		return false; // frame đầu và frame chuẩn bị đánh thì ko xét va chạm
+
+	if (level == 1 && sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL1_START || sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL1_START + 1)
+		return false; // frame đầu và frame chuẩn bị đánh thì ko xét va chạm
+
+	if (level == 2 && sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL2_START || sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL2_START + 1)
+		return false; // frame đầu và frame chuẩn bị đánh thì ko xét va chạm
+
+	CGameObject *Obj = dynamic_cast<CGameObject*>(obj);
+	if (Obj->GetLife() <= 0) // vật này die rồi thì ko va chạm
+		return false;
+	
+	return isCollitionAll(Obj);
+}
+
+void MorningStar::RenderItem(int X, int Y)
+{
 }

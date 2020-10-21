@@ -36,11 +36,11 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 	ResetListObj();
 
 	// lấy tọa độ của cam hiện tại để thiết lập các cells 
-	int rowTop = (int)floor((camera->GetY_cam()) / (float)GRID_CELL_HEIGHT);
-	int rowBottom = (int)floor((camera->GetY_cam() + camera->GetHeight()) / (float)GRID_CELL_HEIGHT);
+	int rowTop = (int)floor((camera->GetY_cam() + 1) / (float)GRID_CELL_HEIGHT);
+	int rowBottom = (int)floor((camera->GetY_cam() + camera->GetHeight() - 1) / (float)GRID_CELL_HEIGHT);
 	
-	int colLeft = (int)floor((camera->GetX_cam()) / (float)GRID_CELL_WIDTH);
-	int colRight = (int)floor((camera->GetX_cam() + camera->GetWidth()) / (float)GRID_CELL_WIDTH);
+	int colLeft = (int)floor((camera->GetX_cam() + 1) / (float)GRID_CELL_WIDTH);
+	int colRight = (int)floor((camera->GetX_cam() + camera->GetWidth() - 1) / (float)GRID_CELL_WIDTH);
 
 	// loop check  trong cells các obj dc đánh dấu, có thì cho vào list
 	for (int row = rowTop; row <= rowBottom; row++)
@@ -54,10 +54,10 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 			{
 				if (cells[row][col].at(i)->GetLife() > 0) // còn tồn tại
 				{
-					if (cells[row][col].at(i)->isPush == false)
+					if (cells[row][col].at(i)->GetIsPush() == false)
 					{
 						ListObj.push_back(cells[row][col].at(i));
-						cells[row][col].at(i)->isPush = true;
+						cells[row][col].at(i)->SetIsPush(true);
 					}
 				}
 			}
@@ -84,10 +84,10 @@ void Grid::GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj)
 			{
 				if (cells[row][col].at(i)->GetLife() > 0) // còn tồn tại
 				{
-					if (cells[row][col].at(i)->isPush == false)
+					if (cells[row][col].at(i)->GetIsPush() == false)
 					{
 						ListObj.push_back(cells[row][col].at(i));
-						cells[row][col].at(i)->isPush = true;
+						cells[row][col].at(i)->SetIsPush(true);
 					}
 				}
 			}
@@ -99,7 +99,7 @@ void Grid::ResetListObj()
 {
 	for (UINT i = 0; i < listObjectGame.size(); i++)
 	{
-		listObjectGame[i]->isPush = false;
+		listObjectGame[i]->SetIsPush(false);
 	}
 }
 
@@ -113,7 +113,7 @@ void Grid::Insert(int id, int type, int nx, int x, int y, int w, int h)
 	}
 	dataObject->SetId(id);
 	dataObject->SetDirect(nx);
-	dataObject->isPush = false;
+	dataObject->SetIsPush(false);
 
 	listObjectGame.push_back(dataObject); // thêm vào list obj 
 

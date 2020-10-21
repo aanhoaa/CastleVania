@@ -1,18 +1,19 @@
 ﻿#include "BigHeart.h"
 
-BigHeart::BigHeart()
+BigHeart::BigHeart(float X, float Y)
 {
 	texture = new Load_img_file("Resources\\item\\1.png");
 	sprite = new Load_resources(texture, 100);
 	obj_type = def_ID::BIGHEART;
-}
 
-BigHeart::BigHeart(float X, float Y) : BigHeart()
-{
 	this->x = X;
 	this->y = Y;
 	vy = LARGEHEART_GRAVITY;
+	TimeDisplayed = 0;
 	TimeDisplayMax = LARGEHEART_TIMEDISPLAYMAX; // set time hiển thị tối đa
+	
+	//TimeWaited = 0;
+	//TimeWaitMax = LARGEHEART_TIMEWAITMAX; // set time chờ hit effect mới được collect
 }
 
 void BigHeart::GetBoundingBox(float & left, float & top, float & right, float & bottom)
@@ -25,6 +26,12 @@ void BigHeart::GetBoundingBox(float & left, float & top, float & right, float & 
 
 void BigHeart::Update(DWORD dt, vector<LPGAMEOBJECT> * listObject)
 {
+	if (TimeWaited < TIMEWAITMAX)
+	{
+		TimeWaited += dt;
+		return;
+	}
+
 	TimeDisplayed += dt;
 	if (TimeDisplayed >= TimeDisplayMax)
 	{
@@ -32,7 +39,7 @@ void BigHeart::Update(DWORD dt, vector<LPGAMEOBJECT> * listObject)
 		return;
 	}
 
-	dy = vy * dt;
+	Items::Update(dt); // Update dt, dx, dy
 
 	vector<LPGAMEOBJECT> listObject_Brick;
 	listObject_Brick.clear();
@@ -69,12 +76,6 @@ void BigHeart::Update(DWORD dt, vector<LPGAMEOBJECT> * listObject)
 
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
-}
-
-void BigHeart::SetReward()
-{
-	//Data::GetInstance()->HeartCollect += 5;
-	//DebugOut(L"[ITEM] +5 Heart. Tong = %d \n", Data::GetInstance()->HeartCollect);
 }
 
 BigHeart::~BigHeart()

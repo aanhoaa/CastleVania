@@ -68,7 +68,7 @@ void Map::DrawMap(Camera *camera)
 				{
 				//	DebugOut(L"[INFO] Res ne: %d\n", x + TileTexture->FrameWidth*j); // 0
 					TileSprite->SelectIndex(TileMap[row + i][column + j]);
-					TileSprite->DrawRaw(x + TileTexture->FrameWidth*j, y + TileTexture->FrameHeight*i + BoardHeight);
+					TileSprite->Draw(x + TileTexture->FrameWidth*j, y + TileTexture->FrameHeight*i + BoardHeight);
 				}
 			}
 		}

@@ -6,6 +6,7 @@
 #include "define.h"
 #include "Simon.h"
 #include "HeartPoint.h"
+#include "Dagger.h"
 
 class BoardGame
 {
@@ -17,8 +18,9 @@ private:
 
 	FontGame font;
 	HeartPoint heartPoint;
+	string ShowPoint(string s, UINT MaxNumber);
 public:
 	BoardGame(int X, int Y);
-	void Render(Camera *camera, Simon *simon);
+	void Render(Camera *camera, Simon *simon, Weapons *weap, int stage);
 	~BoardGame();
 };

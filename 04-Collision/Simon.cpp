@@ -13,10 +13,13 @@ Simon::Simon()
 	isJumping = false;
 	isSitting = false;
 	isAttacking = false;
-	life = 16; // 16 mạng
+	hp = 16; // 16 hp
+	life = 5; // 5 mạng
+	HeartPoint = 5;
+	point = 0;
 
-	ListWeapon.clear();
-	ListWeapon.push_back(new MorningStar());
+	mainWeapon = new MorningStar();
+	subWeapon = NULL;
 }
 
 Simon::~Simon()
@@ -29,14 +32,14 @@ void Simon::GetBoundingBox(float & left, float & top, float & right, float & bot
 	{
 		left = x + 12;
 		top = y - 1; // fixed y (sit() updated y)
-		right = x + SIMON_BBOX_WIDTH - 17;
+		right = x + SIMON_BBOX_WIDTH - 15;
 		bottom = y + SIMON_BBOX_SITTING_HEIGHT - 3;
 	}
 	else
 	{
 		left = x - 12;
 		top = y - 1;
-		right = x + SIMON_BBOX_WIDTH - 17;
+		right = x + SIMON_BBOX_WIDTH - 15;
 		bottom = y + SIMON_BBOX_HEIGHT - 3;
 	}
 }
@@ -52,6 +55,28 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	/* Update về sprite */
 
 	int index = sprite->GetIndex();
+
+	if (isAttacking == true)
+	{
+		if (mainWeapon->GetFinish() == false) // nếu MorningStar đang đánh
+		{
+			mainWeapon->Update(dt);
+			if (mainWeapon->GetFinish() == true)
+				isAttacking = false;
+		}
+		else
+		{
+			if (subWeapon != NULL)
+			{
+				isAttacking = !(SIMON_ANI_SITTING_ATTACKING_END == index || SIMON_ANI_STANDING_ATTACKING_END == index);
+			}
+		}
+	}
+
+	if (subWeapon != NULL && subWeapon->GetFinish() == false)
+	{
+		subWeapon->Update(dt);
+	}
 
 	if (isSitting == true)
 	{
@@ -107,7 +132,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			}
 			else
 			{
-				sprite->SelectIndex(SiMON_ANI_IDLE);		// (khi nhảy + phím di chuyển => reset lại lúc đứng yên)
+				sprite->SelectIndex(SiMON_ANI_IDLE);		// k làm gì cả => đứng yên
 			}
 		}
 
@@ -120,8 +145,10 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	vy += SIMON_GRAVITY * dt; 
 
-	if (isJumping == true && isWalking == true)
-		vx += 0.0012f * dt *nx;
+	if (isJumping && isWalking)
+	{
+		dx = vx * dt * 1.5f;
+	}
 
 	vector<LPGAMEOBJECT> coObjects_Brick; // obj brick
 	coObjects_Brick.clear();
@@ -132,28 +159,36 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	CollisionWithBrick(&coObjects_Brick); // check Collision and update x, y for simon
 
-	CollisionWithItem();
-
+	mainWeapon->SetPosition(this->x, this->y);
+	mainWeapon->SetSpeed(vx, vy); // set vận tốc để kt va chạm
+	mainWeapon->UpdatePositionFitSimon();
+/*
 	if (isAttacking == true) //  update postion roi sau vì kiểm tra va chạm bên trên có thể khiến x,y của simon thay đổi, gây lệch vị trí roi với simon
 	{
-		if (ListWeapon[0]->GetFinish() == false) // nếu MorningStar đang đánh
+		if (mainWeapon->GetFinish() == false) // nếu MorningStar chưa hoặc đang đánh
 		{
-			ListWeapon[0]->SetPosition(this->x, this->y);
-			ListWeapon[0]->UpdatePositionFitSimon();
-			ListWeapon[0]->Update(dt);
+			mainWeapon->SetPosition(this->x, this->y);
+			mainWeapon->UpdatePositionFitSimon();
+			mainWeapon->Update(dt);
 
-			if (ListWeapon[0]->GetFinish() == true) 
+			if (mainWeapon->GetFinish() == true)  // đánh xong
 				isAttacking = false;
-
-			ListWeapon[0]->CollisionWithObject(dt, coObjects);
 		}	
+		else
+		{
+			if (subWeapon != NULL)
+			{
+				isAttacking = !(SIMON_ANI_SITTING_ATTACKING_END + 1 == sprite->GetIndex() || SIMON_ANI_STANDING_ATTACKING_END + 1 == sprite->GetIndex());
+			}
+		}
 	}
+	*/
 }
 
 void Simon::Render(Camera* camera)
 {
-	/*if (IS_DEBUG_RENDER_BBOX)
-		RenderBoundingBox(camera);*/
+	if (IS_DEBUG_RENDER_BBOX)
+		RenderBoundingBox(camera);
 
 	D3DXVECTOR2 pos = camera->Translate(x, y);
 	//DebugOut(L"[INFO] y_s: %.6f\n", y);
@@ -165,11 +200,11 @@ void Simon::Render(Camera* camera)
 		sprite->DrawFlipX((int)pos.x, (int)pos.y);
 
 	// render weapons
-	for (UINT i = 0; i<ListWeapon.size(); i++)
-		if (ListWeapon[i]->GetFinish() == false)
-		{
-			ListWeapon[i]->Render(camera);
-		}
+	if (mainWeapon->GetFinish() == false)
+		mainWeapon->Render(camera); // không cần xét hướng, vì Draw của lớp Weapon đã xét khi vẽ
+
+	if (subWeapon != NULL && subWeapon->GetFinish() == false)
+		subWeapon->Render(camera); // không cần xét hướng, vì Draw của lớp Weapon đã xét khi vẽ
 }
 
 void Simon::Left()
@@ -277,80 +312,9 @@ void Simon::CollisionWithBrick(vector<LPGAMEOBJECT>* coObjects)
 		delete coEvents[i];
 }
 
-void Simon::CollisionWithItem()
-{
-	//Data *_data = Data::GetInstance();
-	vector<LPGAMEOBJECT> listObj;
-	listObj.clear();
-
-
-	/*Xóa những Item đã kết thúc*/
-	/*vector<Items*>::iterator it;
-	for (it = _data->ListItem.begin(); it != _data->ListItem.end(); )
-	{
-		if ((*it)->GetFinish() == true)
-		{
-			it = _data->ListItem.erase(it);
-		}
-		else
-			++it;
-	}*/
-	
-	float l, t, r, b;
-	float l1, t1, r1, b1;
-	GetBoundingBox(l, t, r, b);  // lấy BBOX của simon
-
-	// xét va chạm khi simon đứng ngay vị trí candle => lúc này là AABB
-	//for (UINT i = 0; i < _data->ListItem.size(); i++) // check trước bằng AABB xem có va chạm không?
-	//{
-	//	_data->ListItem.at(i)->GetBoundingBox(l1, t1, r1, b1);
-	//	if (CGame::GetInstance()->CollisionAABB(l, t, r, b, l1, t1, r1, b1) == true)
-	//	{
-	//		_data->ListItem.at(i)->SetReward();
-	//		_data->ListItem.at(i)->SetFinish(true);
-	//	}
-	//}
-
-	// xét va chạm khi simon có khoảng cách với candle => lúc này ăn item thì sẽ là swept AABB
-	//for (UINT i = 0; i < _data->ListItem.size(); i++)
-	//	if (_data->ListItem[i]->GetFinish() == false) // chưa kết thúc thì xét
-	//	{
-	//		listObj.push_back(_data->ListItem[i]);
-	//	}
-
-
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
-
-	coEvents.clear();
-
-	CalcPotentialCollisions(&listObj, coEvents); // Lấy danh sách các va chạm
-
-												 // No collision occured, proceed normally
-	if (coEvents.size() != 0)
-	{
-		float min_tx, min_ty, nx = 0, ny;
-
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
-
-		for (UINT i = 0; i < coEventsResult.size(); i++)
-		{
-			LPCOLLISIONEVENT e = coEventsResult[i];
-			Items *items = dynamic_cast<Items *>(e->obj); // Chắc chắn là Item nên ép kiểu luôn
-
-			items->SetReward();
-			items->SetFinish(true);
-		}
-	}
-
-	for (UINT i = 0; i < coEvents.size(); i++)
-		delete coEvents[i];
-
-}
-
 void Simon::Attack(Weapons * weapon)
 {
-	if (isAttacking == true) // đang tấn công thì bỏ qua
+	if (isAttacking == true && dynamic_cast<MorningStar*>(weapon) != NULL) // đang tấn công mà là roi thì bỏ qua
 		return;
 
 	isAttacking = true; // set trang thái tấn công
@@ -365,4 +329,37 @@ void Simon::SetHeartCollect(int HeartP)
 int Simon::GetHeartCollect()
 {
 	return HeartPoint;
+}
+
+void Simon::SetLife(int _life)
+{
+	life = _life;
+}
+
+int Simon::GetPoint()
+{
+	return point;
+}
+
+void Simon::SetPoint(int _point)
+{
+	point = _point;
+}
+
+bool Simon::isCollisionWithItem(Items * item)
+{
+	if (item->GetFinish() == true)
+		return false;
+
+	//float l, t, r, b;
+	//float l1, t1, r1, b1;
+	//this->GetBoundingBox(l, t, r, b);  // lấy BBOX của simon
+
+	//item->GetBoundingBox(l1, t1, r1, b1);
+	//if (CGame::GetInstance()->CollisionAABB(l, t, r, b, l1, t1, r1, b1) == true)
+	//{
+	//	return true; // check with AABB
+	//}
+
+	return isCollitionAll(item);
 }

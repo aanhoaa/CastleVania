@@ -128,9 +128,10 @@
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Candle.h" />
-    <ClInclude Include="Data.h" />
+    <ClInclude Include="Dagger.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="HitEffect.h" />
     <ClInclude Include="FontGame.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
@@ -155,9 +156,10 @@
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Candle.cpp" />
-    <ClCompile Include="Data.cpp" />
+    <ClCompile Include="Dagger.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="define.cpp" />
+    <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="FontGame.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
