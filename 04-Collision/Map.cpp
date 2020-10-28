@@ -4,7 +4,7 @@
 
 Map::Map()
 {
-	LoadMap();
+	//LoadMap();
 }
 
 
@@ -12,10 +12,24 @@ Map::~Map()
 {
 }
 
-void Map::LoadMap()
+void Map::LoadMap(eMap mMap)
 {
-	ReadMapTXT("Resources/map/1.txt");
-	TileTexture = new Load_img_file("Resources/map/1.png", ColTile, RowTile, CountTileFrame);
+	switch (mMap)
+	{
+	case eMap::mMap1:
+		ReadMapTXT("Resources/map/1.txt");
+		TileTexture = new Load_img_file("Resources/map/1.png", ColTile, RowTile, CountTileFrame);
+		break;
+	case eMap::mMap2:
+		ReadMapTXT("Resources/map/2.txt");
+		TileTexture = new Load_img_file("Resources/map/2.png", 18, 4, 72);
+		break;
+	default:
+		DebugOut(L"[MAP] Load map fail!");
+		return;
+		break;
+	}
+
 	TileSprite = new Load_resources(TileTexture, 100);
 
 	MapWidth = (TileTexture->FrameWidth)*(ColumnMatrix);  // Chiều dài của MAP

@@ -65,7 +65,6 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 void LoadResources()
 {
 	sceneManager->LoadResources();
-
 }
 
 /*
@@ -203,11 +202,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	sceneManager = SceneManager::GetInstance();
 
 
-	sceneManager->SetScene(new Scene_1()); // vào màn 1
+	sceneManager->SetScene(new Scene_1()); // vào màn 1 - load resources luôn
 
 	game->InitKeyboard();
 	
-	LoadResources();
+	//LoadResources();
 
 	SetWindowPos(hWnd, 0, 0, 0, Window_Width, Window_Height, SWP_NOMOVE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 

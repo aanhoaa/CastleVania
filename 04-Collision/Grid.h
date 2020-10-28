@@ -2,10 +2,11 @@
 #define	__GRID_H__
 
 #include "Game.h" 
-#include "Load_img_file.h" 
+#include "Load_resources.h" 
 #include "Map.h"
 #include "Candle.h"
 #include "Brick.h"
+#include "HidenObject.h"
 #include "define.h"
 
 

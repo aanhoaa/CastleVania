@@ -18,6 +18,11 @@ SceneManager * SceneManager::GetInstance()
 	return _Instance;
 }
 
+Scenes * SceneManager::GetScene()
+{
+	return scenes;
+}
+
 void SceneManager::SetScene(Scenes * x)
 {
 	Scenes * scene_temp = scenes;

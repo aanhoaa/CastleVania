@@ -42,7 +42,7 @@ void MorningStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	// index 1 trong 3 index 3-7-11 thì dừng đánh (sprite roi cuối)
 	//DebugOut(L"[INFO] Level: %d\n", level);
 	isFinish = (sprite->GetIndex() == 3 && level == 0) + (sprite->GetIndex() == 7 && level == 1) + (sprite->GetIndex() == 11 && level == 2);
-
+	
 	int StartFrame = MORNINGSTAR_ANI_LEVEL0_START + 4 * level; // ánh xạ chỉ số frame bằng level thay vì ifelse 
 	int EndFrame = MORNINGSTAR_ANI_LEVEL0_END + 4 * level;
 
@@ -54,12 +54,10 @@ void MorningStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void MorningStar::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-	switch (level)
-	{
-	case 0:
-	case 1:
-	case 2:
-		//if (sprite->GetIndex() == 2 || sprite->GetIndex() == 5) { // sprite simon đánh thì mới set boundingbox
+		switch (level)
+		{
+		case 0:
+		case 1:
 			if (nx == 1)
 			{
 				left = x + (sprite->GetIndex() >= 2) * 80; // đánh roi thì left = x + 50
@@ -75,12 +73,30 @@ void MorningStar::GetBoundingBox(float & left, float & top, float & right, float
 				right = x + texture->FrameWidth - (sprite->GetIndex() >= 2) * 80;
 				bottom = y + texture->FrameHeight - 15;
 			}
-		//}
-		break;
-	//case 2:
-	default:
 			break;
-	}
+		case 2:
+			//if (sprite->GetIndex() == 2 || sprite->GetIndex() == 5) { // sprite simon đánh thì mới set boundingbox
+			if (nx == 1)
+			{
+				left = x + (sprite->GetIndex() >= 2) * 20; // đánh roi thì left = x + 50
+				top = y + 15;
+				// Là 2 frame đầu thì right = x - 110
+				right = x + texture->FrameWidth
+					+ (sprite->GetIndex() == 0 || sprite->GetIndex() == 1) * 100;
+				bottom = y + texture->FrameHeight - 15;
+			}
+			else {
+				left = x + 30 + (sprite->GetIndex() == 0 || sprite->GetIndex() == 1) * 80;
+				top = y + 15;
+				right = x + texture->FrameWidth - (sprite->GetIndex() >= 2) * 80;
+				bottom = y + texture->FrameHeight - 15;
+			}
+			//}
+			break;
+			//case 2:
+		default:
+			break;
+		}
 }
 
 void MorningStar::UpdatePositionFitSimon()

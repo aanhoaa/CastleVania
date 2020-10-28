@@ -28,8 +28,6 @@ struct CCollisionEvent
 	}
 };
 
-
-
 class CGameObject
 {
 protected:
@@ -38,6 +36,7 @@ protected:
 	def_ID obj_type; // loại obj
 	bool isPush; // xét xem obj đó đã dc cho vào list chưa (xử lý với tình huống 1 obj nằm trên 2 cells trở lên)
 public:
+	int scene;
 	int id; // id obj
 	float x; 
 	float y;
@@ -68,6 +67,7 @@ public:
 	int GetObj_id();
 
 	int GetHP();
+	void SetHP(int _hp);
 	int GetLife();
 
 	bool GetIsPush();
@@ -104,7 +104,7 @@ public:
 	virtual void Render(Camera * camera) = 0;
 	virtual void SetState(int state) { this->state = state; }
 
-	~CGameObject();
+	 ~CGameObject();
 };
 
 

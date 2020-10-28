@@ -7,7 +7,6 @@
 #include "Load_resources.h"
 #include "debug.h"
 #include "BBox.h"
-#include "Game.h"
 #include "GameObject.h"
 #include "Items.h"
 #include "BigHeart.h"

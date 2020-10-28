@@ -1,5 +1,6 @@
 
 #include "GameObject.h"
+#include "Data.h"
 
 class Candle : public CGameObject
 {

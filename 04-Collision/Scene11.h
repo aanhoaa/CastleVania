@@ -1,4 +1,4 @@
-#include "Scenes.h"
+﻿#include "Scenes.h"
 #include "Load_resources.h"
 
 
@@ -11,6 +11,12 @@
 #include "BoardGame.h"
 #include "Dagger.h"
 #include "HitEffect.h"
+#include "GameTime.h"
+#include "Sound.h"
+#include "Scene12.h"
+#include "Data.h"
+
+#define GAME_TIME_SCENE1 300
 
 class Scene_1 : public Scenes
 {
@@ -19,13 +25,14 @@ public:
 	Map * TileMap;
 	Camera *camera;
 	Grid * gridGame;
-
 	BoardGame * board;
-	//Data * _data;
+	Sound * sound;
 
 	vector<LPGAMEOBJECT> listObj;
 	vector <Items*> listItem;
 	vector <HitEffect*> listEffect;
+
+	CGameTime * gameTime;
 
 public:
 	Scene_1();
@@ -39,9 +46,12 @@ public:
 	void Update(DWORD dt);
 	void Render();
 
+	void ResetResource(); // reset lai resource khi simon mất 1 mạng
+
 	void CheckCollision();
 	void CheckCollisionWeapon();
 	void CheckCollisionSimonWithItem();
+	void CheckCollisionSimonWithHidenObject();
 
 	Items * GetNewItem(int Id, def_ID Type, float X, float Y);
 };

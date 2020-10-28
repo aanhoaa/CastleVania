@@ -193,6 +193,11 @@ int CGameObject::GetHP()
 	return hp;
 }
 
+void CGameObject::SetHP(int _hp)
+{
+	hp = _hp;
+}
+
 bool CGameObject::GetIsPush()
 {
 	return isPush;

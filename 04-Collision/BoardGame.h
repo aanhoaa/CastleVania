@@ -18,9 +18,9 @@ private:
 
 	FontGame font;
 	HeartPoint heartPoint;
-	string ShowPoint(string s, UINT MaxNumber);
+	string Show(string s, UINT MaxNumber);
 public:
 	BoardGame(int X, int Y);
-	void Render(Camera *camera, Simon *simon, Weapons *weap, int stage);
+	void Render(Camera *camera, Simon *simon, int TimeRemaining, Weapons *weap, int stage);
 	~BoardGame();
 };

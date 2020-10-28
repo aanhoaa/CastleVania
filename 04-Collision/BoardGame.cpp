@@ -8,24 +8,26 @@ BoardGame::BoardGame(int X, int Y)
 	y = Y;
 }
 
-void BoardGame::Render(Camera * camera, Simon *simon, Weapons *weap, int stage)
+void BoardGame::Render(Camera * camera, Simon *simon, int TimeRemaining, Weapons *weap, int stage)
 {
 	sprite->Draw(x, y);
 
-	font.Draw(x, y + 15, "SCORE-" + ShowPoint(std::to_string(simon->GetPoint()),(UINT)6));
-	font.Draw(x, y + 33, "PLAYER");
-	font.Draw(x, y + 51, "ENEMY");
-	font.Draw(x + 210, y + 15, "TIME");
-	font.Draw((x + 400 - 20), y + 15, "STAGE");
-	font.Draw(x + 400 + 60, y + 15, std::to_string(stage));
-	font.Draw(x + 400 + 15, y + 15 + 18, std::to_string(simon->GetHeartCollect())); // Số lượng tim nhặt dc
-	heartPoint.Draw(x + 100, y + 30, simon->GetHP(), 5); // display life simon
+	font.Draw(x, y + 10, "SCORE-" + Show(std::to_string(simon->GetPoint()),(UINT)6));
+	font.Draw(x, y + 28, "PLAYER");
+	font.Draw(x, y + 46, "ENEMY");
+	font.Draw(x + 210, y + 10, "TIME" + Show(std::to_string(TimeRemaining), (UINT)4));
+	font.Draw((x + 380), y + 10, "STAGE");
+	font.Draw(x + 460, y + 10, Show(std::to_string(stage),2));
+	font.Draw(x + 415, y + 32, Show(std::to_string(simon->GetHeartCollect()),2)); // Số lượng tim nhặt dc
+	font.Draw(x + 415, y + 52, Show(std::to_string(simon->GetLife()), 2)); // Số lượng tim nhặt dc
+
+	heartPoint.Draw(x + 100, y + 25, simon->GetHP(), 5); // display life simon
 
 	if (weap != NULL)
 	{
 		if (weap->GetType() == def_ID::DAGGER)
 		{
-			weap->RenderItem(330, 40);
+			weap->RenderItem(330, 35);
 		}
 	}
 }
@@ -36,7 +38,7 @@ BoardGame::~BoardGame()
 	SAFE_DELETE(sprite);
 }
 
-string BoardGame::ShowPoint(string s, UINT MaxNumber)
+string BoardGame::Show(string s, UINT MaxNumber)
 {
 	while (s.size() < MaxNumber)
 		s = "0" + s;

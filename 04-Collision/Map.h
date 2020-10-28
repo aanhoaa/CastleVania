@@ -35,7 +35,7 @@ private:
 public:
 	Map();
 	~Map();
-	void LoadMap();
+	void LoadMap(eMap mMap);
 	void ReadMapTXT(char * filename);
 	void DrawMap(Camera * camera);
 };

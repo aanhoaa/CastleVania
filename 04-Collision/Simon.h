@@ -28,6 +28,8 @@
 #define SIMON_ANI_SITTING_ATTACKING_BEGIN 15
 #define SIMON_ANI_SITTING_ATTACKING_END 17
 
+#define TIME_FREEZE_MAX 500
+
 #include "GameObject.h"
 #include "Weapons.h"
 #include "MorningStar.h"
@@ -41,6 +43,11 @@ public:
 	bool isJumping;
 	bool isSitting;
 	bool isAttacking;
+
+	bool isFreeze; // Trạng thái đóng băng thay đổi màu liên tục
+	DWORD TimeFreeze; // thời gian đã đóng băng
+
+	D3DXVECTOR2 PositionBackup;
 
 public:
 	Simon();
@@ -71,6 +78,13 @@ public:
 	void SetLife(int l);
 	int GetPoint();
 	void SetPoint(int s);
+
+	bool GetFreeze();
+	void SetFreeze(bool _isFreeze);
+	void UpdateFreeze(DWORD dt);
+
+	bool LoseLife();
+	void SetPositionBackup(float X, float Y);  // lưu vị trí cần backup để simon die thì bắt đầu lại từ đây
 };
 
 

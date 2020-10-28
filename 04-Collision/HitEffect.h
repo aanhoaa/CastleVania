@@ -16,7 +16,7 @@ protected:
 
 public:
 	HitEffect();
-	~HitEffect();
+	 ~HitEffect();
 
 	virtual void Render(Camera * camera);
 	virtual void Update(DWORD dt);

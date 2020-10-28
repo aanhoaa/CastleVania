@@ -82,9 +82,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>d3dx9.lib;d3d9.lib;dxguid.lib;dxerr.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3dx9.lib;d3d9.lib;dxguid.lib;dxerr.lib;dinput8.lib;dsound.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -129,8 +130,13 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Candle.h" />
     <ClInclude Include="Dagger.h" />
+    <ClInclude Include="Data.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="DSutil.h" />
+    <ClInclude Include="dxutil.h" />
+    <ClInclude Include="GameTime.h" />
+    <ClInclude Include="HidenObject.h" />
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="FontGame.h" />
     <ClInclude Include="Game.h" />
@@ -144,9 +150,11 @@
     <ClInclude Include="MorningStar.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Scene11.h" />
+    <ClInclude Include="Scene12.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Scenes.h" />
     <ClInclude Include="Simon.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="Weapons.h" />
   </ItemGroup>
   <ItemGroup>
@@ -157,8 +165,13 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Candle.cpp" />
     <ClCompile Include="Dagger.cpp" />
+    <ClCompile Include="Data.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="define.cpp" />
+    <ClCompile Include="DSutil.cpp" />
+    <ClCompile Include="dxutil.cpp" />
+    <ClCompile Include="GameTime.cpp" />
+    <ClCompile Include="HidenObject.cpp" />
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="FontGame.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -173,9 +186,11 @@
     <ClCompile Include="MorningStar.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Scene11.cpp" />
+    <ClCompile Include="Scene12.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Scenes.cpp" />
     <ClCompile Include="Simon.cpp" />
+    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Weapons.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -15,8 +15,8 @@ HitEffect::~HitEffect()
 
 void HitEffect::Render(Camera * camera)
 {
-	D3DXVECTOR2 pos = camera->Translate(x, y);
-	sprite->Draw(pos.x, pos.y);
+	D3DXVECTOR2 pos = camera->Translate((float)x, (float)y);
+	sprite->Draw((int)pos.x, (int)pos.y);
 
 }
 

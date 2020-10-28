@@ -4,12 +4,26 @@
 
 Candle::Candle(int X, int Y)
 {
-	texture = new Load_img_file("Resources\\ground\\0.png", 2, 1, 2, 0);
-	sprite = new Load_resources(texture, 100);
-	this->x = (float)X;
-	this->y = (float)Y;
-	obj_type = def_ID::CANDLE;
-	life = 1;
+	int candle = Data::GetInstance()->scene;
+	DebugOut(L"[INFO] Data: %d\n", candle);
+	if (candle == 1)
+	{
+		texture = new Load_img_file("Resources\\ground\\0.png", 2, 1, 2, 0);
+		sprite = new Load_resources(texture, 100);
+		this->x = (float)X;
+		this->y = (float)Y;
+		obj_type = def_ID::BIGCANDLE;
+		life = 1;
+	}
+	else
+	{
+		texture = new Load_img_file("Resources\\ground\\1.png", 2, 1, 2, 0);
+		sprite = new Load_resources(texture, 100);
+		this->x = (float)X;
+		this->y = (float)Y;
+		obj_type = def_ID::SMALLCANDLE;
+		life = 1;
+	}
 }
 
 Candle::~Candle()

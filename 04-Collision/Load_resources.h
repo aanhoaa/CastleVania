@@ -40,6 +40,10 @@ public:
 	// Render current sprite at location (X,Y) at the target surface
 	void Draw(int x, int y);
 
+	// Render with change coler
+	void DrawChangeColor(int X, int Y);
+	void DrawChangeColorFlipX(int x, int y);
+
 	//Render with scale (-1, 1)
 	void DrawFlipX(int x, int y);
 	void DrawFlipXByIndex(int index, int x, int y);

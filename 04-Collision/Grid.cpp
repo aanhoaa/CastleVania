@@ -22,8 +22,12 @@ void Grid::ReadFileToGrid(char * filename)
 
 	if (inp)
 	{
-		while (inp >> id >> type >> nx >> x >> y >> w >> h)
+		int n;
+		inp >> n;
+
+		for (int i = 0; i < n; i++)
 		{
+			inp >> id >> type >> nx >> x >> y >> w >> h;
 			Insert(id, type, nx, x, y, w, h);
 		}
 		inp.close();
@@ -52,8 +56,9 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 
 			for (UINT i = 0; i < cells[row][col].size(); i++) // có đánh dấu 
 			{
-				if (cells[row][col].at(i)->GetLife() > 0) // còn tồn tại
+				if ((cells[row][col].at(i)->GetLife() > 0)) // còn tồn tại
 				{
+					//DebugOut(L"[INFO] type: %d\n", (cells[row][col].at(i)->GetType()));
 					if (cells[row][col].at(i)->GetIsPush() == false)
 					{
 						ListObj.push_back(cells[row][col].at(i));
@@ -136,6 +141,8 @@ void Grid::Insert(int id, int type, int nx, int x, int y, int w, int h)
 CGameObject * Grid::GetNewObject(int type, int x, int y, int w, int h)
 {
 	if (type == def_ID::BRICK) return new Brick(x, y, w, h); 
-	if (type == def_ID::CANDLE) return new Candle(x, y);
+	if (type == def_ID::BIGCANDLE) return new Candle(x, y);
+	if (type == def_ID::HIDDENOBJECT) return new HidenObject(x, y, w, h);
+	if (type == def_ID::SMALLCANDLE) return new Candle(x, y);
 	return NULL;
 }

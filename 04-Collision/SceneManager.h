@@ -15,6 +15,7 @@ public:
 
 	static SceneManager * GetInstance();
 
+	Scenes * GetScene();
 	void SetScene(Scenes * x);
 
 	void KeyState(BYTE *state);

@@ -192,12 +192,22 @@ void Simon::Render(Camera* camera)
 
 	D3DXVECTOR2 pos = camera->Translate(x, y);
 	//DebugOut(L"[INFO] y_s: %.6f\n", y);
-	
+
 	// render simon
-	if (nx == -1)
-		sprite->Draw((int)pos.x, (int)pos.y);
+	if (this->GetFreeze() == true)
+	{
+		if (nx == -1)
+			sprite->DrawChangeColor((int)pos.x, (int)pos.y);
+		else
+			sprite->DrawChangeColorFlipX((int)pos.x, (int)pos.y);
+	}
 	else
-		sprite->DrawFlipX((int)pos.x, (int)pos.y);
+	{
+		if (nx == -1)
+			sprite->Draw((int)pos.x, (int)pos.y);
+		else
+			sprite->DrawFlipX((int)pos.x, (int)pos.y);
+	}
 
 	// render weapons
 	if (mainWeapon->GetFinish() == false)
@@ -351,15 +361,58 @@ bool Simon::isCollisionWithItem(Items * item)
 	if (item->GetFinish() == true)
 		return false;
 
-	//float l, t, r, b;
-	//float l1, t1, r1, b1;
-	//this->GetBoundingBox(l, t, r, b);  // lấy BBOX của simon
-
-	//item->GetBoundingBox(l1, t1, r1, b1);
-	//if (CGame::GetInstance()->CollisionAABB(l, t, r, b, l1, t1, r1, b1) == true)
-	//{
-	//	return true; // check with AABB
-	//}
-
 	return isCollitionAll(item);
+}
+
+bool Simon::GetFreeze()
+{
+	return isFreeze;
+}
+
+void Simon::SetFreeze(bool _isFreeze)
+{
+	isFreeze = _isFreeze;
+	TimeFreeze = 0; // thời gian đã đóng băng
+}
+
+void Simon::UpdateFreeze(DWORD dt)
+{
+	if (TimeFreeze + dt >= TIME_FREEZE_MAX)
+	{
+		SetFreeze(false); // kết thúc đóng băng
+	}
+	else
+		TimeFreeze += dt;
+}
+
+bool Simon::LoseLife()
+{
+	if (life - 1 < 0)
+		return false;
+	hp = 16;
+	life = life - 1;
+	HeartPoint = 5;
+	
+	//SAFE_DELETE(mainWeapon);
+	//SAFE_DELETE(subWeapon);
+	mainWeapon = new MorningStar();
+	subWeapon = NULL;
+
+	isAttacking = 0;
+	isJumping = 0;
+	isFreeze = 0;
+	isSitting = 0;
+	isWalking = 0;
+
+	nx = 1;
+
+	x = PositionBackup.x;
+	y = PositionBackup.y;
+
+	return true;
+}
+
+void Simon::SetPositionBackup(float X, float Y)
+{
+	PositionBackup = D3DXVECTOR2(X, Y);
 }

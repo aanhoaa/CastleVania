@@ -62,3 +62,18 @@ public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *listObject = NULL); // Update và xét va chạm đất
 };
+
+/* Money Bag*/
+#define MONEY_TIMEDISPLAYMAX 3000
+#define MONEY_TIMEWAITMAX 300
+#define MONEY_GRAVITY 0.25f
+
+class MoneyBag : public Items
+{
+public:
+	MoneyBag(float X = 0, float Y = 0);
+	~MoneyBag();
+
+	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	void Update(DWORD dt, vector<LPGAMEOBJECT> *listObject = NULL);
+};
