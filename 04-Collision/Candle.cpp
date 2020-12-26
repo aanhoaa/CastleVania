@@ -1,14 +1,13 @@
 #include "Candle.h"
 #include "debug.h"
 
-
 Candle::Candle(int X, int Y)
 {
 	int candle = Data::GetInstance()->scene;
-	DebugOut(L"[INFO] Data: %d\n", candle);
+
 	if (candle == 1)
 	{
-		texture = new Load_img_file("Resources\\ground\\0.png", 2, 1, 2, 0);
+		texture = LoadTexture::GetInstance()->GetTexture(BIGCANDLE);
 		sprite = new Load_resources(texture, 100);
 		this->x = (float)X;
 		this->y = (float)Y;
@@ -17,7 +16,7 @@ Candle::Candle(int X, int Y)
 	}
 	else
 	{
-		texture = new Load_img_file("Resources\\ground\\1.png", 2, 1, 2, 0);
+		texture = LoadTexture::GetInstance()->GetTexture(SMALLCANDLE);
 		sprite = new Load_resources(texture, 100);
 		this->x = (float)X;
 		this->y = (float)Y;

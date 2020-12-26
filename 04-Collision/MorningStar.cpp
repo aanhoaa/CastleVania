@@ -3,8 +3,8 @@
 
 MorningStar::MorningStar()
 {
-	texture = new Load_img_file("Resources\\weapon\\morningstar.png", 4, 3, 12, 0);
-	sprite = new Load_resources(texture, 100);
+	texture = LoadTexture::GetInstance()->GetTexture(MORNINGSTAR);
+	sprite = new Load_resources(texture, 150);
 	this->level = 0;
 	obj_type = def_ID::MORNINGSTAR;
 }
@@ -23,6 +23,7 @@ void MorningStar::Create(float simon_X, float simon_Y, int simon_nx)
 	{
 	case 0:
 			sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL0_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
+			//sprite->ResetTime();
 			break;
 	case 1:
 		sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL1_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
@@ -35,21 +36,47 @@ void MorningStar::Create(float simon_X, float simon_Y, int simon_nx)
 
 void MorningStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	this->dt = dt;
-	this->dx = vx * dt;
-	this->dy = vy * dt;
+	Weapons::Update(dt);
 
 	// index 1 trong 3 index 3-7-11 thì dừng đánh (sprite roi cuối)
 	//DebugOut(L"[INFO] Level: %d\n", level);
 	isFinish = (sprite->GetIndex() == 3 && level == 0) + (sprite->GetIndex() == 7 && level == 1) + (sprite->GetIndex() == 11 && level == 2);
-	
+
 	int StartFrame = MORNINGSTAR_ANI_LEVEL0_START + 4 * level; // ánh xạ chỉ số frame bằng level thay vì ifelse 
 	int EndFrame = MORNINGSTAR_ANI_LEVEL0_END + 4 * level;
-
+	 
 	if (StartFrame <= sprite->GetIndex() && sprite->GetIndex() < EndFrame)
+	{
+		//DebugOut(L"index_r = %d\n", sprite->GetIndex());
 		sprite->Update(dt);
+	}
 	else
+	{
 		sprite->SelectIndex(StartFrame);
+	}
+	//DebugOut(L"finish = %d\n", isFinish);
+}
+
+void MorningStar::Render(Camera * camera)
+{
+	D3DXVECTOR2 pos = camera->Translate(x, y);
+	if (nx == -1)
+		sprite->Draw((int)pos.x, (int)pos.y);
+	else
+		sprite->DrawFlipX((int)pos.x, (int)pos.y);
+
+	if (IS_DEBUG_RENDER_BBOX)
+	{
+		if (level == 0 && sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL0_START || sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL0_START + 1)
+			return; // frame đầu và frame chuẩn bị đánh thì vẽ BBOX
+
+		if (level == 1 && sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL1_START || sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL1_START + 1)
+			return;
+
+		if (level == 2 && sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL2_START || sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL2_START + 1)
+			return;
+		RenderBoundingBox(camera);
+	}
 }
 
 void MorningStar::GetBoundingBox(float & left, float & top, float & right, float & bottom)
@@ -65,13 +92,13 @@ void MorningStar::GetBoundingBox(float & left, float & top, float & right, float
 				// Là 2 frame đầu thì right = x - 110
 				right = x + texture->FrameWidth
 					- 30 - (sprite->GetIndex() == 0 || sprite->GetIndex() == 1) * 80;
-				bottom = y + texture->FrameHeight - 15;
+				bottom = y + texture->FrameHeight - 35;
 			}
 			else {
 				left = x + 30 + (sprite->GetIndex() == 0 || sprite->GetIndex() == 1) * 80;
 				top = y + 15;
 				right = x + texture->FrameWidth - (sprite->GetIndex() >= 2) * 80;
-				bottom = y + texture->FrameHeight - 15;
+				bottom = y + texture->FrameHeight - 35;
 			}
 			break;
 		case 2:
@@ -83,13 +110,13 @@ void MorningStar::GetBoundingBox(float & left, float & top, float & right, float
 				// Là 2 frame đầu thì right = x - 110
 				right = x + texture->FrameWidth
 					+ (sprite->GetIndex() == 0 || sprite->GetIndex() == 1) * 100;
-				bottom = y + texture->FrameHeight - 15;
+				bottom = y + texture->FrameHeight - 40;
 			}
 			else {
-				left = x + 30 + (sprite->GetIndex() == 0 || sprite->GetIndex() == 1) * 80;
+				left = x + (sprite->GetIndex() == 0 || sprite->GetIndex() == 1) * 100;
 				top = y + 15;
 				right = x + texture->FrameWidth - (sprite->GetIndex() >= 2) * 80;
-				bottom = y + texture->FrameHeight - 15;
+				bottom = y + texture->FrameHeight - 40;
 			}
 			//}
 			break;
@@ -107,7 +134,7 @@ void MorningStar::UpdatePositionFitSimon()
 	}
 	else
 	{
-		this->x = x - 30;
+		this->x = x - 25;
 	}
 }
 
@@ -138,4 +165,9 @@ bool MorningStar::isCollision(CGameObject * obj)
 
 void MorningStar::RenderItem(int X, int Y)
 {
+}
+
+int MorningStar::GetLevel()
+{
+	return level;
 }

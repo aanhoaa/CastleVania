@@ -18,7 +18,7 @@ void Grid::ReadFileToGrid(char * filename)
 	ifstream inp;
 	inp.open(filename, ios::in);
 
-	int id, type, nx, x, y, w, h;
+	int id, type, nx, x, y, w, h, update;
 
 	if (inp)
 	{
@@ -27,8 +27,8 @@ void Grid::ReadFileToGrid(char * filename)
 
 		for (int i = 0; i < n; i++)
 		{
-			inp >> id >> type >> nx >> x >> y >> w >> h;
-			Insert(id, type, nx, x, y, w, h);
+			inp >> id >> type >> nx >> x >> y >> w >> h >> update;
+			Insert(id, type, nx, x, y, w, h, update);
 		}
 		inp.close();
 	}
@@ -37,7 +37,7 @@ void Grid::ReadFileToGrid(char * filename)
 void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 {
 	ListObj.clear(); // clear list
-	ResetListObj();
+	unordered_map<int, CGameObject*> ListObject;
 
 	// lấy tọa độ của cam hiện tại để thiết lập các cells 
 	int rowTop = (int)floor((camera->GetY_cam() + 1) / (float)GRID_CELL_HEIGHT);
@@ -56,13 +56,13 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 
 			for (UINT i = 0; i < cells[row][col].size(); i++) // có đánh dấu 
 			{
+				
 				if ((cells[row][col].at(i)->GetLife() > 0)) // còn tồn tại
 				{
-					//DebugOut(L"[INFO] type: %d\n", (cells[row][col].at(i)->GetType()));
-					if (cells[row][col].at(i)->GetIsPush() == false)
+					if (ListObject.find(cells[row][col].at(i)->GetObj_id()) == ListObject.end()) // check không trùng id
 					{
+						ListObject[cells[row][col].at(i)->GetObj_id()] = cells[row][col].at(i);
 						ListObj.push_back(cells[row][col].at(i));
-						cells[row][col].at(i)->SetIsPush(true);
 					}
 				}
 			}
@@ -73,7 +73,7 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 void Grid::GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj)
 {
 	ListObj.clear(); // clear list
-	ResetListObj();
+	//ResetListObj();
 
 	int rowBottom = (int)floor((obj->y + obj->GetHeight()) / (float)GRID_CELL_HEIGHT);
 	int rowTop = (int)floor((obj->y) / (float)GRID_CELL_HEIGHT);
@@ -100,17 +100,10 @@ void Grid::GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj)
 	}
 }
 
-void Grid::ResetListObj()
-{
-	for (UINT i = 0; i < listObjectGame.size(); i++)
-	{
-		listObjectGame[i]->SetIsPush(false);
-	}
-}
 
-void Grid::Insert(int id, int type, int nx, int x, int y, int w, int h)
+void Grid::Insert(int id, int type, int nx, int x, int y, int w, int h, int update)
 {
-	CGameObject * dataObject = GetNewObject(type, x, y, w, h); // sau khi load info từ file, xác định obj ->vẽ ra màn hình
+	CGameObject * dataObject = GetNewObject(type, x, y, w, h, update); // sau khi load info từ file, xác định obj ->vẽ ra màn hình
 	if (dataObject == NULL)
 	{
 		DebugOut(L"[Insert Object GRID Fail] : Obj load fail!\n");
@@ -138,11 +131,15 @@ void Grid::Insert(int id, int type, int nx, int x, int y, int w, int h)
 }
 
 // check type_obj để vẽ ra màn hình
-CGameObject * Grid::GetNewObject(int type, int x, int y, int w, int h)
+CGameObject * Grid::GetNewObject(int type, int x, int y, int w, int h, int update)
 {
-	if (type == def_ID::BRICK) return new Brick(x, y, w, h); 
+	if (type == def_ID::BRICK) return new Brick(x, y, w, h, update);
 	if (type == def_ID::BIGCANDLE) return new Candle(x, y);
 	if (type == def_ID::HIDDENOBJECT) return new HidenObject(x, y, w, h);
 	if (type == def_ID::SMALLCANDLE) return new Candle(x, y);
+	if (type == def_ID::BOTTOMSTAIR) return new Stairs(x, y, update);
+	if (type == def_ID::TOPSTAIR) return new Stairs(x, y, update);
+	if (type == def_ID::GATE) return new Gate(x, y);
+	
 	return NULL;
 }

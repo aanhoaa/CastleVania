@@ -72,6 +72,11 @@ void Load_resources::Reset()
 	_timeLocal = 0;
 }
 
+void Load_resources::ResetTime()
+{
+	_timeLocal = 0;
+}
+
 void Load_resources::SelectIndex(int index)
 {
 	_index = index;
@@ -88,7 +93,7 @@ void Load_resources::Update(int ellapseTime)
 	}
 }
 
-void Load_resources::Draw(int X, int Y)
+void Load_resources::Draw(int X, int Y, int alpha)
 {
 	RECT srect;
 
@@ -105,11 +110,36 @@ void Load_resources::Draw(int X, int Y)
 		&srect,
 		NULL,
 		&p,
-		D3DCOLOR_XRGB(R, G, B)
+		D3DCOLOR_XRGB(alpha, R, G, B)
 	);
 }
 
-void Load_resources::DrawChangeColor(int X, int Y)
+void Load_resources::DrawS(int X, int Y, int subX, int alpha)
+{
+	RECT srect;
+
+	LPD3DXSPRITE spriteHandler = CGame::GetInstance()->GetSpriteHandler();
+
+	srect.left = (_index % _texture->Cols)*(_texture->FrameWidth);
+	srect.top = (_index / _texture->Cols)*(_texture->FrameHeight);
+	srect.right = srect.left + _texture->FrameWidth;
+	srect.bottom = srect.top + _texture->FrameHeight;
+
+	srect.left += subX;
+	if (_texture->FrameWidth == (int)srect.left)
+		srect.left -= subX;
+
+	D3DXVECTOR3 p((float)X, (float)Y, 0);
+	spriteHandler->Draw(
+		_texture->Texture,
+		&srect,
+		NULL,
+		&p,
+		D3DCOLOR_XRGB(alpha, R, G, B)
+	);
+}
+
+void Load_resources::DrawChangeColor(int X, int Y, int alpha)
 {
 	LPD3DXSPRITE spriteHandler = CGame::GetInstance()->GetSpriteHandler();
 	RECT srect;
@@ -160,11 +190,11 @@ void Load_resources::DrawChangeColor(int X, int Y)
 		&srect,
 		NULL,
 		&p,
-		D3DCOLOR_ARGB(255, RR, GG, BB)
+		D3DCOLOR_ARGB(alpha, RR, GG, BB)
 	);
 }
 
-void Load_resources::DrawChangeColorFlipX(int x, int y)
+void Load_resources::DrawChangeColorFlipX(int x, int y, int alpha)
 {
 	LPD3DXSPRITE spriteHandler = CGame::GetInstance()->GetSpriteHandler();
 
@@ -183,12 +213,12 @@ void Load_resources::DrawChangeColorFlipX(int x, int y)
 	spriteHandler->SetTransform(&finalMt);
 
 	x -= _texture->FrameWidth;
-	this->DrawChangeColor(x, y);
+	this->DrawChangeColor(x, y, alpha);
 
 	spriteHandler->SetTransform(&oldMt);
 }
 
-void Load_resources::DrawRect(int X, int Y, RECT SrcRect)
+void Load_resources::DrawRect(int X, int Y, RECT SrcRect, int alpha)
 {
 	LPD3DXSPRITE spriteHandler = CGame::GetInstance()->GetSpriteHandler();
 
@@ -198,11 +228,11 @@ void Load_resources::DrawRect(int X, int Y, RECT SrcRect)
 		&SrcRect,
 		NULL,
 		&position,
-		D3DCOLOR_XRGB(255, 255, 255)
+		D3DCOLOR_XRGB(alpha, 255, 255, 255)
 	);
 }
 
-void Load_resources::DrawFlipX(int x, int y)
+void Load_resources::DrawFlipX(int x, int y, int alpha)
 {
 	LPD3DXSPRITE spriteHandler = CGame::GetInstance()->GetSpriteHandler();
 
@@ -221,12 +251,36 @@ void Load_resources::DrawFlipX(int x, int y)
 	spriteHandler->SetTransform(&finalMt);
 
 	x -= _texture->FrameWidth;
-	this->Draw(x, y);
+	this->Draw(x, y, alpha);
 
 	spriteHandler->SetTransform(&oldMt);
 }
 
-void Load_resources::DrawFlipXByIndex(int index, int x, int y)
+void Load_resources::DrawFlipXS(int x, int y, int a, int alpha)
+{
+	LPD3DXSPRITE spriteHandler = CGame::GetInstance()->GetSpriteHandler();
+
+	D3DXMATRIX oldMt;
+	spriteHandler->GetTransform(&oldMt);
+
+	D3DXMATRIX newMt;
+
+	D3DXVECTOR2 top_left = D3DXVECTOR2((float)x, (float)y);
+
+	D3DXVECTOR2 rotate = D3DXVECTOR2(-1.0f, 1.0f);
+
+	D3DXMatrixTransformation2D(&newMt, &top_left, 0.0f, &rotate, NULL, 0.0f, NULL);
+	D3DXMATRIX finalMt = newMt * oldMt;
+
+	spriteHandler->SetTransform(&finalMt);
+
+	x -= _texture->FrameWidth;
+	this->DrawS(x, y, a, alpha);
+
+	spriteHandler->SetTransform(&oldMt);
+}
+
+void Load_resources::DrawFlipXByIndex(int index, int x, int y, int alpha)
 {
 	RECT srect;
 
@@ -254,13 +308,13 @@ void Load_resources::DrawFlipXByIndex(int index, int x, int y)
 		&srect,
 		NULL,
 		&p,
-		D3DCOLOR_XRGB(R, G, B)
+		D3DCOLOR_XRGB(alpha, R, G, B)
 	);
 
 	spriteHandler->SetTransform(&oldMt);
 }
 
-void Load_resources::DrawIndex(int index, int X, int Y)
+void Load_resources::DrawIndex(int index, int X, int Y, int alpha)
 {
 	RECT srect;
 
@@ -280,7 +334,7 @@ void Load_resources::DrawIndex(int index, int X, int Y)
 		&center,
 		&position,
 		//D3DCOLOR_XRGB(A, R, G, B)  //color
-		D3DCOLOR_XRGB(R, G, B)
+		D3DCOLOR_XRGB(alpha, R, G, B)
 	);
 }
 

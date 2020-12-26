@@ -42,7 +42,7 @@ Hit::Hit(int X, int Y)
 {
 	this->x = X;
 	this->y = Y;
-	texture = new Load_img_file("Resources\\other\\0.png", 2, 1, 2, 0);
+	texture = LoadTexture::GetInstance()->GetTexture(HIT);
 	sprite = new Load_resources(texture, 250);
 }
 
@@ -58,12 +58,13 @@ void Hit::Update(DWORD dt)
 }
 
 /* Effect */
-Effect::Effect(int X, int Y)
+Effect::Effect(int X, int Y, int _times)
 {
 	this->x = X;
 	this->y = Y;
-	texture = new Load_img_file("Resources\\other\\1.png", 4, 1, 4, 0);
+	texture = LoadTexture::GetInstance()->GetTexture(EFFECT);
 	sprite = new Load_resources(texture, 150);
+	times = _times;
 }
 
 
@@ -75,5 +76,123 @@ void Effect::Update(DWORD dt)
 {
 	HitEffect::Update(dt);
 	if (sprite->GetIndex() == 3) // nếu là frame cuối thì xong, frame cuối trống
+	{
+		times--;
+		if (times == 0)
+			isFinish = true;
+		else sprite->_timeLocal = sprite->_timeAni;
+	}
+}
+
+//
+BrickSplash::BrickSplash(int X, int Y, int _direction)
+{
+	this->x = X;
+	this->y = Y;
+	dx = dy = vx = vy = 0;
+	texture = LoadTexture::GetInstance()->GetTexture(def_ID::BRICKSPLASH);
+	sprite = new Load_resources(texture, 200);
+	direction = _direction;
+	switch (direction)
+	{
+		case 1:
+		{
+			nx = -1;
+			vx = nx * 0.15f;
+			vy = -0.25f;
+			break;
+		}
+		case 2:
+		{
+			nx = 1;
+			vx = nx * 0.15f;
+			vy = -0.2f;
+			break;
+		}
+		case 3:
+		{
+			nx = -1;
+			vx = nx * 0.07f;
+			vy = -0.22f;
+			break;
+		}
+		case 4:
+		{
+			nx = 1;
+			vx = nx * 0.1f;
+			vy = -0.3f;
+			break;
+		}
+	}
+}
+
+void BrickSplash::Update(DWORD dt)
+{
+	this->dt = dt;
+	this->dx = vx * dt;
+	this->dy = vy * dt;
+
+	vy += BRICKSPLASH_GRAVITY * dt;
+
+	(float)(x += dx);
+	(float)(y += dy);
+
+	Effect::Update(dt);
+	if (sprite->GetIndex() == sprite->_end) // nếu là frame cuối thì xong,
 		isFinish = true;
+}
+
+
+BrickSplash::~BrickSplash()
+{
+}
+
+/* Water */
+Water::Water(float X, float Y, int Model)
+{
+	texture = LoadTexture::GetInstance()->GetTexture(def_ID::WATER);
+	sprite = new Load_resources(texture, 50);
+
+	this->x = (int)X;
+	this->y = (int)Y;
+	dx = dy = vx = vy = 0;
+	
+	_model = Model;
+	switch (_model)
+	{
+	case 1:
+	{
+		vy = -0.4f;
+		vx = -0.04f;
+		break;
+	}
+	case 2:
+	{
+		vy = -0.5f;
+		vx = 0.0f;
+		break;
+	}
+	case 3:
+	{
+		vy = -0.4f;
+		vx = 0.1f;
+		break;
+	}
+	}
+}
+
+Water::~Water()
+{
+}
+
+void Water::Update(DWORD dt)
+{
+	this->dt = dt;
+	this->dx = vx * dt;
+	this->dy = vy * dt;
+
+	vy += WATER_GRAVITY * dt;
+
+	x += dx;
+	y += dy;
 }

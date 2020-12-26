@@ -1,7 +1,7 @@
-﻿#include "Scenes.h"
+﻿#ifndef __SCENE_1_H__
+#define __SCENE_1_H__
+
 #include "Load_resources.h"
-
-
 #include "Brick.h"
 #include "Simon.h" 
 #include "Map.h"
@@ -20,6 +20,7 @@
 
 class Scene_1 : public Scenes
 {
+	bool isPassScene;
 public:
 	Simon * simon;
 	Map * TileMap;
@@ -56,3 +57,4 @@ public:
 	Items * GetNewItem(int Id, def_ID Type, float X, float Y);
 };
 
+#endif

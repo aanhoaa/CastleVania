@@ -7,6 +7,8 @@
 #include "Simon.h"
 #include "HeartPoint.h"
 #include "Dagger.h"
+#include "LoadTexture.h"
+#include "Enemy.h"
 
 class BoardGame
 {
@@ -21,6 +23,6 @@ private:
 	string Show(string s, UINT MaxNumber);
 public:
 	BoardGame(int X, int Y);
-	void Render(Camera *camera, Simon *simon, int TimeRemaining, Weapons *weap, int stage);
+	void Render(Simon *simon, int  _hpBoss, int TimeRemaining, Weapons *weap, int stage);
 	~BoardGame();
 };

@@ -2,6 +2,8 @@
 #include "Load_img_file.h"
 #include "Load_resources.h"
 #include "define.h"
+#include "LoadTexture.h"
+
 #define BOARDHEALTH_MAX_CELL 16
 
 #define BOARDHEALTH_FRAME_PLAYER 0

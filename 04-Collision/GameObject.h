@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-#include "Object.h"
 #include "define.h"
 #include "Load_img_file.h"
 #include "Load_resources.h"
 #include "Camera.h"
 #include "BBOX.h"
+#include "LoadTexture.h"
 
 using namespace std;
 
@@ -49,7 +49,14 @@ public:
 
 	int nx;	 
 
-	int state;
+	bool isReceive;
+
+	// auto go object
+	bool isAutoGo;
+	float x_root;
+	float autoGo_dx;
+	float autoGo_vx;
+	float autoGo_nx;
 
 	DWORD dt; 
 
@@ -69,6 +76,7 @@ public:
 	int GetHP();
 	void SetHP(int _hp);
 	int GetLife();
+	void setLife(int _life);
 
 	bool GetIsPush();
 	void SetIsPush(int _isPush);
@@ -81,14 +89,19 @@ public:
 	void SetId(int ID);
 
 	void LoseLife(int health);
+	void LoseHP(int _hp);
 
-	int GetState() { return this->state; }
+	bool GetReceive();
+	void SetReceive(bool _isReceive);
+
 	void RenderBoundingBox(Camera * camera);
 
-	bool isCollitionAll(CGameObject *obj); 	// AABB và Sweept AABB check all
-
+	bool AABB(LPGAMEOBJECT obj);
+	bool isCollitionAll(LPGAMEOBJECT obj); 	// AABB và Sweept AABB check all
+	LPCOLLISIONEVENT isCollitionAllReturnE(LPGAMEOBJECT obj);
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
+
 	void FilterCollision(
 		vector<LPCOLLISIONEVENT> &coEvents, 
 		vector<LPCOLLISIONEVENT> &coEventsResult, 
@@ -102,37 +115,7 @@ public:
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
 	virtual void Render(Camera * camera) = 0;
-	virtual void SetState(int state) { this->state = state; }
+	virtual void AutoGo(float _autoGo_nx, int _nx_last, float _autoGo_dx, float _autoGo_vx);
 
 	 ~CGameObject();
 };
-
-
-//class CGameObject : public Object
-//{
-//protected:
-//	int Health;
-//
-//public:
-//	int id; // ID của object
-//
-//	int trend;	// hướng -1 : trái, 1: phải
-//
-//	bool isTake;
-//
-//public:
-//
-//
-//	CGameObject();
-//
-//	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
-//	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
-//	virtual void Render(Camera * camera) = 0;
-//
-//	int GetHealth();
-//	void SubHealth(int th);
-//	void SetTrend(int Trend);
-//	void SetId(int ID);
-//
-//	~CGameObject();
-//};

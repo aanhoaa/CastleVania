@@ -22,7 +22,7 @@ void Map::LoadMap(eMap mMap)
 		break;
 	case eMap::mMap2:
 		ReadMapTXT("Resources/map/2.txt");
-		TileTexture = new Load_img_file("Resources/map/2.png", 18, 4, 72);
+		TileTexture = new Load_img_file("Resources/map/2.png", 18, 5, 90);
 		break;
 	default:
 		DebugOut(L"[MAP] Load map fail!");
@@ -71,11 +71,11 @@ void Map::DrawMap(Camera *camera)
 	//DebugOut(L"[INFO] Column: %d\n", column); // -18
 
 	// render các tiled lên màn hình cam
-	for (int i = 0; i < ScreenRow; i++)
+	for (int i = 0; i < ScreenRow + 1; i++)
 	{
 		//if (y + TileTexture->FrameWidth * i >=  AutoFit)
 		{
-			for (int j = 0; j < ScreenColumn +1; j++) // sC+1 để load 1 col sau cam, khi cam tới sẽ có hình luôn(nếu k sẽ đen)
+			for (int j = 0; j < ScreenColumn + 1; j++) // sC+1 để load 1 col sau cam, khi cam tới sẽ có hình luôn(nếu k sẽ đen)
 			{
 				// dk cho phần cuối map
 				if (!(row + i < 0 /*nằm ngoài cam*/|| row + i>RowMatrix  /* vượt quá row trong txt*/|| j + column < 0 || j + column > ColumnMatrix))
@@ -89,5 +89,13 @@ void Map::DrawMap(Camera *camera)
 		//y = y + TileTexture->FrameHeight;
 		//	x = -int(camera->GetViewport().x) % TileTexture->FrameHeight;
 	}
+}
 
+int Map::GetMapWidth()
+{
+	return (TileTexture->FrameWidth)*(ColumnMatrix);  // Chiều dài của MAP
+}
+int Map::GetMapHeight()
+{
+	return (TileTexture->FrameHeight)*(RowMatrix); //  chiều cao của MAP
 }

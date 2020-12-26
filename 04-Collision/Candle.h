@@ -1,9 +1,11 @@
 
 #include "GameObject.h"
 #include "Data.h"
+#include "LoadTexture.h"
 
 class Candle : public CGameObject
 {
+
 public:
 	Candle(int X, int Y);
 	~Candle();

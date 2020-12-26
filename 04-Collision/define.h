@@ -17,6 +17,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+
 using namespace std;
 
 #define WINDOW_WIDTH 512
@@ -41,22 +42,68 @@ extern int MapHeight;
 
 extern int ScreenColumn;
 extern int ScreenRow;
-
+ 
 // ID của Sprite, object
 enum def_ID
 {
 	SIMON = 01,
+	HIT = 02,
+	EFFECT = 03,
+	FONTGAME = 04,
+	BLACKBOARD = 05,
+	RENDERBOX = 06,
+	BRICK_TYPE_1 = 07,
+	BRICK_TYPE_2 = 8,
+	BRICK_TYPE_3 = 9,
+	BRICK_TRANSPARENT = 10,
+	HEARTPOINT = 11,
+	WATER = 12,
+	BRICKSPLASH = 20,
 	BRICK = 21,
+	BRICK_3X32 = 22,
+	BRICK_4X32 = 23,
+	TEX_BRICK_TRANSPARENT = 25,
+	GATE = 26,
 	BIGCANDLE = 41,
 	HIDDENOBJECT = 42,
 	SMALLCANDLE = 43,
+
+	STAIR = 44,
+	BOTTOMSTAIR = 47,
+	TOPSTAIR = 48,
+	
+	//weapon
 	MORNINGSTAR = 61,
 	DAGGER = 62,
+	HOLYWATER = 63,
+	ENEMYBULLET = 65,
+	AXE = 66,
 
+	//item
 	BIGHEART = 81,
 	UPGRADEMORNINGSTAR = 82,
 	iDAGGER = 83,
-	MONNEYBAG = 84
+	MONNEYBAG = 84,
+	SMALLHEART = 85,
+	iHOLYWATER = 86,
+	POTROAST = 87,
+	iAXE = 88,
+	MAGICCRYSTAL = 89,
+
+	//enemy
+	GHOST = 141,
+	PANTHER = 142,
+	BAT = 143,
+	FISHMEN = 144,
+	BOSS = 161,
+
+	//intro
+	MAINMENU = 181,
+	INTRO_GO_SCENE1 = 182,
+	INTRO_BAT_MENU = 183, // bat ở menu
+	HELICOPTER = 184,
+	INTRO_BAT = 185 // ở intro
+
 };
 
 enum eDirection
@@ -77,9 +124,12 @@ enum eSound
 	sStopTimer = 5,
 	sDagger = 6,
 	sMonneyBag = 7,
+	sWasEnemyHit = 8,
+	sHollyWater = 9,
 
 	smusicStage1 = 51,
-	smusicLose = 52
+	smusicLose = 52,
+	sOpenDoor = 53
 };
 
 enum eMap

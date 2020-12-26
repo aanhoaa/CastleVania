@@ -11,7 +11,7 @@ BBox * BBox::GetInstance()
 
 BBox::BBox()
 {
-	texture_BBox = new Load_img_file("textures\\bbox.png");
+	texture_BBox = LoadTexture::GetInstance()->GetTexture(RENDERBOX);
 }
 
 

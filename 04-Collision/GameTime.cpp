@@ -1,7 +1,5 @@
 ﻿#include "GameTime.h"
 
-
-
 CGameTime::CGameTime()
 {
 	this->timed = 0;

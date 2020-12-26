@@ -4,33 +4,27 @@
 Weapons::Weapons()
 {
 	isFinish = 1;
+	isSend = 0;
 }
 
 Weapons::~Weapons()
 {
 }
 
-//int Weapons::GetDirect()
-//{
-//	return nx;
-//}
-//
-//void Weapons::SetDirect(int nx)
-//{
-//	this->nx = nx;
-//}
-
-void Weapons::Create(float simon_X, float simon_Y, int simon_nx)
+void Weapons::Create(float X, float Y, int _nx)
 {
-	this->x = simon_X;
-	this->y = simon_Y;
-	this->nx = simon_nx;
+	this->x = X;
+	this->y = Y;
+	this->nx = _nx;
 	isFinish = 0;
+	isSend = 0;
 }
 
 void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	sprite->Update(dt);
+	this->dt = dt;
+	dx = vx * dt;
+	dy = vy * dt;
 }
 
 void Weapons::Render(Camera * camera)
@@ -64,4 +58,14 @@ bool Weapons::GetFinish()
 void Weapons::SetFinish(bool _isFinish)
 {
 	isFinish = _isFinish;
+}
+
+bool Weapons::GetSend()
+{
+	return isSend;
+}
+
+void Weapons::SetSend(bool _isSend)
+{
+	isSend = _isSend;
 }

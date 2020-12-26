@@ -10,7 +10,12 @@ CGameObject::CGameObject()
 	x = y = 0;
 	vx = vy = 0;
 	nx = 1;	
-	life = 1; // đang sống
+	
+	isAutoGo = 0;
+	isReceive = 0;
+
+	if (GetObj_id() == 39) life = 2;
+	else life = 1; // đang sống
 }
 
 CGameObject::CGameObject(def_ID type)
@@ -25,25 +30,18 @@ void CGameObject::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	dy = vy*dt;
 }
 
-bool CGameObject::isCollitionAll(CGameObject * obj)
+void CGameObject::AutoGo(float _autoGo_nx, int _nx_last, float _autoGo_dx, float _autoGo_vx)
 {
-	float l, t, r, b;
-	float l1, t1, r1, b1;
-	this->GetBoundingBox(l, t, r, b);
-	obj->GetBoundingBox(l1, t1, r1, b1); // bbox obj
+	if (isAutoGo)
+		return;
 
-	// xem xét chuyển aabb về GObj
-	// nếu va chạm AABB
-	if (CGame::GetInstance()->CollisionAABB(l, t, r, b, l1, t1, r1, b1)) 
-		return true;
-	// va chạm sweaptAABB
-	LPCOLLISIONEVENT e = SweptAABBEx(obj); 
-	bool result = e->t > 0 && e->t <= 1.0f; // ĐK va chạm
-	SAFE_DELETE(e);
+	isAutoGo = true;// chưa vào chế độ autoGo thì set
 
-	return result;
+	this->x_root = this->x;
+	autoGo_nx = _autoGo_nx;
+	autoGo_dx = _autoGo_dx;
+	autoGo_vx = _autoGo_vx;
 }
-
 /*
 	Extension of original SweptAABB to deal with two moving objects
 */
@@ -75,6 +73,45 @@ LPCOLLISIONEVENT CGameObject::SweptAABBEx(LPGAMEOBJECT coO)
 	);
 
 	CCollisionEvent * e = new CCollisionEvent(t, nx, ny, coO);
+	return e;
+}
+
+bool CGameObject::AABB(LPGAMEOBJECT obj)
+{
+	float l, t, r, b;
+	float l1, t1, r1, b1;
+	this->GetBoundingBox(l, t, r, b);
+	obj->GetBoundingBox(l1, t1, r1, b1);
+
+	if (CGame::GetInstance()->CollisionAABB(l, t, r, b, l1, t1, r1, b1))
+		return true;
+
+	return false;
+}
+
+bool CGameObject::isCollitionAll(LPGAMEOBJECT obj)
+{
+	if (AABB(obj))
+		return true;
+
+	// va chạm sweaptAABBx
+	LPCOLLISIONEVENT e = SweptAABBEx(obj);
+	bool result = e->t > 0 && e->t <= 1.0f; // ĐK va chạm
+	SAFE_DELETE(e);
+
+	return result;
+}
+
+LPCOLLISIONEVENT CGameObject::isCollitionAllReturnE(LPGAMEOBJECT obj)
+{
+	if (AABB(obj))
+	{
+		LPCOLLISIONEVENT e = new CCollisionEvent(1.0f, GetDirect(), 0, NULL);
+		return e;
+	}
+
+	// va chạm sweaptAABBx
+	LPCOLLISIONEVENT e = SweptAABBEx(obj);
 	return e;
 }
 
@@ -134,7 +171,6 @@ void CGameObject::FilterCollision( //
 	if (min_iy>=0) coEventsResult.push_back(coEvents[min_iy]);
 }
 
-
 void CGameObject::RenderBoundingBox(Camera * camera)
 {
 	RECT rect;
@@ -186,6 +222,11 @@ int CGameObject::GetObj_id()
 int CGameObject::GetLife()
 {
 	return life;
+}
+
+void CGameObject::setLife(int _life)
+{
+	life = _life;
 }
 
 int CGameObject::GetHP()
@@ -244,8 +285,27 @@ void CGameObject::LoseLife(int health)
 		life = 0;
 }
 
+void CGameObject::LoseHP(int _hp)
+{
+	hp -= _hp;
+	if (hp < 0)
+		hp = 0;
+}
+
+bool CGameObject::GetReceive()
+{
+	return isReceive;
+}
+
+void CGameObject::SetReceive(bool _isReceive)
+{
+	isReceive = _isReceive;
+}
+
 CGameObject::~CGameObject()
 {
-	SAFE_DELETE(texture);
+	DebugOut(L"[INFO] Delete nay: \n");
+	//SAFE_DELETE(texture);
 	SAFE_DELETE(sprite);
 }
+

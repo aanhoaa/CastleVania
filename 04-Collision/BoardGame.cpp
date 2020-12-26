@@ -2,13 +2,13 @@
 
 BoardGame::BoardGame(int X, int Y)
 {
-	texture = new Load_img_file("Resources\\blackboard.png");
+	texture = LoadTexture::GetInstance()->GetTexture(BLACKBOARD);
 	sprite = new Load_resources(texture, 0);
 	x = X;
 	y = Y;
 }
 
-void BoardGame::Render(Camera * camera, Simon *simon, int TimeRemaining, Weapons *weap, int stage)
+void BoardGame::Render(Simon *simon, int  _hpBoss, int TimeRemaining, Weapons *weap, int stage)
 {
 	sprite->Draw(x, y);
 
@@ -21,13 +21,29 @@ void BoardGame::Render(Camera * camera, Simon *simon, int TimeRemaining, Weapons
 	font.Draw(x + 415, y + 32, Show(std::to_string(simon->GetHeartCollect()),2)); // Số lượng tim nhặt dc
 	font.Draw(x + 415, y + 52, Show(std::to_string(simon->GetLife()), 2)); // Số lượng tim nhặt dc
 
-	heartPoint.Draw(x + 100, y + 25, simon->GetHP(), 5); // display life simon
+	heartPoint.Draw(x + 100, y + 25, simon->GetHP(), _hpBoss); // display life simon
 
 	if (weap != NULL)
 	{
-		if (weap->GetType() == def_ID::DAGGER)
+		switch (weap->GetType())
 		{
-			weap->RenderItem(330, 35);
+		case def_ID::DAGGER:
+		{
+			weap->RenderItem(330, 40);
+			break;
+		}
+		case def_ID::HOLYWATER:
+		{
+			weap->RenderItem(332, 33);
+			break;
+		}
+		case def_ID::AXE:
+		{
+			weap->RenderItem(332, 33);
+			break;
+		}
+		default:
+			break;
 		}
 	}
 }

@@ -15,7 +15,6 @@ public:
 	bool isCollision(CGameObject* obj);
 	void RenderItem(int X, int Y);
 	void Render(Camera *camera);
-
 };
 
 

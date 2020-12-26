@@ -3,7 +3,7 @@
 #include "Load_img_file.h"
 #include "Load_resources.h"
 #include "define.h"
-
+#include "LoadTexture.h"
 
 class FontGame
 {

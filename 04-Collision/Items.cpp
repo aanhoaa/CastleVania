@@ -12,17 +12,58 @@ Items::~Items()
 {
 }
 
-void Items::Update(DWORD dt, vector<CGameObject*> *listObject)
+void Items::Update(DWORD dt, vector<LPGAMEOBJECT> *listObject)
 {
-	this->dt = dt;
-	dx = vx * dt;
-	dy = vy * dt;
+	CGameObject::Update(dt, listObject);
 
 	if (TimeWaited < TIMEWAITMAX) // hết timewaitmax thì item mới dc update
 	{
 		TimeWaited += dt;
 		return;
 	}
+
+	TimeDisplayed += dt;
+	if (TimeDisplayed >= TimeDisplayMax)
+	{
+		isFinish = true;
+		return;
+	}
+
+	vector<LPGAMEOBJECT> listObject_Brick;
+	listObject_Brick.clear();
+
+	for (UINT i = 0; i < listObject->size(); i++)
+		if (listObject->at(i)->GetType() == def_ID::BRICK)
+			listObject_Brick.push_back(listObject->at(i));
+
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
+
+	coEvents.clear();
+
+	CalcPotentialCollisions(&listObject_Brick, coEvents); // Lấy danh sách các va chạm
+
+														  // No collision occured, proceed normally
+	if (coEvents.size() == 0)
+	{
+		y += dy;
+	}
+	else
+	{
+		float min_tx, min_ty, nx = 0, ny;
+
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
+
+		y += min_ty * dy + ny * 0.4f;
+
+		if (ny != 0)
+		{
+			vy = 0;
+		}
+	}
+
+	for (UINT i = 0; i < coEvents.size(); i++)
+		delete coEvents[i];
 }
 
 void Items::Render(Camera * camera)
@@ -56,7 +97,7 @@ void Items::SetFinish(bool _isFinish)
 /* Whip */
 Whip::Whip(float X, float Y) 
 {
-	texture = new Load_img_file("Resources\\item\\3.png");
+	texture = LoadTexture::GetInstance()->GetTexture(UPGRADEMORNINGSTAR);
 	sprite = new Load_resources(texture, 100);
 	obj_type = def_ID::UPGRADEMORNINGSTAR;
 
@@ -79,56 +120,7 @@ void Whip::GetBoundingBox(float & left, float & top, float & right, float & bott
 
 void Whip::Update(DWORD dt, vector<LPGAMEOBJECT> * listObject)
 {
-	if (TimeWaited < TIMEWAITMAX)
-	{
-		TimeWaited += dt;
-		return;
-	}
-
-	TimeDisplayed += dt;
-	if (TimeDisplayed >= TimeDisplayMax)
-	{
-		isFinish = true;
-		return;
-	}
-
-	Items::Update(dt); // Update dt, dx, dy
-
-	vector<LPGAMEOBJECT> listObject_Brick;
-	listObject_Brick.clear();
-
-	for (UINT i = 0; i < listObject->size(); i++)
-		if (listObject->at(i)->GetType() == def_ID::BRICK)
-			listObject_Brick.push_back(listObject->at(i));
-
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
-
-	coEvents.clear();
-
-	CalcPotentialCollisions(&listObject_Brick, coEvents); // Lấy danh sách các va chạm
-
-														  // No collision occured, proceed normally
-	if (coEvents.size() == 0)
-	{
-		y += dy;
-	}
-	else
-	{
-		float min_tx, min_ty, nx = 0, ny;
-
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
-
-		y += min_ty * dy + ny * 0.4f;
-
-		if (ny != 0)
-		{
-			vy = 0;
-		}
-	}
-
-	for (UINT i = 0; i < coEvents.size(); i++)
-		delete coEvents[i];
+	Items::Update(dt, listObject);
 }
 
 Whip::~Whip()
@@ -138,7 +130,7 @@ Whip::~Whip()
 /* Dagger*/
 iDagger::iDagger(float X, float Y)
 {
-	texture = new Load_img_file("Resources\\item\\4.png");
+	texture = LoadTexture::GetInstance()->GetTexture(iDAGGER);
 	sprite = new Load_resources(texture, 0);
 	obj_type = def_ID::iDAGGER;
 
@@ -160,54 +152,9 @@ void iDagger::GetBoundingBox(float &left, float &top, float &right, float &botto
 
 void iDagger::Update(DWORD dt, vector<LPGAMEOBJECT> *listObject)
 {
-	if (TimeWaited < TIMEWAITMAX)
-	{
-		TimeWaited += dt;
-		return;
-	}
 
-	TimeDisplayed += dt;
-	if (TimeDisplayed >= TimeDisplayMax)
-	{
-		isFinish = true;
-		return;
-	}
+	Items::Update(dt, listObject); // Update dt, dx, dy
 
-	Items::Update(dt); // Update dt, dx, dy
-
-	vector<LPGAMEOBJECT> listObject_Brick;
-	listObject_Brick.clear();
-	for (UINT i = 0; i < listObject->size(); i++)
-		if (listObject->at(i)->GetType() == def_ID::BRICK)
-			listObject_Brick.push_back(listObject->at(i));
-
-	vector<LPCOLLISIONEVENT> coEvents;
-	vector<LPCOLLISIONEVENT> coEventsResult;
-
-	coEvents.clear();
-
-	CalcPotentialCollisions(&listObject_Brick, coEvents); // Lấy danh sách các va chạm
-
-	if (coEvents.size() == 0)
-	{
-		y += dy;
-	}
-	else
-	{
-		float min_tx, min_ty, nx = 0, ny;
-
-		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
-
-		y += min_ty * dy + ny * 0.4f;
-
-		if (ny != 0)
-		{
-			vy = 0;
-		}
-	}
-
-	for (UINT i = 0; i < coEvents.size(); i++)
-		delete coEvents[i];
 }
 
 iDagger::~iDagger()
@@ -217,7 +164,7 @@ iDagger::~iDagger()
 /* Money Bag*/
 MoneyBag::MoneyBag(float X, float Y)
 {
-	texture = new Load_img_file("Resources\\item\\2.png", 3, 1, 3, 0);
+	texture = LoadTexture::GetInstance()->GetTexture(MONNEYBAG);
 	sprite = new Load_resources(texture, 100);
 
 	this->x = X;
@@ -243,31 +190,140 @@ void MoneyBag::GetBoundingBox(float & left, float & top, float & right, float & 
 	top = y;
 	right = x + texture->FrameWidth;
 	bottom = y + texture->FrameHeight;
-
 }
 
 void MoneyBag::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
 {
-	if (TimeWaited < TimeWaitMax)
+	Items::Update(dt, listObject);
+}
+
+/* Holy water */
+iHolyWater::iHolyWater(float X, float Y)
+{
+	obj_type = def_ID::iHOLYWATER;
+	texture = LoadTexture::GetInstance()->GetTexture(iHOLYWATER);
+	sprite = new Load_resources(texture, 0);
+	
+	this->x = X;
+	this->y = Y;
+	vy = ITEMHOLYWATER_GRAVITY;
+	TimeDisplayMax = ITEMHOLYWATER_TIMEDISPLAYMAX;
+	TimeDisplayed = 0;
+	TimeWaited = 0;
+	TimeWaitMax = ITEMHOLYWATER_TIMEWAITMAX;
+}
+
+iHolyWater::~iHolyWater()
+{
+}
+
+void iHolyWater::GetBoundingBox(float & left, float & top, float & right, float & bottom)
+{
+	left = x;
+	top = y;
+	right = x + texture->FrameWidth;
+	bottom = y + texture->FrameHeight;
+}
+
+void iHolyWater::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
+{
+	Items::Update(dt, listObject);
+}
+
+//
+PotRoast::PotRoast(float X, float Y)
+{
+	obj_type = def_ID::POTROAST;
+	texture = LoadTexture::GetInstance()->GetTexture(def_ID::POTROAST);
+	sprite = new Load_resources(texture, 100);
+
+	x = X;
+	y = Y;
+	life = 1;
+
+	vy = POTROAST_GRAVITY;
+	TimeDisplayMax = POTROAST_TIMEDISPLAYMAX; // set time hiển thị tối đa
+	TimeDisplayed = 0;
+	TimeWaited = 0;
+	TimeWaitMax = POTROAST_TIMEWAITMAX;
+}
+
+PotRoast::~PotRoast()
+{
+}
+
+void PotRoast::GetBoundingBox(float & left, float & top, float & right, float & bottom)
+{
+	left = x;
+	top = y;
+	right = x + texture->FrameWidth;
+	bottom = y + texture->FrameHeight;
+}
+
+void PotRoast::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
+{
+	Items::Update(dt, listObject);
+}
+
+/* Axe */
+iAxe::iAxe(float X, float Y)
+{
+	texture = LoadTexture::GetInstance()->GetTexture(def_ID::iAXE);
+	sprite = new Load_resources(texture, 0);
+	obj_type = def_ID::iAXE;
+
+	this->x = X;
+	this->y = Y;
+	vy = ITEMTHROWINGAXE_GRAVITY;
+	TimeDisplayMax = ITEMTHROWINGAXE_TIMEDISPLAYMAX;
+	TimeDisplayed = 0;
+	TimeWaited = 0;
+	TimeWaitMax = ITEMTHROWINGAXE_TIMEWAITMAX;
+}
+
+void iAxe::GetBoundingBox(float & left, float & top, float & right, float & bottom)
+{
+	left = x;
+	top = y;
+	right = x + texture->FrameWidth;
+	bottom = y + texture->FrameHeight;
+}
+
+void iAxe::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
+{
+	Items::Update(dt, listObject);
+}
+
+iAxe::~iAxe()
+{
+}
+
+/* Magic Crystal */
+MagicCrystal::MagicCrystal(int X, int Y)
+{
+	texture = LoadTexture::GetInstance()->GetTexture(def_ID::MAGICCRYSTAL);
+	sprite = new Load_resources(texture, 100);
+
+	x = X;
+	y = Y;
+	life = 1;
+	obj_type = def_ID::MAGICCRYSTAL;
+
+	vy = MAGICCRYSTAL_GRAVITY;
+	TimeWaited = 0;
+	TimeWaitMax = MAGICCRYSTAL_TIMEWAITMAX;
+
+}
+
+void MagicCrystal::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
+{
+	if (isWaitingDisplay())
 	{
 		TimeWaited += dt;
 		return;
 	}
 
-	TimeDisplayed += dt;
-	if (TimeDisplayed >= TimeDisplayMax)
-	{
-		isFinish = true;
-		return;
-	}
-
-	Items::Update(dt); // Update dt, dx, dy
-
-	sprite->Update(dt);
-
-					  // tam cho money roi xuong
-
-
+	CGameObject::Update(dt, listObject);
 
 	vector<LPGAMEOBJECT> listObject_Brick;
 	listObject_Brick.clear();
@@ -277,11 +333,8 @@ void MoneyBag::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
-
 	coEvents.clear();
-
-	CalcPotentialCollisions(&listObject_Brick, coEvents); // Lấy danh sách các va chạm
-
+	CalcPotentialCollisions(&listObject_Brick, coEvents); // Lấy danh sách các va chạm 
 														  // No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
@@ -290,17 +343,40 @@ void MoneyBag::Update(DWORD dt, vector<LPGAMEOBJECT>* listObject)
 	else
 	{
 		float min_tx, min_ty, nx = 0, ny;
-
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
-
 		y += min_ty * dy + ny * 0.4f;
-
 		if (ny != 0)
 		{
 			vy = 0;
 		}
 	}
-
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
+}
+
+void MagicCrystal::Render(Camera * camera)
+{
+	if (isWaitingDisplay())
+	{
+		return;
+	}
+
+	D3DXVECTOR2 pos = camera->Translate(x, y);
+
+	sprite->Draw((int)pos.x, (int)pos.y);
+
+	if (IS_DEBUG_RENDER_BBOX)
+		RenderBoundingBox(camera);
+}
+
+MagicCrystal::~MagicCrystal()
+{
+}
+
+void MagicCrystal::GetBoundingBox(float & left, float & top, float & right, float & bottom)
+{
+	left = x;
+	top = y;
+	right = x + texture->FrameWidth;
+	bottom = y + texture->FrameHeight;
 }

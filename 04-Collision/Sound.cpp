@@ -19,8 +19,11 @@ void Sound::LoadResourceSound()
 	Create(eSound::sStopTimer, L"Resources/sound/stoptimer.wav");
 	Create(eSound::sDagger, L"Resources/sound/usingdagger.wav");
 	Create(eSound::sMonneyBag, L"Resources/sound/display_monney.wav");
+	Create(eSound::sWasEnemyHit, L"Resources/sound/hurting.wav");
+	Create(eSound::sHollyWater, L"Resources/sound/holywater.wav");
 	Create(eSound::smusicStage1, L"Resources/music/Stage_01_Vampire_Killer.wav");
 	Create(eSound::smusicLose, L"Resources/music/Life_Lost.wav");
+	Create(eSound::sOpenDoor, L"Resources/sound/opendoor.wav");
 }
 
 void Sound::Create(eSound _id, LPTSTR filename)

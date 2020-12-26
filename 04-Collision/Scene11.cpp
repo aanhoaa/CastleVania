@@ -3,8 +3,8 @@
 /* Scene 1*/
 Scene_1::Scene_1()
 {
-	LoadResources();
 	Data::GetInstance()->scene = 1;
+	LoadResources();
 }
 
 Scene_1::~Scene_1()
@@ -12,18 +12,28 @@ Scene_1::~Scene_1()
 	SAFE_DELETE(TileMap);
 	SAFE_DELETE(board);
 	SAFE_DELETE(gridGame);
-	SAFE_DELETE(camera);
 }
 
 void Scene_1::KeyState(BYTE * state)
 {
 	if (simon->GetFreeze() == true) // Đang bóng băng thì không quan tâm phím
-	{
 		return;
-	}
+
+	if (simon->isAutoGo == true) // đang chế độ tự đi thì ko xét phím
+		return;
 
 	if (simon->isJumping && simon->isWalking)
 		return;
+
+	if (simon->isAttacking) // đang attack
+	{
+		float vx, vy;
+		simon->GetSpeed(vx, vy);
+		simon->SetSpeed(0, vy);
+		DebugOut(L"DIK_RIGHT & attack \n");
+
+		return;
+	}
 
 	if (CGame::GetInstance()->IsKeyDown(DIK_DOWN))
 	{
@@ -70,7 +80,7 @@ void Scene_1::KeyState(BYTE * state)
 			simon->Go();
 		}
 		else
-		{
+		{	
 			simon->Stop();
 		}
 }
@@ -80,6 +90,21 @@ void Scene_1::OnKeyDown(int KeyCode)
 	if (simon->GetFreeze() == true) // Đang bóng băng thì không quan tâm phím
 	{
 		return;
+	}
+
+	if (KeyCode == DIK_S)
+	{
+		DebugOut(L"x_s = %f . x_y = %f\n", simon->x, simon->y);
+	}
+
+	if (KeyCode == DIK_A)
+	{
+		simon->SetPosition(1275.0f, 0);
+	}
+
+	if (KeyCode == DIK_P) // simon autogo
+	{
+		simon->AutoGo((float)simon->GetDirect(), 1, 200.0f, SIMON_WALKING_SPEED);
 	}
 
 	if (KeyCode == DIK_ESCAPE)
@@ -93,6 +118,8 @@ void Scene_1::OnKeyDown(int KeyCode)
 		if (simon->isAttacking == false)
 			sound->Play(eSound::sMorningStar);
 		simon->Attack(simon->mainWeapon);
+		simon->sprite->ResetTime();
+		//DebugOut(L"Simon Fight key down X\n");
 	}
 
 	if (KeyCode == DIK_Z)
@@ -115,9 +142,7 @@ void Scene_1::OnKeyDown(int KeyCode)
 		if (CGame::GetInstance()->IsKeyDown(DIK_LEFT) || CGame::GetInstance()->IsKeyDown(DIK_RIGHT))
 		{
 			simon->Stop();
-			float vx, vy;
-			simon->GetSpeed(vx, vy);
-			simon->SetSpeed(SIMON_WALKING_SPEED * simon->GetDirect(), vy - SIMON_VJUMP);
+			simon->SetSpeed(SIMON_WALKING_SPEED * simon->GetDirect(), -SIMON_VJUMP);
 			simon->isJumping = 1;
 			simon->isWalking = 1;
 		}
@@ -151,13 +176,16 @@ void Scene_1::LoadResources()
 	TileMap = new Map();
 	TileMap->LoadMap(eMap::mMap1);
 
-	camera = new Camera(Window_Width, Window_Height);
+	camera = SceneManager::GetInstance()->GetCamera();
+	camera->SetBoundary(0, TileMap->GetMapWidth() - camera->GetWidth()); // set biên camera dựa vào kích thước map
+	camera->SetBoundaryBackup(camera->GetBoundaryLeft(), camera->GetBoundaryRight()); // backup lại biên
+
 	camera->SetPosition(0, 0);
 
 	board = new BoardGame(0, 0);
 
 	simon = new Simon();
-	simon->SetPosition(SIMON_POSITION_DEFAULT);
+	simon->SetPosition(0, 300.0f);
 
 	simon->SetPositionBackup(SIMON_POSITION_DEFAULT);
 
@@ -172,14 +200,18 @@ void Scene_1::LoadResources()
 	gameTime = new CGameTime();
 	gameTime->SetTime(0);
 
+	isPassScene = 0;
 	// bắt đầu vào -> nhạc game
 	sound->Play(eSound::smusicStage1, true);
 }
 
 void Scene_1::Update(DWORD dt)
 {
-	camera->SetPosition(simon->x - Window_Width / 2 + 30, camera->GetY_cam()); // cho camera chạy theo simon
-	camera->Update();
+	if (camera->AllowFollowSimon())
+	{
+		camera->SetPosition(simon->x - Window_Width / 2 + 30, camera->GetY_cam()); // cho camera chạy theo simon
+	}
+	camera->Update(dt);
 	
 	// nếu đang trong state freeze => k update simon
 	if (simon->GetFreeze() == true)
@@ -240,10 +272,12 @@ void Scene_1::Render()
 {
 	TileMap->DrawMap(camera);
 
-	board->Render(camera, simon, GAME_TIME_SCENE1 - gameTime->GetTime(), simon->subWeapon, 1);
+	board->Render(simon, Data::GetInstance()->hpBoss, GAME_TIME_SCENE1 - gameTime->GetTime(), simon->subWeapon, 1);
 
 	for (UINT i = 0; i < listObj.size(); i++)
-		listObj[i]->Render(camera);
+	{
+			listObj[i]->Render(camera);
+	}
 
 	for (UINT i = 0; i < listItem.size(); i++) // Draw các item
 	{
@@ -287,19 +321,26 @@ void Scene_1::CheckCollisionWeapon()
 	if (listObj.size() == 1) // 1 do còn lại là brick thì sẽ không xét với weapon
 		return;
 
-	if (simon->mainWeapon->GetFinish() == false) // Vũ khí đang hoạt động
+	if (simon->mainWeapon->GetFinish() == false) // roi đang đánh
 	{
 		for (UINT i = 0; i < listObj.size(); i++)
+		{
 			if (listObj[i]->GetType() == def_ID::BIGCANDLE)
+			{
 				if (simon->mainWeapon->isCollision(listObj[i]) == true)
 				{
 					CGameObject *candle = dynamic_cast<CGameObject*>(listObj[i]);
 					candle->LoseLife(1);
-					listEffect.push_back(new Hit((int)(candle->x), (int)(candle->y + 10))); // hiệu ứng lửa
-					listEffect.push_back(new Effect((int)(candle->x - 5), (int)(candle->y + 8))); // hiệu ứng lửa
-					listItem.push_back(GetNewItem(candle->GetObj_id(), def_ID::BIGCANDLE, candle->x + 5, candle->y));
+					if (candle->GetLife() < 1)
+					{
+						listEffect.push_back(new Hit((int)(candle->x), (int)(candle->y + 10))); // hiệu ứng lửa
+						listEffect.push_back(new Effect((int)(candle->x - 5), (int)(candle->y + 8))); // hiệu ứng lửa
+						listItem.push_back(GetNewItem(candle->GetObj_id(), candle->GetType(), candle->x + 5, candle->y));
+					}
 					sound->Play(eSound::sHit); // sound đánh trúng obj
 				}
+			}
+		}
 	}
 
 	if (simon->subWeapon != NULL && simon->subWeapon->GetFinish() == false)
@@ -313,7 +354,7 @@ void Scene_1::CheckCollisionWeapon()
 					simon->subWeapon->SetFinish(true);   // cây kiếm trúng object thì tắt luôn
 					listEffect.push_back(new Hit((int)(candle->x ), (int)(candle->y + 10))); // hit effect
 					listEffect.push_back(new Effect((int)(candle->x - 5), (int)(candle->y + 8))); // hit effect
-					listItem.push_back(GetNewItem(candle->GetObj_id(), def_ID::BIGCANDLE, candle->x, candle->y));
+					listItem.push_back(GetNewItem(candle->GetObj_id(), candle->GetType(), candle->x, candle->y));
 					sound->Play(eSound::sHit); // sound đánh trúng obj
 				}
 	}
@@ -362,6 +403,7 @@ void Scene_1::CheckCollisionSimonWithItem()
 					sound->Play(eSound::sCollectItem);
 					break;
 				}
+
 				default:
 					DebugOut(L"[CheckCollisionSimonWithItem] Khong nhan dang duoc loai Item!\n");
 					break;
@@ -380,24 +422,24 @@ void Scene_1::CheckCollisionSimonWithHidenObject()
 			CGameObject * hidenObject = dynamic_cast<CGameObject*>(listObj[i]);
 			if (hidenObject->GetHP() > 0)
 			{
-				LPCOLLISIONEVENT e = simon->SweptAABBEx(listObj[i]);
-				if (0 < e->t && e->t <= 1) // có va chạm xảy ra
+				if (simon->isCollitionAll(hidenObject))
 				{
 					switch (hidenObject->GetObj_id())
 					{
 						case 7: // đụng trúng cửa
 						{
-							SceneManager::GetInstance()->SetScene(new Scene_2(simon, gameTime));
-							return;
+							simon->AutoGo((float)simon->GetDirect(), 1, 70.0f, 0.02f);
+							
 							break;
 						}
 						case 8:
 						{
 							sound->Play(eSound::sMonneyBag);
-							listItem.push_back(GetNewItem(hidenObject->GetObj_id(), def_ID::HIDDENOBJECT, simon->x, simon->y));
+							listItem.push_back(GetNewItem(hidenObject->GetObj_id(), hidenObject->GetType(), simon->x, simon->y));
 							// chưa hiện effect 1000d
 							simon->SetPoint(simon->GetPoint() + 1000);
-
+							SceneManager::GetInstance()->SetScene(new Scene_2(simon, gameTime));
+							return;
 							break;
 						}
 					}

@@ -1,10 +1,9 @@
 #include "HeartPoint.h"
 
 
-
 HeartPoint::HeartPoint()
 {
-	texture = new Load_img_file("Resources\\heal.png", 3, 1, 3);
+	texture = LoadTexture::GetInstance()->GetTexture(HEARTPOINT);
 	sprite = new Load_resources(texture, 0);
 }
 

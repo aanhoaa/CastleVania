@@ -5,8 +5,6 @@
 #include "Load_img_file.h"
 
 
-
-
 class Load_resources {
 public:
 	Load_img_file * _texture;
@@ -28,6 +26,7 @@ public:
 	//trở về frame đầu tiên
 	void Reset();
 
+	void ResetTime();
 	//chọn ID của 1 frame
 	void SelectIndex(int index);
 
@@ -38,20 +37,23 @@ public:
 	void Update(int ellapseTime);
 
 	// Render current sprite at location (X,Y) at the target surface
-	void Draw(int x, int y);
+	void Draw(int x, int y, int alpha = 255);
+	void DrawS(int x, int y, int a, int alpha = 255);
 
 	// Render with change coler
-	void DrawChangeColor(int X, int Y);
-	void DrawChangeColorFlipX(int x, int y);
+	void DrawChangeColor(int X, int Y, int alpha = 255);
+	void DrawChangeColorFlipX(int x, int y, int alpha = 255);
 
 	//Render with scale (-1, 1)
-	void DrawFlipX(int x, int y);
-	void DrawFlipXByIndex(int index, int x, int y);
+	void DrawFlipX(int x, int y, int alpha = 255);
+	void DrawFlipXByIndex(int index, int x, int y, int alpha = 255);
+
+	void DrawFlipXS(int x, int y, int subX, int alpha = 255);
 
 	//Render Rect of texture at (x,y)
-	void DrawRect(int X, int Y, RECT SrcRect);
+	void DrawRect(int X, int Y, RECT SrcRect, int alpha = 255);
 
-	void DrawIndex(int index, int X, int Y);
+	void DrawIndex(int index, int X, int Y, int alpha = 255);
 	~Load_resources();
 
 	//=======================================================================================================================

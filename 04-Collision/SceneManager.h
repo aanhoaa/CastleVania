@@ -1,6 +1,7 @@
 #pragma once
 #include "define.h" 
 #include "Scenes.h"
+#include "Camera.h"
 
 class SceneManager
 {
@@ -8,6 +9,7 @@ private:
 	static SceneManager * _Instance;
 
 	Scenes * scenes;
+	Camera * camera;
 
 public:
 	SceneManager();
@@ -15,6 +17,7 @@ public:
 
 	static SceneManager * GetInstance();
 
+	Camera * GetCamera();
 	Scenes * GetScene();
 	void SetScene(Scenes * x);
 

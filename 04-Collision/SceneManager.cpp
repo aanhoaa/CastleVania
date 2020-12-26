@@ -5,6 +5,7 @@ SceneManager * SceneManager::_Instance = NULL;
 
 SceneManager::SceneManager()
 {
+	camera = new Camera(SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 SceneManager::~SceneManager()
@@ -30,7 +31,6 @@ void SceneManager::SetScene(Scenes * x)
 	scenes = x;
 	SAFE_DELETE(scene_temp);
 }
-
 
 void SceneManager::KeyState(BYTE * state)
 {
@@ -63,3 +63,7 @@ void SceneManager::Render()
 	scenes->Render();
 }
 
+Camera * SceneManager::GetCamera()
+{
+	return camera;
+}

@@ -4,9 +4,8 @@
 
 FontGame::FontGame()
 {
-	texture = new Load_img_file("Resources\\font\\1.png", 13, 3, 37, 0);
+	texture = LoadTexture::GetInstance()->GetTexture(FONTGAME);
 	sprite = new Load_resources(texture, 0);
-
 }
 
 
