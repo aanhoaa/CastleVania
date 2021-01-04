@@ -3,6 +3,7 @@
 
 GameIntro::GameIntro()
 {
+	Data::GetInstance()->scene = 0;
 	LoadResources();
 }
 
@@ -19,7 +20,7 @@ void GameIntro::KeyState(BYTE * state)
 
 void GameIntro::OnKeyDown(int KeyCode)
 {
-	if (KeyCode == DIK_2) // lấy tọa độ world của chuột 
+	if (KeyCode == DIK_2) 
 	{
 		POINT p;
 		GetCursorPos(&p);
@@ -28,7 +29,7 @@ void GameIntro::OnKeyDown(int KeyCode)
 	}
 	else
 	{
-		isPressStart = true; // nhấn phím bất kì thì xác nhận đã nhấn
+		isPressStart = true;
 	}
 }
 
@@ -38,11 +39,15 @@ void GameIntro::OnKeyUp(int KeyCode)
 
 void GameIntro::LoadResources()
 {
-	LoadTexture * _textureManager = LoadTexture::GetInstance(); // Đã gọi load resource
+	LoadTexture * textureIntro = LoadTexture::GetInstance(); 
+	// load resource màn nào vào màn nấy - kp load hết all resource game
+	// code here ...
 
-	Sprite_MainMenu = new Load_resources(_textureManager->GetTexture(def_ID::MAINMENU), 0);
-	Sprite_IntroBatMenu = new Load_resources(_textureManager->GetTexture(def_ID::INTRO_BAT_MENU), 150);
-	Sprite_IntroGoScene1 = new Load_resources(_textureManager->GetTexture(def_ID::INTRO_GO_SCENE1), 0);
+
+
+	Sprite_MainMenu = new Load_resources(textureIntro->GetTexture(def_ID::MAINMENU), 0);
+	Sprite_IntroBatMenu = new Load_resources(textureIntro->GetTexture(def_ID::INTRO_BAT_MENU), 150);
+	Sprite_IntroGoScene1 = new Load_resources(textureIntro->GetTexture(def_ID::INTRO_GO_SCENE1), 0);
 
 	StatusProcess = INTRO_STATUS_PROCESS_MENU;
 	TimeWaited = 0;
@@ -55,8 +60,8 @@ void GameIntro::LoadResources()
 	board = new BoardGame(0, 0);
 
 	heliCopter = new HelicopterIntro(432, 146);
-	introBat1 = new BatIntro(299, 118, -0.0134, 0.0f, 2); // Đi ngang qua trái
-	introBat2 = new BatIntro(47, 224, 0.0265, -0.0177f, 1); // Đi góc dưới trái lên phải trên
+	introBat1 = new BatIntro(299, 118, -0.0139, 0.0f, 2); // Đi ngang qua trái
+	introBat2 = new BatIntro(47, 224, 0.0270, -0.0182f, 1); // Đi góc dưới trái lên phải trên
 }
 
 void GameIntro::Update(DWORD dt)
@@ -86,7 +91,7 @@ void GameIntro::Update(DWORD dt)
 				simon->SetPosition(500, 336);
 				//simon->vy = -0.005f;
 				simon->SetDirect(-1);
-				simon->AutoGo((float)simon->GetDirect(), -1, 275.0f, 0.1f);
+				simon->AutoGo((float)simon->GetDirect(), -1, 275.0f, 0.08f);
 			}
 			else
 			{

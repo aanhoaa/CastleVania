@@ -4,7 +4,7 @@
 MorningStar::MorningStar()
 {
 	texture = LoadTexture::GetInstance()->GetTexture(MORNINGSTAR);
-	sprite = new Load_resources(texture, 150);
+	sprite = new Load_resources(texture, 120);
 	this->level = 0;
 	obj_type = def_ID::MORNINGSTAR;
 }
@@ -23,7 +23,6 @@ void MorningStar::Create(float simon_X, float simon_Y, int simon_nx)
 	{
 	case 0:
 			sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL0_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
-			//sprite->ResetTime();
 			break;
 	case 1:
 		sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL1_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
@@ -131,10 +130,12 @@ void MorningStar::UpdatePositionFitSimon()
 	if (nx == -1)
 	{
 		this->x = x - 65;
+		//this->y = y;
 	}
 	else
 	{
 		this->x = x - 25;
+		//this->y = y;
 	}
 }
 

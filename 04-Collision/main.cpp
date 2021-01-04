@@ -25,7 +25,9 @@
 #include "debug.h"
 #include "Game.h"
 #include "GameIntro.h"
+#include "GameEnd.h"
 #include "Scene11.h"
+
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"04 - Collision"
 
@@ -202,7 +204,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	sceneManager = SceneManager::GetInstance();
 
-	sceneManager->SetScene(new GameIntro()); // vào màn 1 - load resources luôn
+	sceneManager->SetScene(new GameIntro()); 
 
 	game->InitKeyboard();
 	

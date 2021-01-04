@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "define.h"
 #include "Load_img_file.h"
+#include "Data.h"
 
 class LoadTexture
 {

@@ -9,7 +9,7 @@ class Load_img_file
 public:
 	char* fileName; //đường dẫn tới file ảnh
 	RECT Size;		//độ phân giải ảnh
-	LPDIRECT3DTEXTURE9 Texture; // save info bitmap
+	LPDIRECT3DTEXTURE9 Texture; // lưu sprite
 	int Cols;		//số cột frame
 	int Rows;		//số hàng frame
 	int Count;		//tổng số frame

@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Data.h"
 #include "LoadTexture.h"
 #include "Load_resources.h"
 #include "BoardGame.h"
@@ -6,7 +7,6 @@
 #include "Camera.h"
 #include "Brick.h"
 #include "ObjectIntro.h"
-
 #include "Scene11.h"
 
 
@@ -24,11 +24,9 @@ private:
 	FontGame TextPressStart;
 	FontGame TextInfor;
 
-	/*Xử lí nhấn phím thì tiếp tục*/
 	bool isPressStart;
 	DWORD TimeWaited;
 
-	/* Xử lí nhấp nháy TextPressStart */
 	bool isDrawTextPressStart;
 	DWORD TimeWaitedToChangeDisplayTextPressStart;
 

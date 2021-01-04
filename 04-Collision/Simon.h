@@ -68,6 +68,7 @@
 
 class Simon : public CGameObject
 {
+	Load_resources * simonDeath;
 public:
 	int HeartPoint; // số lượng heart nhặt được
 	int point;
@@ -102,10 +103,10 @@ public:
 	int isStairUp_Backup;
 	int nx_AfterGo;
 
-	/*float AutoGoX_Dx;
-	float AutoGoX_Speed;
-	float AutoGoX_Direct;
-	float AutoGoX_Backup_X;*/
+	bool isDeadth;
+	DWORD TimeWaitedAfterDeath;
+
+	bool beforeDeath;
 public:
 	Simon();
 	~Simon();
@@ -118,15 +119,18 @@ public:
 	virtual void Render(Camera * camera);
 	virtual void AutoGo(float _autoGo_nx, int _nx_last, float _autoGo_dx, float _autoGo_vx);
 
+	DWORD a;
+	bool b;
 	void Left();  // set lại hướng của simon
 	void Right(); // set lại hướng của simon
 	void Go();
 	void Sit();
+	void ResetSit();
 	void Jump();
 	void Stop();
 	void GoUpStair();
 	void StartUntouchable();
-
+	void SetDeadth();
 	//void SetAutoGoX(float nx, int nx_Backup, float Dx, float Speed); // set các thông số auto và backup các trạng thái hiện tại
 	void RestoreBackupAutoGoX(); // khôi phục trạng thái 
 

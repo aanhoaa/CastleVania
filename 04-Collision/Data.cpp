@@ -14,7 +14,7 @@ Data * Data::GetInstance()
 
 Data::Data()
 {
-	scene = 1;
+	scene = 0;
 }
 
 

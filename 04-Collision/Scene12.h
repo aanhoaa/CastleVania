@@ -17,6 +17,8 @@
 #include "Enemy.h"
 #include "HolyWater.h"
 #include "Axe.h"
+#include "GameEnd.h"
+#include "Scene11.h"
 
 #define GAME_TIME_SCENE2 300
 
@@ -93,6 +95,9 @@
 #define CLEARSTATE3_LIMITTIMEWAIT_PROCESS_GETSCORE_TIME 10 // thời gian chờ tăng mỗi đơn vị point
 #define CLEARSTATE3_LIMITTIMEWAIT_PROCESS_GETSCORE_HEART 200 // thời gian chờ tăng mỗi đơn vị point
 
+#define OPTION_SELECT_CONTINUE 1
+#define OPTION_SELECT_END 2
+
 class Scene_2 : public Scenes
 {
 private:
@@ -114,6 +119,11 @@ private:
 	CGameTime * gameTime;
 
 	int stateGame;
+
+	bool gameOver;
+	FontGame option;
+	Load_resources * optionHeart;
+	int optionSelect;
 
 	int CountEnemyGhost; // số lượng ghost hiện tại
 	DWORD TimeCreateGhost; // thời điểm bắt đầu tạo ghost
@@ -155,6 +165,11 @@ private:
 	DWORD TimeWaited_ClearState3;
 	DWORD LimitTimeWait_ClearState3;
 
+	bool testa;
+	bool isProcessingGoThroughTheDoorBoss;
+
+	DWORD magicTime;
+	bool magicDown;
 
 public:
 	Scene_2(Simon * _simon = NULL, CGameTime* _gameTime = NULL);

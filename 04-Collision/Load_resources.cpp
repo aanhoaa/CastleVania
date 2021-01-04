@@ -4,44 +4,44 @@
 Load_resources::Load_resources()
 {
 	_texture = NULL;
-	_start = 0;
-	_end = 0;
-	_timeAni = 0;
-	_index = 0;
-	_timeLocal = 0;
+	startFrame = 0;
+	lastFrame = 0;
+	timeAnimation = 0;
+	currentFrame = 0;
+	timeLocal = 0;
 	SetARGB();
 }
 
 Load_resources::Load_resources(const Load_resources &sprite)
 {
 	_texture = sprite._texture;
-	_start = sprite._start;
-	_end = sprite._end;
-	_timeAni = sprite._timeAni;
-	_index = sprite._start;
-	_timeLocal = sprite._timeLocal;
+	startFrame = sprite.startFrame;
+	lastFrame = sprite.lastFrame;
+	timeAnimation = sprite.timeAnimation;
+	currentFrame = sprite.startFrame;
+	timeLocal = sprite.timeLocal;
 	SetARGB();
 }
 
-Load_resources::Load_resources(Load_img_file* texture, int start, int end, int timeAnimation)
+Load_resources::Load_resources(Load_img_file* texture, int start, int end, int _timeAnimation)
 	: _texture(texture)
 {
-	_start = start;
-	_end = end;
-	_timeAni = timeAnimation;
-	_index = start;
-	_timeLocal = 0;
+	startFrame = start;
+	lastFrame = end;
+	timeAnimation = _timeAnimation;
+	currentFrame = start;
+	timeLocal = 0;
 	SetARGB();
 }
 
-Load_resources::Load_resources(Load_img_file* texture, int timeAnimation)
+Load_resources::Load_resources(Load_img_file* texture, int _timeAnimation)
 	: _texture(texture)
 {
-	_start = 0;
-	_end = _texture->Count - 1;
-	_timeAni = timeAnimation;
-	_index = 0;
-	_timeLocal = 0;
+	startFrame = 0;
+	lastFrame = _texture->Count - 1;
+	timeAnimation = _timeAnimation;
+	currentFrame = 0;
+	timeLocal = 0;
 	SetARGB();
 }
 
@@ -61,34 +61,34 @@ void Load_resources::SetARGB(int r, int g, int b, int a)
 
 void Load_resources::Next()
 {
-	_index++;
-	if (_index > _end)
-		_index = _start;
+	currentFrame++;
+	if (currentFrame > lastFrame)
+		currentFrame = startFrame;
 }
 
 void Load_resources::Reset()
 {
-	_index = _start;
-	_timeLocal = 0;
+	currentFrame = startFrame;
+	timeLocal = 0;
 }
 
 void Load_resources::ResetTime()
 {
-	_timeLocal = 0;
+	timeLocal = 0;
 }
 
 void Load_resources::SelectIndex(int index)
 {
-	_index = index;
+	currentFrame = index;
 }
 
-void Load_resources::Update(int ellapseTime)
+void Load_resources::Update(DWORD ellapseTime)
 {
-	_timeLocal += ellapseTime;
+	timeLocal += ellapseTime;
 
-	if (_timeLocal >= _timeAni) // neu time dem > time ani tuc la ani do da chay du roi, can chuyen sang frame tiep
+	if (timeLocal >= timeAnimation) // neu time dem > time ani tuc la ani do da chay du roi, can chuyen sang frame tiep
 	{
-		_timeLocal = 0; // reset bien dem time
+		timeLocal = 0; // reset bien dem time
 		this->Next(); // chuyen sang next frame
 	}
 }
@@ -99,8 +99,8 @@ void Load_resources::Draw(int X, int Y, int alpha)
 
 	LPD3DXSPRITE spriteHandler = CGame::GetInstance()->GetSpriteHandler();
 
-	srect.left = (_index % _texture->Cols)*(_texture->FrameWidth);
-	srect.top = (_index / _texture->Cols)*(_texture->FrameHeight);
+	srect.left = (currentFrame % _texture->Cols)*(_texture->FrameWidth);
+	srect.top = (currentFrame / _texture->Cols)*(_texture->FrameHeight);
 	srect.right = srect.left + _texture->FrameWidth;
 	srect.bottom = srect.top + _texture->FrameHeight;
 
@@ -114,20 +114,28 @@ void Load_resources::Draw(int X, int Y, int alpha)
 	);
 }
 
-void Load_resources::DrawS(int X, int Y, int subX, int alpha)
+void Load_resources::DrawS(int X, int Y, int subX, int pivot, int alpha)
 {
 	RECT srect;
 
 	LPD3DXSPRITE spriteHandler = CGame::GetInstance()->GetSpriteHandler();
 
-	srect.left = (_index % _texture->Cols)*(_texture->FrameWidth);
-	srect.top = (_index / _texture->Cols)*(_texture->FrameHeight);
+	srect.left = (currentFrame % _texture->Cols)*(_texture->FrameWidth);
+	srect.top = (currentFrame / _texture->Cols)*(_texture->FrameHeight);
 	srect.right = srect.left + _texture->FrameWidth;
 	srect.bottom = srect.top + _texture->FrameHeight;
 
-	srect.left += subX;
-	if (_texture->FrameWidth == (int)srect.left)
-		srect.left -= subX;
+	if (pivot == 1)
+	{
+		srect.left += subX;
+		if (_texture->FrameWidth == (int)srect.left)
+			srect.left -= subX;
+	}
+	else
+	{
+		srect.bottom -= subX;
+	}
+
 
 	D3DXVECTOR3 p((float)X, (float)Y, 0);
 	spriteHandler->Draw(
@@ -143,8 +151,8 @@ void Load_resources::DrawChangeColor(int X, int Y, int alpha)
 {
 	LPD3DXSPRITE spriteHandler = CGame::GetInstance()->GetSpriteHandler();
 	RECT srect;
-	srect.left = (_index % _texture->Cols)*_texture->FrameWidth;
-	srect.top = (_index / _texture->Cols)*_texture->FrameHeight;
+	srect.left = (currentFrame % _texture->Cols)*_texture->FrameWidth;
+	srect.top = (currentFrame / _texture->Cols)*_texture->FrameHeight;
 	srect.right = srect.left + _texture->FrameWidth;
 	srect.bottom = srect.top + _texture->FrameHeight;
 
@@ -256,7 +264,7 @@ void Load_resources::DrawFlipX(int x, int y, int alpha)
 	spriteHandler->SetTransform(&oldMt);
 }
 
-void Load_resources::DrawFlipXS(int x, int y, int a, int alpha)
+void Load_resources::DrawFlipXS(int x, int y, int a, int pivot, int alpha)
 {
 	LPD3DXSPRITE spriteHandler = CGame::GetInstance()->GetSpriteHandler();
 
@@ -275,7 +283,7 @@ void Load_resources::DrawFlipXS(int x, int y, int a, int alpha)
 	spriteHandler->SetTransform(&finalMt);
 
 	x -= _texture->FrameWidth;
-	this->DrawS(x, y, a, alpha);
+	this->DrawS(x, y, a, pivot, alpha);
 
 	spriteHandler->SetTransform(&oldMt);
 }
@@ -340,5 +348,5 @@ void Load_resources::DrawIndex(int index, int X, int Y, int alpha)
 
 int Load_resources::GetIndex()
 {
-	return _index;
+	return currentFrame;
 }

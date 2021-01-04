@@ -80,7 +80,7 @@ void Effect::Update(DWORD dt)
 		times--;
 		if (times == 0)
 			isFinish = true;
-		else sprite->_timeLocal = sprite->_timeAni;
+		else sprite->timeLocal = sprite->timeAnimation;
 	}
 }
 
@@ -138,7 +138,7 @@ void BrickSplash::Update(DWORD dt)
 	(float)(y += dy);
 
 	Effect::Update(dt);
-	if (sprite->GetIndex() == sprite->_end) // nếu là frame cuối thì xong,
+	if (sprite->GetIndex() == sprite->lastFrame) // nếu là frame cuối thì xong,
 		isFinish = true;
 }
 

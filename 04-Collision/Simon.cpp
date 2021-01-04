@@ -4,12 +4,14 @@
 
 Simon::Simon()
 {
-	texture = LoadTexture::GetInstance()->GetTexture(SIMON);
-	sprite = new Load_resources(texture, 150);
 	obj_type = def_ID::SIMON;
+	texture = LoadTexture::GetInstance()->GetTexture(SIMON);
+	sprite = new Load_resources(texture, 120);
+
+	simonDeath = new Load_resources(LoadTexture::GetInstance()->GetTexture(SIMONDEATH), 500);
 
 	hp = 16; // 16 hp
-	life = 5; // 5 mạng
+	life = 1; // 5 mạng
 	HeartPoint = 5;
 	point = 0;
 
@@ -23,8 +25,15 @@ Simon::Simon()
 	isUntouchable = false;
 	isAutoGoX = false;
 
-	mainWeapon = new MorningStar();
-	subWeapon = NULL;
+	isDeadth = false;
+	beforeDeath = 0;
+	b = 0;
+
+	if (Data::GetInstance()->scene >= 1)
+	{
+		mainWeapon = new MorningStar();
+		subWeapon = NULL;
+	}
 }
 
 Simon::~Simon()
@@ -42,13 +51,23 @@ void Simon::GetBoundingBox(float & left, float & top, float & right, float & bot
 	}
 	else
 	{
-		left = x + 12;
-		top = y - 1;
-		right = x + SIMON_BBOX_WIDTH - 15;
-		bottom = y + SIMON_BBOX_HEIGHT-3;
+		if (isDeadth)
+		{
+			left = x + 12;
+			top = y - 1;
+			right = x + SIMON_BBOX_WIDTH - 15;
+			bottom = y + 52;
+		}
+		else
+		{
+			left = x + 12;
+			top = y - 1;
+			right = x + SIMON_BBOX_WIDTH - 15;
+			bottom = y + SIMON_BBOX_HEIGHT - 3;
 
-		if (isJumping)
-			bottom = y + SIMON_BBOX_JUMPING_HEIGHT;
+			if (isJumping)
+				bottom = y + SIMON_BBOX_JUMPING_HEIGHT;
+		}
 	}
 }
 
@@ -63,8 +82,6 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	
 	if (x + SIMON_BBOX_WIDTH > right + Window_Width)
 		x = (float)(right + Window_Width - SIMON_BBOX_WIDTH); // phải tương tự
-
-/*sprite */
 	
 	int index = sprite->GetIndex();
 
@@ -189,75 +206,81 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else
 	{
-		if (isEnemyHit)
+		if (isEnemyHit && !isDeadth)
 		{
-			sprite->SelectIndex(SIMON_ANI_ENEMY_HIT);
+				sprite->SelectIndex(SIMON_ANI_ENEMY_HIT);
 		}
 		else
 		{
-			if (isSitting == true)
+			if (isDeadth)
 			{
-				if (isAttacking == true)
-				{
-					//if (index < SIMON_ANI_STANDING_ATTACKING_BEGIN || index > SIMON_ANI_STANDING_ATTACKING_END)
-					{
-						if (index < SIMON_ANI_SITTING_ATTACKING_BEGIN || index > SIMON_ANI_SITTING_ATTACKING_END )
-						{
-							sprite->SelectIndex(SIMON_ANI_SITTING_ATTACKING_BEGIN);
-						}
-						else
-						{
-							sprite->Update(dt); // dt này được cập nhật khi gọi update; 
-
-							if (sprite->GetIndex() == SIMON_ANI_SITTING_ATTACKING_END + 1)
-								sprite->SelectIndex(SIMON_ANI_SITTING);
-						}
-					}
-				}
-				else
-					sprite->SelectIndex(SIMON_ANI_SITTING);
+				simonDeath->Update(dt);
 			}
 			else
 			{
-				if (isAttacking == true)
+				if (isSitting == true)
 				{
-					if (index < SIMON_ANI_STANDING_ATTACKING_BEGIN || index > SIMON_ANI_STANDING_ATTACKING_END)
+					if (isAttacking == true)
 					{
-						sprite->SelectIndex(SIMON_ANI_STANDING_ATTACKING_BEGIN);
+						//if (index < SIMON_ANI_STANDING_ATTACKING_BEGIN || index > SIMON_ANI_STANDING_ATTACKING_END)
+						{
+							if (index < SIMON_ANI_SITTING_ATTACKING_BEGIN || index > SIMON_ANI_SITTING_ATTACKING_END)
+							{
+								sprite->SelectIndex(SIMON_ANI_SITTING_ATTACKING_BEGIN);
+							}
+							else
+							{
+								sprite->Update(dt); // dt này được cập nhật khi gọi update; 
+
+								if (sprite->GetIndex() == SIMON_ANI_SITTING_ATTACKING_END + 1)
+									sprite->SelectIndex(SIMON_ANI_SITTING);
+							}
+						}
 					}
 					else
-					{
-						
-						sprite->Update(dt); // dt này được cập nhật khi gọi update; 
-					}
+						sprite->SelectIndex(SIMON_ANI_SITTING);
 				}
 				else
 				{
-					if (isWalking == true) // đang di chuyển
+					if (isAttacking == true)
 					{
-						if (isJumping == false) // ko nhảy
+						if (index < SIMON_ANI_STANDING_ATTACKING_BEGIN || index > SIMON_ANI_STANDING_ATTACKING_END)
 						{
-							if (index < SIMON_ANI_WALKING_BEGIN || index > SIMON_ANI_WALKING_END)
-								sprite->SelectIndex(SIMON_ANI_WALKING_BEGIN);
-
-							//cập nhật frame mới
-							sprite->Update(dt); // dt này được cập nhật khi gọi update; 
+							sprite->SelectIndex(SIMON_ANI_STANDING_ATTACKING_BEGIN);
 						}
 						else
 						{
-							sprite->SelectIndex(SIMON_ANI_JUMPING);
+							sprite->Update(dt); // dt này được cập nhật khi gọi update; 
 						}
 					}
 					else
 					{
-						if (isJumping == true) // nếu ko đi mà chỉ nhảy
+						if (isWalking == true) // đang di chuyển
 						{
-							sprite->SelectIndex(SIMON_ANI_JUMPING);
+							if (isJumping == false) // ko nhảy
+							{
+								if (index < SIMON_ANI_WALKING_BEGIN || index > SIMON_ANI_WALKING_END)
+									sprite->SelectIndex(SIMON_ANI_WALKING_BEGIN);
+
+								//cập nhật frame mới
+								sprite->Update(dt); // dt này được cập nhật khi gọi update; 
+							}
+							else
+							{
+								sprite->SelectIndex(SIMON_ANI_JUMPING);
+							}
 						}
 						else
 						{
-							sprite->SelectIndex(SiMON_ANI_IDLE);		// SIMON đứng yên
+							if (isJumping == true) // nếu ko đi mà chỉ nhảy
+							{
+								sprite->SelectIndex(SIMON_ANI_JUMPING);
+							}
+							else
+							{
+								sprite->SelectIndex(SiMON_ANI_IDLE);		// SIMON đứng yên
 
+							}
 						}
 					}
 				}
@@ -280,7 +303,13 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			vy += SIMON_GRAVITY_JUMPING * dt;//dt;
 		}
 		else
-			vy += SIMON_GRAVITY * dt;// Simple fall down
+		{
+			if (isEnemyHit)
+			{
+				vy += 0.001f * dt;
+			}
+			else vy += SIMON_GRAVITY * dt;// Simple fall down
+		}
 	}
 	else
 	{
@@ -312,9 +341,12 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (isOnStair)
 		CollisionWithExitStair(coObjects);
 
-	mainWeapon->SetPosition(this->x, this->y);
-	mainWeapon->SetSpeed(vx, vy); // set vận tốc để kt va chạm
-	mainWeapon->UpdatePositionFitSimon();
+	if (Data::GetInstance()->scene >= 1)
+	{
+		mainWeapon->SetPosition(this->x, this->y);
+		mainWeapon->SetSpeed(vx, vy); // set vận tốc để kt va chạm
+		mainWeapon->UpdatePositionFitSimon();
+	}
 
 	if (isAutoGo)
 	{
@@ -324,6 +356,15 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			RestoreBackupAutoGoX();
 			isAutoGo = false;
 		}
+	}
+
+	if (!isDeadth && Data::GetInstance()->scene >= 2)
+	{
+		/*DebugOut(L"reset\n");
+		simonDeath->SelectIndex(0);*/
+		simonDeath->Reset();
+		simonDeath->ResetTime();
+		simonDeath->SelectIndex(0);
 	}
 }
 
@@ -339,54 +380,63 @@ void Simon::Render(Camera* camera)
 	//DebugOut(L"[INFO] res: %d\n", res);
 	int alpha;
 	alpha = (isUntouchable ? res : 255);
-	//DebugOut(L"index_simon = %d\n", sprite->GetIndex());
-	if (this->GetFreeze() == true)
+	
+	if (isDeadth)
 	{
 		if (nx == -1)
-			sprite->DrawChangeColor((int)pos.x, (int)pos.y, alpha);
+			simonDeath->Draw((int)pos.x, (int)pos.y, 255);
 		else
-			sprite->DrawChangeColorFlipX((int)pos.x, (int)pos.y, alpha);
+			simonDeath->DrawFlipX((int)pos.x, (int)pos.y, 255);
 	}
 	else
 	{
-		if (sprite->GetIndex() != 8)
+		if (this->GetFreeze() == true)
 		{
-			
-
-			if (x >= 1330 && Data::GetInstance()->scene == 1)
+			if (nx == -1)
+				sprite->DrawChangeColor((int)pos.x, (int)pos.y, alpha);
+			else
+				sprite->DrawChangeColorFlipX((int)pos.x, (int)pos.y, alpha);
+		}
+		else
+		{
+			if (sprite->GetIndex() != 8)
 			{
-				if (nx == -1)
-					sprite->Draw((int)pos.x, (int)pos.y, alpha);
+				if (x >= 1330 && Data::GetInstance()->scene == 1)
+				{
+					if (nx == -1)
+						sprite->Draw((int)pos.x, (int)pos.y, alpha);
+					else
+					{
+						sprite->DrawFlipXS((int)pos.x, (int)pos.y, (int)(abs(x - 1330) * 2.0f, 1), alpha);
+					}
+				}
 				else
 				{
-
-					sprite->DrawFlipXS((int)pos.x, (int)pos.y, (int)abs(x - 1330) * 2.0f, alpha);
+					if (nx == -1)
+						sprite->Draw((int)pos.x, (int)pos.y, alpha);
+					else
+						sprite->DrawFlipX((int)pos.x, (int)pos.y, alpha);
 				}
 			}
 			else
 			{
-				if (nx == -1)
+				if (nx == 1)
 					sprite->Draw((int)pos.x, (int)pos.y, alpha);
 				else
 					sprite->DrawFlipX((int)pos.x, (int)pos.y, alpha);
 			}
-
-		}
-		else
-		{
-			if (nx == 1)
-				sprite->Draw((int)pos.x, (int)pos.y, alpha);
-			else
-				sprite->DrawFlipX((int)pos.x, (int)pos.y, alpha);
 		}
 	}
-
+	
 	// render weapons
-	if (mainWeapon->GetFinish() == false)
-		mainWeapon->Render(camera); // không cần xét hướng, vì Draw của lớp Weapon đã xét khi vẽ
+	if (Data::GetInstance()->scene >= 1)
+	{
+		if (mainWeapon->GetFinish() == false)
+			mainWeapon->Render(camera); // không cần xét hướng, vì Draw của lớp Weapon đã xét khi vẽ
 
-	if (subWeapon != NULL && subWeapon->GetFinish() == false)
-		subWeapon->Render(camera); // không cần xét hướng, vì Draw của lớp Weapon đã xét khi vẽ
+		if (subWeapon != NULL && subWeapon->GetFinish() == false)
+			subWeapon->Render(camera); // không cần xét hướng, vì Draw của lớp Weapon đã xét khi vẽ
+	}
 }
 
 void Simon::AutoGo(float _autoGo_nx, int _nx_last, float _autoGo_dx, float _autoGo_vx)
@@ -465,6 +515,16 @@ void Simon::Sit()
 	isSitting = true;
 }
 
+void Simon::ResetSit()
+{
+	if (isSitting == true) // nếu simon đang ngồi
+	{
+		isSitting = 0; // hủy trạng thái ngồi
+		y = y - 25; // kéo simon lên
+	}
+}
+
+
 void Simon::Jump()
 {
 	if (isJumping == true)
@@ -540,15 +600,17 @@ void Simon::SetEnemyHit(LPCOLLISIONEVENT e)
 			DebugOut(L"Va cham enemy: %d\n", nx);
 			//nx = nx == 1 ? -1 : 1;
 
-			vx = SIMON_WALKING_SPEED * e->nx * 2;
-			vy = -SIMON_VJUMP_ENEMY_HIT;
+			/*vx = SIMON_WALKING_SPEED * e->nx * 2;
+			vy = -SIMON_VJUMP_ENEMY_HIT;*/
+			vx = 0.11f * e->nx;
+			vy = -0.2f;
 			isEnemyHit = true;
 		}
 
 		if (e->ny != 0)
 		{
 			//vx = 0.09f * e->nx * 2;
-			vy = -SIMON_VJUMP_ENEMY_HIT;
+			vy = -0.2f;
 			isEnemyHit = true;
 		}
 	}
@@ -615,6 +677,7 @@ void Simon::CollisionWithBrick(vector<LPGAMEOBJECT>* coObjects)
 		if (nx != 0 || ny <= 0)
 		{
 			isEnemyHit = 0;
+			beforeDeath = 1;
 		}
 	}
 
@@ -753,7 +816,12 @@ void Simon::Attack(Weapons * weapon)
 		return;
 
 	isAttacking = true; // set trang thái tấn công
-	weapon->Create(this->x, this->y, this->nx); // set vị trí weapon theo simon
+	
+	//if (isJumping)
+	//{
+	//	weapon->Create(this->x, this->y + 60, this->nx); // set vị trí weapon theo simon
+	//}
+	 weapon->Create(this->x, this->y, this->nx); // set vị trí weapon theo simon
 }
 
 void Simon::SetHeartCollect(int HeartP)
@@ -814,7 +882,7 @@ bool Simon::LoseLife()
 {
 	if (life - 1 < 0)
 		return false;
-	hp = 16;
+	hp = 2;
 	life = life - 1;
 	HeartPoint = 5;
 	
@@ -856,40 +924,17 @@ void Simon::StartUntouchable()
 	startUntouchable = GetTickCount();
 }
 
-//void Simon::SetAutoGoX(float direct, int _nxAfterGo, float Dx, float Speed)
-//{
-//	if (isAutoGoX)
-//		return;
-//
-//	isAutoGoX = true;// chưa vào chế độ autoGo thì set
-//
-//	AutoGoX_Backup_X = x;
-//
-//	//Backup trạng thái
-//	isWalking_Backup = isWalking;
-//	isJumping_Backup = isJumping;
-//	isSitting_Backup = isSitting;
-//	isAttacking_Backup = isAttacking;
-//	isOnStair_Backup = isOnStair;
-//	isProcessingOnStair_Backup = isProcessingOnStair;
-//	nx_stair_Backup = nx_stair;
-//	isStairUp_Backup = isStairUp;
-//
-//	// get info
-//	AutoGoX_Dx = Dx;
-//	AutoGoX_Speed = Speed;
-//	AutoGoX_Direct = direct;
-//	this->nx_AfterGo = _nxAfterGo;
-//
-//	nx = (int)direct;
-//	vx = Speed * direct;
-//	isWalking = 1;
-//	isJumping = 0;
-//	isSitting = 0;
-//	isAttacking = 0;
-//	isOnStair = 0;
-//	isProcessingOnStair = 0;
-//}
+void Simon::SetDeadth()
+{
+	isDeadth = true;
+	TimeWaitedAfterDeath = 0;
+
+	ResetSit();
+	vx = 0;
+	isWalking = 0;
+	isOnStair = 0;
+	Stop();
+}
 
 void Simon::RestoreBackupAutoGoX()
 {

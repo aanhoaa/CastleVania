@@ -9,11 +9,11 @@ class Load_resources {
 public:
 	Load_img_file * _texture;
 	
-	int _start;		//chạy từ frame đầu tiên (chỉ số)
-	int _end;		//chạy đến frame cuối cùng (chỉ số)
-	int _index;		//frame hiện tại
-	int _timeAni;	//thời gian chuyển frame
-	int _timeLocal;	//biến hỗ trợ đếm thời gian
+	int startFrame;		
+	int lastFrame;		
+	int currentFrame;		
+	int timeAnimation;	//time của 1 frame
+	int timeLocal;	// time đang có
 
 	Load_resources();
 	Load_resources(const Load_resources &sprite);
@@ -34,11 +34,11 @@ public:
 	int GetIndex();
 
 	//update animation
-	void Update(int ellapseTime);
+	void Update(DWORD ellapseTime);
 
 	// Render current sprite at location (X,Y) at the target surface
 	void Draw(int x, int y, int alpha = 255);
-	void DrawS(int x, int y, int a, int alpha = 255);
+	void DrawS(int x, int y, int a, int pivot, int alpha = 255);
 
 	// Render with change coler
 	void DrawChangeColor(int X, int Y, int alpha = 255);
@@ -48,7 +48,7 @@ public:
 	void DrawFlipX(int x, int y, int alpha = 255);
 	void DrawFlipXByIndex(int index, int x, int y, int alpha = 255);
 
-	void DrawFlipXS(int x, int y, int subX, int alpha = 255);
+	void DrawFlipXS(int x, int y, int subX, int pivot, int alpha = 255);
 
 	//Render Rect of texture at (x,y)
 	void DrawRect(int X, int Y, RECT SrcRect, int alpha = 255);

@@ -24,7 +24,7 @@ void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	this->dt = dt;
 	dx = vx * dt;
-	dy = vy * dt;
+	//dy = vy * dt;
 }
 
 void Weapons::Render(Camera * camera)

@@ -31,7 +31,7 @@ using namespace std;
 
 #define SHOWBOX_PINK 0
 
-#define IS_DEBUG_RENDER_BBOX 1
+#define IS_DEBUG_RENDER_BBOX 0
 
 
 extern int Window_Width;
@@ -42,6 +42,8 @@ extern int MapHeight;
 
 extern int ScreenColumn;
 extern int ScreenRow;
+
+extern int rdb;
  
 // ID của Sprite, object
 enum def_ID
@@ -71,6 +73,9 @@ enum def_ID
 	STAIR = 44,
 	BOTTOMSTAIR = 47,
 	TOPSTAIR = 48,
+
+	//simon death
+	SIMONDEATH = 49,
 	
 	//weapon
 	MORNINGSTAR = 61,
@@ -102,7 +107,11 @@ enum def_ID
 	INTRO_GO_SCENE1 = 182,
 	INTRO_BAT_MENU = 183, // bat ở menu
 	HELICOPTER = 184,
-	INTRO_BAT = 185 // ở intro
+	INTRO_BAT = 185, // ở intro
+
+	//end
+	CASTLE = 186,
+	TOPCASTLE = 187
 
 };
 

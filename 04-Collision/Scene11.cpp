@@ -30,7 +30,6 @@ void Scene_1::KeyState(BYTE * state)
 		float vx, vy;
 		simon->GetSpeed(vx, vy);
 		simon->SetSpeed(0, vy);
-		DebugOut(L"DIK_RIGHT & attack \n");
 
 		return;
 	}
@@ -132,6 +131,13 @@ void Scene_1::OnKeyDown(int KeyCode)
 		}
 	}
 
+	if (KeyCode == DIK_1)
+	{
+		camera->SetAllowFollowSimon(0);
+		camera->SetPosition(camera->GetX_cam() + 20.0f, 0);
+
+	}
+
 	if (simon->isJumping && simon->isWalking)
 	{
 		return;
@@ -171,6 +177,8 @@ void Scene_1::OnKeyUp(int KeyCode)
 
 void Scene_1::LoadResources()
 {
+	LoadTexture::GetInstance()->LoadResource();
+
 	sound = Sound::GetInstance();
 
 	TileMap = new Map();
@@ -190,7 +198,6 @@ void Scene_1::LoadResources()
 	simon->SetPositionBackup(SIMON_POSITION_DEFAULT);
 
 	gridGame = new Grid();
-	gridGame->ReadFileToGrid("Resources\\map\\Obj_1.txt"); // đọc các object từ file vào Grid
 
 	listItem.clear();
 
@@ -298,7 +305,6 @@ void Scene_1::ResetResource()
 {
 	SAFE_DELETE(gridGame);
 	gridGame = new Grid();
-	gridGame->ReadFileToGrid("Resources/map/Obj_1.txt"); // đọc lại các object từ list
 
 	listItem.clear();
 	listEffect.clear();
@@ -405,7 +411,6 @@ void Scene_1::CheckCollisionSimonWithItem()
 				}
 
 				default:
-					DebugOut(L"[CheckCollisionSimonWithItem] Khong nhan dang duoc loai Item!\n");
 					break;
 				}
 			}
@@ -428,7 +433,7 @@ void Scene_1::CheckCollisionSimonWithHidenObject()
 					{
 						case 7: // đụng trúng cửa
 						{
-							simon->AutoGo((float)simon->GetDirect(), 1, 70.0f, 0.02f);
+							simon->AutoGo((float)simon->GetDirect(), 1, 70.0f, 0.04f);
 							
 							break;
 						}
@@ -439,6 +444,7 @@ void Scene_1::CheckCollisionSimonWithHidenObject()
 							// chưa hiện effect 1000d
 							simon->SetPoint(simon->GetPoint() + 1000);
 							SceneManager::GetInstance()->SetScene(new Scene_2(simon, gameTime));
+							
 							return;
 							break;
 						}

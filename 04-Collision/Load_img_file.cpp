@@ -75,8 +75,7 @@ void Load_img_file::Load(int ShowBox)
 
 	if (result != D3D_OK)
 	{
-		//GLMessage("Can not load texture");
-		//	GLTrace("[texture.h] Failed to create texture from file '%s'", FileName);
+		MessageBox(NULL, L"Failed to get information from image file", L"Error", MB_OK);
 		return;
 	}
 }
@@ -88,8 +87,6 @@ void Load_img_file::Load(int R, int G, int B)
 
 	LPDIRECT3DDEVICE9 d3ddv = CGame::GetInstance()->GetDirect3DDevice();
 
-
-
 	result = D3DXGetImageInfoFromFileA(fileName, &info);
 
 	RECT s = { (LONG)0, (LONG)0, (LONG)info.Width, (LONG)info.Height };
@@ -100,8 +97,7 @@ void Load_img_file::Load(int R, int G, int B)
 
 	if (result != D3D_OK)
 	{
-		//GLMessage("Can not load texture");
-		//GLTrace("[texture.h] Failed to get information from image file [%s]", FileName);
+		MessageBox(NULL, L"Failed to get information from image file", L"Error", MB_OK);
 		OutputDebugStringA(fileName);
 		return;
 	}

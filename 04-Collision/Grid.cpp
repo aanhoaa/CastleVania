@@ -3,7 +3,14 @@
 
 Grid::Grid()
 {
-
+	if (Data::GetInstance()->scene == 1)
+	{
+		ReadFileToGrid("Resources\\map\\Obj_1.txt");
+	}
+	else if (Data::GetInstance()->scene == 2)
+	{
+		ReadFileToGrid("Resources\\map\\Obj_2.txt");
+	}
 }
 
 Grid::~Grid()
@@ -28,7 +35,7 @@ void Grid::ReadFileToGrid(char * filename)
 		for (int i = 0; i < n; i++)
 		{
 			inp >> id >> type >> nx >> x >> y >> w >> h >> update;
-			Insert(id, type, nx, x, y, w, h, update);
+			pushToCell(id, type, nx, x, y, w, h, update);
 		}
 		inp.close();
 	}
@@ -37,7 +44,7 @@ void Grid::ReadFileToGrid(char * filename)
 void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 {
 	ListObj.clear(); // clear list
-	unordered_map<int, CGameObject*> ListObject;
+	vector<int> listIdObject;
 
 	// lấy tọa độ của cam hiện tại để thiết lập các cells 
 	int rowTop = (int)floor((camera->GetY_cam() + 1) / (float)GRID_CELL_HEIGHT);
@@ -59,9 +66,9 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 				
 				if ((cells[row][col].at(i)->GetLife() > 0)) // còn tồn tại
 				{
-					if (ListObject.find(cells[row][col].at(i)->GetObj_id()) == ListObject.end()) // check không trùng id
+					if (find(begin(listIdObject), end(listIdObject), cells[row][col].at(i)->GetObj_id()) == end(listIdObject))
 					{
-						ListObject[cells[row][col].at(i)->GetObj_id()] = cells[row][col].at(i);
+						listIdObject.push_back(cells[row][col].at(i)->GetObj_id());
 						ListObj.push_back(cells[row][col].at(i));
 					}
 				}
@@ -70,38 +77,8 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 	}
 }
 
-void Grid::GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj)
-{
-	ListObj.clear(); // clear list
-	//ResetListObj();
 
-	int rowBottom = (int)floor((obj->y + obj->GetHeight()) / (float)GRID_CELL_HEIGHT);
-	int rowTop = (int)floor((obj->y) / (float)GRID_CELL_HEIGHT);
-
-	int colLeft = (int)floor((obj->x) / (float)GRID_CELL_WIDTH);
-	int colRight = (int)floor((obj->x + obj->GetWidth()) / (float)GRID_CELL_WIDTH);
-
-	for (int row = rowTop; row <= rowBottom; row++)
-	{
-		for (int col = colLeft; col <= colRight; col++)
-		{
-			for (UINT i = 0; i < cells[row][col].size(); i++)
-			{
-				if (cells[row][col].at(i)->GetLife() > 0) // còn tồn tại
-				{
-					if (cells[row][col].at(i)->GetIsPush() == false)
-					{
-						ListObj.push_back(cells[row][col].at(i));
-						cells[row][col].at(i)->SetIsPush(true);
-					}
-				}
-			}
-		}	
-	}
-}
-
-
-void Grid::Insert(int id, int type, int nx, int x, int y, int w, int h, int update)
+void Grid::pushToCell(int id, int type, int nx, int x, int y, int w, int h, int update)
 {
 	CGameObject * dataObject = GetNewObject(type, x, y, w, h, update); // sau khi load info từ file, xác định obj ->vẽ ra màn hình
 	if (dataObject == NULL)
@@ -111,9 +88,7 @@ void Grid::Insert(int id, int type, int nx, int x, int y, int w, int h, int upda
 	}
 	dataObject->SetId(id);
 	dataObject->SetDirect(nx);
-	dataObject->SetIsPush(false);
-
-	listObjectGame.push_back(dataObject); // thêm vào list obj 
+	//dataObject->SetIsPush(false);
 
 	int Top = (int)floor(y / (float)GRID_CELL_HEIGHT);
 	int Bottom = (int)floor((y + h) / (float)GRID_CELL_HEIGHT);

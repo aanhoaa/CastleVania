@@ -13,7 +13,6 @@ public:
 	static Sound * __Instance;
 	static Sound * GetInstance();
 
-
 	CSoundManager *dsound;
 
 	// khởi tạo direct sound

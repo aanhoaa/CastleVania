@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <vector>
-
 #include "define.h"
 #include "Camera.h"
 #include "Load_img_file.h"

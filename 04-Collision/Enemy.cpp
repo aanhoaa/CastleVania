@@ -603,7 +603,7 @@ Boss::Boss(float X, float Y, Simon * simon, Camera *camera)
 {
 	x = X;
 	y = Y;
-	hp = 4;
+	hp = 2;
 	obj_type = def_ID::BOSS;
 
 	texture = LoadTexture::GetInstance()->GetTexture(def_ID::BOSS);
@@ -616,10 +616,6 @@ Boss::Boss(float X, float Y, Simon * simon, Camera *camera)
 	this->camera = camera;
 	isWaiting = false;
 	isAttacking = false;
-
-	//this->listWeaponOfEnemy = listWeaponOfEnemy;
-	//weapon = new FireBall();
-	//listWeaponOfEnemy->push_back(weapon);
 }
 
 Boss::~Boss()
@@ -785,14 +781,14 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 			{
 				isWaiting = false; // ngừng chờ
 
-				int random = rand() % 2;
+				int random = rand() % 3;
 				switch (random)
 				{
-				case 2: //25 %
+				case 3: //25 %
 					StartAttack();
 					break;
 
-				case 1: // 75%
+				default: // 75%
 					StartCurves();
 
 					break;
@@ -877,7 +873,7 @@ void Boss::Render(Camera * camera)
 	else
 	{
 		sprite->Update(dt);
-		if (sprite->_index == 0)
+		if (sprite->currentFrame == 0)
 			sprite->SelectIndex(1);
 	}
 
@@ -892,7 +888,7 @@ void Boss::Render(Camera * camera)
 
 	if (IS_DEBUG_RENDER_BBOX && isUseBezierCurves) // sử dụng BezierCurves thì mới vẽ 
 	{
-		for (float i = 0; i < 1; i += 0.01)
+		for (float i = 0; i < 1; i += 0.01f)
 		{
 			// The Green Line
 			float xa = getPt(x1, x2, i);
@@ -1007,8 +1003,6 @@ void Boss::StartStaight(Simon* simon)
 
 	xBefore = x;
 	yBefore = y;
-	//xTarget = 5178 + rand() % (5492 - 5178);
-	//yTarget = 80 + rand() % (190 - 80);
 
 	xTarget = simon->x + rand() % (5492 - 5178);
 	yTarget = simon->y - rand() % (200 - 100 + 1) - 100;
@@ -1041,10 +1035,7 @@ void Boss::StartStaight(Simon* simon)
 	//DebugOut(L"xBefore: %f . xTarget: %f \n", xBefore, xTarget);
 	DebugOut(L"StatusProcessing = %d, Target (%f, %f) \n", StatusProcessing, xTarget, yTarget);
 
-	//float tt = 1000.0f / (50 + rand() % 100);
-	//vx = (xTarget - xBefore) / (abs(xTarget - xBefore)*tt);
-	//vy = (yTarget - yBefore) / (abs(yTarget - yBefore)*tt);
-	vx = (xTarget - xBefore) / (1000); // cho đi 1 giây
+	vx = (xTarget - xBefore) / (1000); 
 	vy = (yTarget - yBefore) / (1000);
 }
 

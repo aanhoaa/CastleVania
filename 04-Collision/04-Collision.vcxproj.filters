@@ -135,6 +135,12 @@
     <ClInclude Include="ObjectIntro.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameEnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectEnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="debug.cpp">
@@ -258,6 +264,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ObjectIntro.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectEnd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

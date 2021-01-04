@@ -31,9 +31,8 @@ private:
 public:
 	void ReadFileToGrid(char * filename); // Đọc các object từ file
 	void GetListObject(vector<CGameObject*>& ListObj, Camera * camera);
-	void GetListObject(vector<CGameObject*> &ListObj, CGameObject * obj);
 
-	void Insert(int id, int type, int nx, int x, int y, int w, int h, int update); //Thêm object vào grid
+	void pushToCell(int id, int type, int nx, int x, int y, int w, int h, int update); //Thêm object vào grid
 
 	CGameObject * GetNewObject(int type, int x, int y, int w, int h, int update);
 

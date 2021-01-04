@@ -127,6 +127,7 @@
     <ClInclude Include="BBox.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyBullet.h" />
+    <ClInclude Include="GameEnd.h" />
     <ClInclude Include="Heart.h" />
     <ClInclude Include="BoardGame.h" />
     <ClInclude Include="Brick.h" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Load_resources.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MorningStar.h" />
+    <ClInclude Include="ObjectEnd.h" />
     <ClInclude Include="ObjectIntro.h" />
     <ClInclude Include="Scene11.h" />
     <ClInclude Include="Scene12.h" />
@@ -169,6 +171,7 @@
     <ClCompile Include="BBox.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />
+    <ClCompile Include="GameEnd.cpp" />
     <ClCompile Include="Heart.cpp" />
     <ClCompile Include="BoardGame.cpp" />
     <ClCompile Include="Brick.cpp" />
@@ -196,6 +199,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MorningStar.cpp" />
+    <ClCompile Include="ObjectEnd.cpp" />
     <ClCompile Include="ObjectIntro.cpp" />
     <ClCompile Include="Scene11.cpp" />
     <ClCompile Include="Scene12.cpp" />

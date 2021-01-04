@@ -74,10 +74,10 @@ void Gate::Render(Camera * camera)
 		{
 		case 1:
 		{
-			sprite->_timeLocal += dt;
-			if (sprite->_timeLocal >= 800)
+			sprite->timeLocal += dt;
+			if (sprite->timeLocal >= 800)
 			{
-				sprite->_timeLocal = 0;
+				sprite->timeLocal = 0;
 				sprite->Next();
 				isOpen++;
 			}
@@ -85,10 +85,10 @@ void Gate::Render(Camera * camera)
 		}
 		case 2:
 		{
-			sprite->_timeLocal += dt;
-			if (sprite->_timeLocal >= 200)
+			sprite->timeLocal += dt;
+			if (sprite->timeLocal >= 200)
 			{
-				sprite->_timeLocal = 0;
+				sprite->timeLocal = 0;
 				sprite->Next();
 				isOpen++;
 			}
@@ -99,10 +99,10 @@ void Gate::Render(Camera * camera)
 		{
 			Data::GetInstance()->passGate = 1;
 
-			sprite->_timeLocal += dt;
-			if (sprite->_timeLocal >= 500)
+			sprite->timeLocal += dt;
+			if (sprite->timeLocal >= 500)
 			{
-				sprite->_timeLocal = 0;
+				sprite->timeLocal = 0;
 				sprite->SelectIndex(0);
 				isOpen++;
 			}
