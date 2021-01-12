@@ -45,6 +45,7 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 {
 	ListObj.clear(); // clear list
 	vector<int> listIdObject;
+	listIdObject.clear();
 
 	// lấy tọa độ của cam hiện tại để thiết lập các cells 
 	int rowTop = (int)floor((camera->GetY_cam() + 1) / (float)GRID_CELL_HEIGHT);
@@ -52,12 +53,12 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 	
 	int colLeft = (int)floor((camera->GetX_cam() + 1) / (float)GRID_CELL_WIDTH);
 	int colRight = (int)floor((camera->GetX_cam() + camera->GetWidth() - 1) / (float)GRID_CELL_WIDTH);
-
+	
 	// loop check  trong cells các obj dc đánh dấu, có thì cho vào list
 	for (int row = rowTop; row <= rowBottom; row++)
 	{
 		for (int col = colLeft; col <= colRight; col++) // hiện tại với w và h thì nên để col < colRight (thêm <= sẽ lấy thêm obj ngoài cam)
-		{
+		{ 
 			//DebugOut(L"[INFO] Row thu: %d\n", row);
 			//DebugOut(L"[INFO] So luong obj: %d\n", cells[row][col].size());
 
@@ -88,7 +89,6 @@ void Grid::pushToCell(int id, int type, int nx, int x, int y, int w, int h, int 
 	}
 	dataObject->SetId(id);
 	dataObject->SetDirect(nx);
-	//dataObject->SetIsPush(false);
 
 	int Top = (int)floor(y / (float)GRID_CELL_HEIGHT);
 	int Bottom = (int)floor((y + h) / (float)GRID_CELL_HEIGHT);
@@ -115,6 +115,7 @@ CGameObject * Grid::GetNewObject(int type, int x, int y, int w, int h, int updat
 	if (type == def_ID::BOTTOMSTAIR) return new Stairs(x, y, update);
 	if (type == def_ID::TOPSTAIR) return new Stairs(x, y, update);
 	if (type == def_ID::GATE) return new Gate(x, y);
+	if (type == def_ID::GHOST) return new Ghost(x, y, -1);
 	
 	return NULL;
 }

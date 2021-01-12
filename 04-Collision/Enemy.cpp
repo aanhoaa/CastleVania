@@ -440,7 +440,7 @@ void Fishmen::UpdateCustom(DWORD dt, vector<LPGAMEOBJECT>* listObject, Simon * s
 {
 	if (enemyBullet != NULL && enemyBullet->GetFinish() == false)
 	{
-		enemyBullet->Update(dt, listObject);
+		enemyBullet->Update(dt, simon);
 	}
 
 	if (isJumping)
@@ -465,7 +465,6 @@ void Fishmen::UpdateCustom(DWORD dt, vector<LPGAMEOBJECT>* listObject, Simon * s
 		distance = 0;
 		Attack(enemyBullet);
 		shoot = 1;
-		//DebugOut(L"[Accum enough]\n");
 	}
 
 	pos_x_before = x;
@@ -637,7 +636,7 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 
 	if (enemyBullet != NULL && enemyBullet->GetFinish() == false)
 	{
-		enemyBullet->Update(dt, coObjects);
+		enemyBullet->Update(dt, simon);
 	}
 
 	if (Data::GetInstance()->bossAppear == 1)

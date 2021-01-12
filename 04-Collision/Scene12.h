@@ -109,6 +109,7 @@ private:
 	BoardGame * board;
 	Sound * sound;
 
+	vector<LPGAMEOBJECT> listAllObj;
 	vector<LPGAMEOBJECT> listObj;
 
 	vector <Items*> listItem;
@@ -125,6 +126,8 @@ private:
 	Load_resources * optionHeart;
 	int optionSelect;
 
+	DWORD FirstTimeGenGhost;
+	bool isFirstGhost;
 	int CountEnemyGhost; // số lượng ghost hiện tại
 	DWORD TimeCreateGhost; // thời điểm bắt đầu tạo ghost
 	DWORD TimeWaitProcessCreateGhost; // Thời điểm bắt đầu chờ xử lí việc tạo ghost
@@ -167,6 +170,7 @@ private:
 
 	bool testa;
 	bool isProcessingGoThroughTheDoorBoss;
+	bool isDone;
 
 	DWORD magicTime;
 	bool magicDown;
@@ -192,12 +196,10 @@ public:
 	void ProcessingDoneStateBoss(DWORD dt);
 
 	void CheckCollision();
-	void CheckCollisionWeapon(vector<LPGAMEOBJECT> listObj);
-	void CheckCollisionSimonWithItem();
 	void CheckCollisionSimonWithHidenObject();
-	void CheckCollisionWithEnemy();
-	void CheckCollisionSimonWithEnemy();
 	void CheckCollisionSimonWithGate();
+
+	void DropItem();
 
 	void ResetResource(); // reset lai resource khi simon mất 1 mạng
 

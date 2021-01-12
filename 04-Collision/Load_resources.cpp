@@ -127,9 +127,7 @@ void Load_resources::DrawS(int X, int Y, int subX, int pivot, int alpha)
 
 	if (pivot == 1)
 	{
-		srect.left += subX;
-		if (_texture->FrameWidth == (int)srect.left)
-			srect.left -= subX;
+		srect.left += (float)subX;
 	}
 	else
 	{

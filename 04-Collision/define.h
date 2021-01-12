@@ -31,7 +31,7 @@ using namespace std;
 
 #define SHOWBOX_PINK 0
 
-#define IS_DEBUG_RENDER_BBOX 0
+#define IS_DEBUG_RENDER_BBOX 1
 
 
 extern int Window_Width;
@@ -122,6 +122,21 @@ enum eDirection
 	LEFT = (1 << 1),
 	RIGHT = (1 << 2),
 	BOTTOM = (1 << 3)
+};
+
+enum eHidden
+{
+	PROCESSINGSCENE1 = 7,
+	PASSINGSCENE2 = 8,
+	WATERDOWNLEFT = 41,
+	WATERUPLEFT = 45,
+	BONUS = 65,
+	WATERFISHMEN = 66,
+	PASSINGDOOR1 = 67,
+	WATERDOWNRIGHT = 81,
+	PASSINGDOOR2 = 94,
+	BOSSAPPEAR = 124,
+	WATERUPRIGHT = 125
 };
 
 enum eSound

@@ -1,6 +1,6 @@
 ﻿#pragma once
+
 #include "GameObject.h"
-#include "Simon.h"
 #include "EnemyBullet.h"
 
 class Enemy : public CGameObject

@@ -16,7 +16,7 @@ EnemyBullet::~EnemyBullet()
 {
 }
 
-void EnemyBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void EnemyBullet::Update(DWORD dt, Simon *simon)
 {
 	if (isFinish)
 		return;
@@ -25,6 +25,8 @@ void EnemyBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	x += dx;
 	y += dy;
+
+	CheckCollision(simon);
 }
 
 void EnemyBullet::Create(float X, float Y, int _nx)
@@ -80,4 +82,18 @@ void EnemyBullet::Render(Camera * camera)
 	}
 
 	Weapons::Render(camera);
+}
+
+void EnemyBullet::CheckCollision(Simon * simon)
+{
+	if (this != NULL && !this->GetFinish())
+	{
+		if (isCollitionAll(simon))
+		{
+			LPCOLLISIONEVENT e = isCollitionAllReturnE(simon);
+			simon->SetEnemyHit(e);
+			this->SetFinish(true);
+			return;
+		}
+	}
 }

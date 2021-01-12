@@ -134,8 +134,8 @@ void BrickSplash::Update(DWORD dt)
 
 	vy += BRICKSPLASH_GRAVITY * dt;
 
-	(float)(x += dx);
-	(float)(y += dy);
+	x += (int)dx;
+	y += (int)dy;
 
 	Effect::Update(dt);
 	if (sprite->GetIndex() == sprite->lastFrame) // nếu là frame cuối thì xong,
@@ -193,6 +193,6 @@ void Water::Update(DWORD dt)
 
 	vy += WATER_GRAVITY * dt;
 
-	x += dx;
-	y += dy;
+	x += (int)dx;
+	y += (int)dy;
 }

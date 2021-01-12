@@ -1,4 +1,4 @@
-#include "Weapons.h"
+﻿#include "Weapons.h"
 
 
 Weapons::Weapons()
@@ -24,7 +24,6 @@ void Weapons::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	this->dt = dt;
 	dx = vx * dt;
-	//dy = vy * dt;
 }
 
 void Weapons::Render(Camera * camera)
@@ -49,6 +48,84 @@ void Weapons::SetPosition(float X, float Y)
 void Weapons::UpdatePositionFitSimon()
 {
 }
+
+bool Weapons::isCollision(CGameObject* obj)
+{
+	if (isFinish)
+		return false;
+
+	CGameObject *gameObj = dynamic_cast<CGameObject*>(obj);
+	if (gameObj->GetLife() <= 0)
+		return false;
+
+	return isCollitionAll(obj);
+}
+
+void Weapons::CheckCollision(vector<LPGAMEOBJECT> *listObj)
+{
+	if (this != NULL && GetFinish() == false) // roi đang đánh
+	{
+		for (UINT i = 0; i < listObj->size(); i++)
+		{
+			CGameObject *gameObj = dynamic_cast<CGameObject*>(listObj->at(i));
+			if (isCollision(gameObj) == true)
+			{
+				switch (gameObj->GetType())
+				{
+				case def_ID::BIGCANDLE:
+				{
+					gameObj->LoseLife(1);
+					break;
+				}
+				case def_ID::SMALLCANDLE:
+				{
+					gameObj->LoseLife(1);
+					break;
+				}
+				case def_ID::BRICK:
+				{
+					if (gameObj->GetObj_id() == 39 || gameObj->GetObj_id() == 40 
+						|| gameObj->GetObj_id() == 51 || gameObj->GetObj_id() == 72)
+						gameObj->LoseLife(1);
+					break;
+				}
+				case def_ID::GHOST:
+				{
+					DebugOut(L"[Hit ghost]\n");
+					gameObj->LoseLife(1);
+					break;
+				}
+				case def_ID::PANTHER:
+				{
+					gameObj->LoseLife(1);
+					break;
+				}
+				case def_ID::BAT:
+				{
+					gameObj->LoseLife(1);
+					break;
+				}
+				case def_ID::FISHMEN:
+				{
+					gameObj->LoseLife(1);
+					break;
+				}
+				case def_ID::BOSS:
+				{
+					gameObj->LoseHP(2);
+					if (gameObj->GetHP() == 0)
+						gameObj->LoseLife(1);
+					Data::GetInstance()->hpBoss -= 2;
+					break;
+				}
+				default:
+					break;
+				}
+			}
+		}
+	}
+}
+
 
 bool Weapons::GetFinish()
 {

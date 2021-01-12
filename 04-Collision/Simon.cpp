@@ -2,7 +2,7 @@
 #include "debug.h"
 
 
-Simon::Simon()
+Simon::Simon(Camera * _camera)
 {
 	obj_type = def_ID::SIMON;
 	texture = LoadTexture::GetInstance()->GetTexture(SIMON);
@@ -15,6 +15,7 @@ Simon::Simon()
 	HeartPoint = 5;
 	point = 0;
 
+	this->camera = _camera;
 	// states have ready
 	isWalking = false; 
 	isJumping = false;
@@ -34,6 +35,7 @@ Simon::Simon()
 		mainWeapon = new MorningStar();
 		subWeapon = NULL;
 	}
+	sound = Sound::GetInstance();
 }
 
 Simon::~Simon()
@@ -89,7 +91,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		if (mainWeapon->GetFinish() == false) // nếu MorningStar đang đánh
 		{
-			mainWeapon->Update(dt);
+			mainWeapon->Update(dt, coObjects);
 
 			if (mainWeapon->GetFinish() == true)
 			{
@@ -341,6 +343,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (isOnStair)
 		CollisionWithExitStair(coObjects);
 
+	CollisionWithEnemy(coObjects);
+
 	if (Data::GetInstance()->scene >= 1)
 	{
 		mainWeapon->SetPosition(this->x, this->y);
@@ -360,8 +364,6 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if (!isDeadth && Data::GetInstance()->scene >= 2)
 	{
-		/*DebugOut(L"reset\n");
-		simonDeath->SelectIndex(0);*/
 		simonDeath->Reset();
 		simonDeath->ResetTime();
 		simonDeath->SelectIndex(0);
@@ -401,13 +403,15 @@ void Simon::Render(Camera* camera)
 		{
 			if (sprite->GetIndex() != 8)
 			{
-				if (x >= 1330 && Data::GetInstance()->scene == 1)
+				if (x + texture->FrameWidth >= 1378.0f && Data::GetInstance()->scene == 1)
 				{
 					if (nx == -1)
 						sprite->Draw((int)pos.x, (int)pos.y, alpha);
 					else
 					{
-						sprite->DrawFlipXS((int)pos.x, (int)pos.y, (int)(abs(x - 1330) * 2.0f, 1), alpha);
+						if ( x <= 1490.0f)
+							sprite->DrawFlipXS((int)pos.x, (int)pos.y, (int)(abs(x + (float)(texture->FrameWidth) - 1378.0f)), 1, alpha);
+						else sprite->DrawFlipX((int)pos.x, (int)pos.y, alpha);
 					}
 				}
 				else
@@ -428,14 +432,13 @@ void Simon::Render(Camera* camera)
 		}
 	}
 	
-	// render weapons
 	if (Data::GetInstance()->scene >= 1)
 	{
-		if (mainWeapon->GetFinish() == false)
-			mainWeapon->Render(camera); // không cần xét hướng, vì Draw của lớp Weapon đã xét khi vẽ
+		if (!mainWeapon->GetFinish())
+			mainWeapon->Render(camera); 
 
-		if (subWeapon != NULL && subWeapon->GetFinish() == false)
-			subWeapon->Render(camera); // không cần xét hướng, vì Draw của lớp Weapon đã xét khi vẽ
+		if (subWeapon != NULL && !subWeapon->GetFinish())
+			subWeapon->Render(camera); 
 	}
 }
 
@@ -558,11 +561,6 @@ void Simon::Stop()
 		return;
 
 	vx = 0;
-
-	/*if (vx != 0)
-		vx -= dt * SIMON_GRAVITY*0.1*nx;
-
-	nx != 0 ? (vx != 0 ? vx = 0 : vx = vx) : nx;*/
 	
 	isWalking = 0;
 	if (isSitting == true) // nếu simon đang ngồi
@@ -597,11 +595,6 @@ void Simon::SetEnemyHit(LPCOLLISIONEVENT e)
 	{
 		if (e->nx != 0)
 		{
-			DebugOut(L"Va cham enemy: %d\n", nx);
-			//nx = nx == 1 ? -1 : 1;
-
-			/*vx = SIMON_WALKING_SPEED * e->nx * 2;
-			vy = -SIMON_VJUMP_ENEMY_HIT;*/
 			vx = 0.11f * e->nx;
 			vy = -0.2f;
 			isEnemyHit = true;
@@ -616,10 +609,7 @@ void Simon::SetEnemyHit(LPCOLLISIONEVENT e)
 	}
 	else
 	{
-		//vx = 0;
-		//vy = 0;
 		isWalking = 1;
-		//isHurting = 1;
 	}
 
 	StartUntouchable(); // tàng hình không bị va chạm
@@ -683,6 +673,128 @@ void Simon::CollisionWithBrick(vector<LPGAMEOBJECT>* coObjects)
 
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
+}
+
+void Simon::CollisionWithEnemy(vector<LPGAMEOBJECT>* coObjects)
+{
+	if (isUntouchable)
+	{
+		if (GetTickCount() - startUntouchable > SIMON_UNTOUCHABLE_TIME)
+		{
+			startUntouchable = 0;
+			isUntouchable = false;
+		}
+	}
+
+	if (!isUntouchable) // mode va chạm
+	{
+		for (UINT i = 0; i < coObjects->size(); i++)
+		{
+			CGameObject * enemy = dynamic_cast<CGameObject *> (coObjects->at(i));
+			
+			if (enemy->GetType() == def_ID::GHOST || enemy->GetType() == def_ID::PANTHER || enemy->GetType() == def_ID::BAT ||
+				enemy->GetType() == def_ID::FISHMEN || enemy->GetType() == def_ID::BOSS)
+			{
+				if (enemy->GetLife() > 0) // còn sống
+				{
+					if (isCollitionAll(enemy))
+					{
+						LPCOLLISIONEVENT e = isCollitionAllReturnE(enemy);
+						SetEnemyHit(e);
+						return;
+					}
+				}
+			}
+		}
+	}
+}
+
+void Simon::CollisionWithItem(vector<Items*> * listItem)
+{
+	if (listItem->size() == 0)
+		return;
+
+	for (UINT i = 0; i < listItem->size(); i++)
+		// nếu item chưa biến mất (do k collect) và item đang không phải trong thời gian của hiteffect thì xét va chạm
+		if (listItem->at(i)->GetFinish() == false && listItem->at(i)->isWaitingDisplay() == false)
+		{
+			if (isCollisionWithItem(listItem->at(i))) // có va chạm
+			{
+				listItem->at(i)->SetFinish(true);
+				switch (listItem->at(i)->GetType())
+				{
+				case def_ID::BIGHEART:
+				{
+					SetHeartCollect(GetHeartCollect() + 5);
+					//listItem->at(i)->SetFinish(true);
+					sound->Play(eSound::sCollectItem); // sound collect item
+					break;
+				}
+				case def_ID::SMALLHEART:
+				{
+					SetHeartCollect(GetHeartCollect() + 1);
+					//listItem->at(i)->SetFinish(true);
+					sound->Play(eSound::sCollectItem);
+					break;
+				}
+				case def_ID::UPGRADEMORNINGSTAR:
+				{
+					MorningStar * objMorningStar = dynamic_cast<MorningStar*>(mainWeapon);
+					objMorningStar->UpgradeLevel(); // Nâng cấp vũ khí roi
+					//listItem[i]->SetFinish(true);
+					SetFreeze(true); // bật trạng thái đóng băng
+					sound->Play(eSound::sCollectWeapon);
+					break;
+				}
+				case def_ID::iDAGGER:
+				{
+					SAFE_DELETE(subWeapon);
+					this->subWeapon = new Dagger();
+					//listItem[i]->SetFinish(true);
+					sound->Play(eSound::sCollectWeapon);
+					break;
+				}
+				case def_ID::MONNEYBAG:
+				{
+					//listItem[i]->SetFinish(true);
+					sound->Play(eSound::sCollectItem);
+					SetPoint(1000);
+					break;
+				}
+				case def_ID::iHOLYWATER:
+				{
+					SAFE_DELETE(subWeapon);
+					subWeapon = new HolyWater(camera);
+					//listItem[i]->SetFinish(true);
+					sound->Play(eSound::sCollectWeapon);
+					break;
+				}
+				case def_ID::POTROAST:
+				{
+					//listItem[i]->SetFinish(true);
+					sound->Play(eSound::sCollectWeapon);
+					SetHP(min(GetHP() + 6, 16)); // tăng 6 đơn vị máu
+					break;
+				}
+				case def_ID::iAXE:
+				{
+					SAFE_DELETE(subWeapon);
+					subWeapon = new Axe(camera);
+					//listItem[i]->SetFinish(true);
+					sound->Play(eSound::sCollectWeapon);
+					break;
+				}
+				case def_ID::MAGICCRYSTAL:
+				{
+					//listItem[i]->SetFinish(true);
+					Data::GetInstance()->passBoss = 1;
+					break;
+				}
+				default:
+					break;
+				}
+			}
+		}
 }
 
 void Simon::CollisionWithExitStair(vector<LPGAMEOBJECT> *coObjects)

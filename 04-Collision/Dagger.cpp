@@ -17,6 +17,7 @@ void Dagger::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	Weapons::Update(dt); // update dt,dx,dy
 
 	x += dx;
+	Weapons::CheckCollision(coObjects);
 }
 
 void Dagger::Create(float simonX, float simonY, int simonTrend)
@@ -36,12 +37,7 @@ void Dagger::GetBoundingBox(float & left, float & top, float & right, float & bo
 
 bool Dagger::isCollision(CGameObject * obj)
 {
-	// dt, dx, dy đã update
-	CGameObject *gameObj = dynamic_cast<CGameObject*>(obj);
-	if (gameObj->GetLife() <= 0) 
-		return false;
-
-	return isCollitionAll(obj);
+	return Weapons::isCollision(obj);
 }
 
 void Dagger::RenderItem(int X, int Y)
@@ -63,3 +59,8 @@ void Dagger::Render(Camera * camera)
 
 	Weapons::Render(camera);
 }
+
+//void Dagger::CheckCollision(vector<LPGAMEOBJECT>* listObj)
+//{
+//	Weapons::CheckCollision(listObj);
+//}

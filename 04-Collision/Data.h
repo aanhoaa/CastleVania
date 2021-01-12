@@ -12,12 +12,11 @@ public:
 	float boundaryLeft;
 	float boundaryRight;
 	bool bossAppear = false;
+	bool passBoss = false;
+	bool passGate = false;
 	float y_Cam;
 
 	int hpBoss = 16;
-
-	bool passGate = 0;
-	//vector<Item *> ListItem; // lisst chứa các item
 
 
 	Data();

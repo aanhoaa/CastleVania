@@ -9,10 +9,11 @@ class HolyWater : public Weapons
 private:
 	Load_img_file * texture_item;
 	Load_resources * sprite_item;
+	Camera * camera;
 	bool isCollisionBrick;
 	int countSprite = 0;
 public:
-	HolyWater();
+	HolyWater(Camera * _camera);
 	virtual ~HolyWater();
 
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
@@ -23,6 +24,6 @@ public:
 	void RenderItem(int X, int Y);
 	bool isCollision(CGameObject* obj);
 	void Render(Camera *camera);
-
+	//void CheckCollision(vector<LPGAMEOBJECT>* listObj);
 };
 

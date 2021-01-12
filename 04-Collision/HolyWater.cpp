@@ -2,7 +2,7 @@
 
 
 
-HolyWater::HolyWater()
+HolyWater::HolyWater(Camera * _camera)
 {
 	obj_type = def_ID::HOLYWATER;
 	texture = LoadTexture::GetInstance()->GetTexture(HOLYWATER);
@@ -13,6 +13,7 @@ HolyWater::HolyWater()
 
 	isCollisionBrick = false;
 	isFinish = true;
+	this->camera = _camera;
 }
 
 HolyWater::~HolyWater()
@@ -22,6 +23,12 @@ HolyWater::~HolyWater()
 
 void HolyWater::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (!camera->isObjectInCamera(x, y, (float)GetWidth(), (float)GetHeight()))
+	{
+		isFinish = true;
+		return;
+	}
+
 	if (isFinish)
 		return;
 
@@ -37,6 +44,8 @@ void HolyWater::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	Weapons::Update(dt); //update dt dx d
+	dy = vy * dt;
+
 	if (!isCollisionBrick)
 		vy += HOLYWATER_GRAVITY * dt;
 
@@ -78,6 +87,8 @@ void HolyWater::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
+
+	Weapons::CheckCollision(coObjects);
 }
 
 void HolyWater::Create(float simon_X, float simon_Y, int simon_nx)
@@ -126,14 +137,7 @@ void HolyWater::RenderItem(int X, int Y)
 
 bool HolyWater::isCollision(CGameObject * obj)
 {
-	if (isFinish)
-		return false;
-	// dt, dx, dy đã update
-	CGameObject *gameObj = dynamic_cast<CGameObject*>(obj);
-	if (gameObj->GetLife() <= 0) // vật này die rồi thì ko va chạm
-		return false;
-
-	return isCollitionAll(obj);
+	return Weapons::isCollision(obj);
 }
 
 void HolyWater::Render(Camera * camera)
@@ -159,3 +163,8 @@ void HolyWater::Render(Camera * camera)
 		RenderBoundingBox(camera);
 	}
 }
+
+//void HolyWater::CheckCollision(vector<LPGAMEOBJECT>* listObj)
+//{
+//	Weapons::CheckCollision(listObj);
+//}

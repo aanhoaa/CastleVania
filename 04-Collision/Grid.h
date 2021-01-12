@@ -9,6 +9,7 @@
 #include "HidenObject.h"
 #include "Stairs.h"
 #include "define.h"
+#include "Enemy.h"
 
 
 using namespace std;
@@ -19,7 +20,7 @@ using namespace std;
 #define GRID_INSERT_OBJECT__DIXUONGHONUOC_LEFT 41, def_ID::HIDDENOBJECT, -1, 3210, 410, 40, 10, 0 
 #define GRID_INSERT_OBJECT__DIRAKHOIHONUOC_LEFT 45, def_ID::HIDDENOBJECT, -1, 3142, 435, 20, 20, 0 
 
-#define GRID_INSERT_OBJECT__DIXUONGHONUOC_RIGHT 86, def_ID::HIDDENOBJECT, -1, 3835, 423, 25, 10, 0 
+#define GRID_INSERT_OBJECT__DIXUONGHONUOC_RIGHT 125, def_ID::HIDDENOBJECT, -1, 3835, 423, 25, 10, 0 
 #define GRID_INSERT_OBJECT__DIRAKHOIHONUOC_RIGHT 81, def_ID::HIDDENOBJECT, -1, 3807, 460, 30, 20, 0 
 class Grid
 {

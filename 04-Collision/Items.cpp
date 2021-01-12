@@ -304,8 +304,8 @@ MagicCrystal::MagicCrystal(int X, int Y)
 	texture = LoadTexture::GetInstance()->GetTexture(def_ID::MAGICCRYSTAL);
 	sprite = new Load_resources(texture, 100);
 
-	x = X;
-	y = Y;
+	x = (float)X;
+	y = (float)Y;
 	life = 1;
 	obj_type = def_ID::MAGICCRYSTAL;
 

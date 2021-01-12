@@ -12,11 +12,15 @@
 #include "GameObject.h"
 #include "Weapons.h"
 #include "Heart.h"
+#include "HitEffect.h"
+
 
 class MorningStar : public Weapons
 {
 protected:
 	int level;
+	vector <HitEffect*> listEffect;
+	vector <CGameObject*> listEnemy;
 public:
 	MorningStar();
 	~MorningStar();

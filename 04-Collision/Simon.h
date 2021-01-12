@@ -65,10 +65,15 @@
 #include "Sound.h"
 #include "Camera.h"
 #include "Data.h"
+#include "Dagger.h"
+#include "HolyWater.h"
+#include "Axe.h"
+#include "Sound.h"
 
 class Simon : public CGameObject
 {
 	Load_resources * simonDeath;
+	Sound * sound;
 public:
 	int HeartPoint; // số lượng heart nhặt được
 	int point;
@@ -107,8 +112,10 @@ public:
 	DWORD TimeWaitedAfterDeath;
 
 	bool beforeDeath;
+
+	Camera * camera;
 public:
-	Simon();
+	Simon(Camera * _camera);
 	~Simon();
 
 	MorningStar * mainWeapon;
@@ -131,11 +138,12 @@ public:
 	void GoUpStair();
 	void StartUntouchable();
 	void SetDeadth();
-	//void SetAutoGoX(float nx, int nx_Backup, float Dx, float Speed); // set các thông số auto và backup các trạng thái hiện tại
 	void RestoreBackupAutoGoX(); // khôi phục trạng thái 
 
 	void SetEnemyHit(LPCOLLISIONEVENT e);
 	void CollisionWithBrick(vector<LPGAMEOBJECT> *coObjects = NULL);
+	void CollisionWithEnemy(vector<LPGAMEOBJECT> *coObjects = NULL);
+	void CollisionWithItem(vector<Items*> *listItem = NULL);
 	void CollisionWithExitStair(vector<LPGAMEOBJECT> *coObjects = NULL);
 	void Attack(Weapons *weapon);
 
@@ -154,6 +162,8 @@ public:
 
 	bool LoseLife();
 	void SetPositionBackup(float X, float Y);  // lưu vị trí cần backup để simon die thì bắt đầu lại từ đây
+
+	//void checkCollisionW
 };
 
 

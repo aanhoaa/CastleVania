@@ -35,6 +35,8 @@ protected:
 	int life;
 	def_ID obj_type; // loại obj
 	bool isPush; // xét xem obj đó đã dc cho vào list chưa (xử lý với tình huống 1 obj nằm trên 2 cells trở lên)
+	bool isDrop;
+	bool isEnabled;
 public:
 	int scene;
 	int id; // id obj
@@ -81,12 +83,17 @@ public:
 	bool GetIsPush();
 	void SetIsPush(int _isPush);
 
+	bool GetIsDrop();
+	void SetIsDrop(int _isDrop);
+
 	int GetHeight();
 	int GetWidth();
 	def_ID GetType();
 	int GetDirect();
 	void SetDirect(int nx);
 	void SetId(int ID);
+
+	void SetEnabled(bool _isEnabled);
 
 	void LoseLife(int health);
 	void LoseHP(int _hp);

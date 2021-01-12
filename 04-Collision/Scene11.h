@@ -29,11 +29,14 @@ public:
 	BoardGame * board;
 	Sound * sound;
 
+	vector<LPGAMEOBJECT> listAllObj;
 	vector<LPGAMEOBJECT> listObj;
 	vector <Items*> listItem;
 	vector <HitEffect*> listEffect;
 
 	CGameTime * gameTime;
+	bool isghost;
+	int countghost;
 
 public:
 	Scene_1();
@@ -50,9 +53,8 @@ public:
 	void ResetResource(); // reset lai resource khi simon mất 1 mạng
 
 	void CheckCollision();
-	void CheckCollisionWeapon();
-	void CheckCollisionSimonWithItem();
 	void CheckCollisionSimonWithHidenObject();
+	void DropItem();
 
 	Items * GetNewItem(int Id, def_ID Type, float X, float Y);
 };

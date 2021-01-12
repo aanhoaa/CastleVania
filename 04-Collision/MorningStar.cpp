@@ -54,6 +54,8 @@ void MorningStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		sprite->SelectIndex(StartFrame);
 	}
 	//DebugOut(L"finish = %d\n", isFinish);
+	Weapons::CheckCollision(coObjects);
+	//CheckCollision(listEnemy);
 }
 
 void MorningStar::Render(Camera * camera)

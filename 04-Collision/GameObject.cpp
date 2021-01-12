@@ -11,6 +11,7 @@ CGameObject::CGameObject()
 	vx = vy = 0;
 	nx = 1;	
 	
+	isDrop = 0;
 	isAutoGo = 0;
 	isReceive = 0;
 
@@ -216,7 +217,7 @@ void CGameObject::GetSpeed(float &vx, float &vy)
 
 int CGameObject::GetObj_id()
 {
-	return id;
+	return this->id;
 }
 
 int CGameObject::GetLife()
@@ -249,6 +250,16 @@ void CGameObject::SetIsPush(int _isPush)
 	isPush = _isPush;
 }
 
+bool CGameObject::GetIsDrop()
+{
+	return isDrop;
+}
+
+void CGameObject::SetIsDrop(int _isDrop)
+{
+	isDrop = _isDrop;
+}
+
 int CGameObject::GetHeight()
 {
 	return texture->FrameHeight;
@@ -276,6 +287,11 @@ void CGameObject::SetDirect(int nx)
 void CGameObject::SetId(int ID)
 {
 	this->id = ID;
+}
+
+void CGameObject::SetEnabled(bool _isEnabled)
+{
+	this->isEnabled = _isEnabled;
 }
 
 void CGameObject::LoseLife(int health)

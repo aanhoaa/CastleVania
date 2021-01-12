@@ -23,7 +23,7 @@ Load_img_file * LoadTexture::GetTexture(def_ID type)
 
 void LoadTexture::LoadResource()
 {
-	if (Data::GetInstance()->scene == 0) // intro game
+	//if (Data::GetInstance()->scene == 2) // intro game
 	{
 		DebugOut(L"[0] Load resource scene: %d\n", Data::GetInstance()->scene);
 		AddTexture(def_ID::MAINMENU, new Load_img_file("Resources/mainmenu.png"));
@@ -44,7 +44,7 @@ void LoadTexture::LoadResource()
 		AddTexture(def_ID::SIMONDEATH, new Load_img_file("Resources/test.png", 3, 1, 3));
 	}
 
-	if (Data::GetInstance()->scene == 1) // stage 1-1
+	//if (Data::GetInstance()->scene == 1) // stage 1-1
 	{
 		DebugOut(L"[1] Load resource scene: %d\n", Data::GetInstance()->scene);
 		AddTexture(def_ID::BRICK_TYPE_1, new Load_img_file("Resources/ground/2.png")); // loại dành cho state 1
@@ -63,7 +63,7 @@ void LoadTexture::LoadResource()
 		AddTexture(def_ID::DAGGER, new Load_img_file("Resources/weapon/1.png"));
 	}
 
-	if (Data::GetInstance()->scene == 2) // stage 1-2
+	//if (Data::GetInstance()->scene == 1) // stage 1-2
 	{
 		//resoure object static
 		AddTexture(def_ID::BRICK_TYPE_2, new Load_img_file("Resources/ground/2-2.png")); // dành cho state 2

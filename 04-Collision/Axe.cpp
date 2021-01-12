@@ -1,6 +1,6 @@
 ﻿#include "Axe.h"
 
-Axe::Axe(Camera * camera)
+Axe::Axe(Camera * _camera)
 {
 	obj_type = def_ID::AXE;
 	texture = LoadTexture::GetInstance()->GetTexture(def_ID::AXE);
@@ -10,7 +10,7 @@ Axe::Axe(Camera * camera)
 	sprite_item = new Load_resources(texture_item, 200);
 
 	isFinish = true;
-	this->camera = camera;
+	this->camera = _camera;
 }
 
 
@@ -20,20 +20,22 @@ Axe::~Axe()
 
 void Axe::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (!camera->isObjectInCamera(x, y, GetWidth(), GetHeight())) // xử lí ra khỏi cam thì kết thúc
+	if (!camera->isObjectInCamera(x, y, (float)GetWidth(), (float)GetHeight())) // xử lí ra khỏi cam thì kết thúc
 	{
 		isFinish = true;
-
 		return;
 	}
 
 	Weapons::Update(dt); //update dt dx d 
+	dy = vy * dt;
 	vy += AXE_GRAVITY * dt;
 
 	y += dy;
 	x += dx;
 
 	sprite->Update(dt);
+
+	Weapons::CheckCollision(coObjects);
 }
 
 void Axe::Create(float simon_X, float simon_Y, int simon_nx)
@@ -76,14 +78,7 @@ void Axe::UpdatePositionFitSimon()
 
 bool Axe::isCollision(CGameObject * obj)
 {
-	if (isFinish)
-		return false;
-	// dt, dx, dy đã update
-	CGameObject *gameObj = dynamic_cast<CGameObject*>(obj);
-	if (gameObj->GetLife() <= 0) // vật này die rồi thì ko va chạm
-		return false;
-
-	return isCollitionAll(obj);
+	return Weapons::isCollision(obj);
 }
 
 void Axe::Render(Camera * camera)

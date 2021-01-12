@@ -55,7 +55,7 @@ void GameIntro::LoadResources()
 
 	isDrawTextPressStart = true;
 
-	simon = new Simon();
+	simon = new Simon(camera);
 	//simon->SetPosition(485, 300);
 	board = new BoardGame(0, 0);
 

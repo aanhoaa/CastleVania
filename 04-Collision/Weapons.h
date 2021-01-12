@@ -29,7 +29,8 @@ public:
 	virtual void Render(Camera *camera);
 	virtual void SetPosition(float X, float Y);
 	virtual void UpdatePositionFitSimon();
-	virtual bool isCollision(CGameObject* obj) = 0; // kiểm tra vũ khí này có va chạm với object kia hay không?
+	virtual bool isCollision(CGameObject* obj); // kiểm tra vũ khí này có va chạm với object kia hay không?
 	virtual void RenderItem(int X, int Y) = 0; // vẽ item lên ô blackborad 
+	virtual void CheckCollision(vector<LPGAMEOBJECT> *coObjects = NULL);
 };                                            
 
