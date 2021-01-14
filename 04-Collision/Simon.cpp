@@ -170,36 +170,12 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 				if (HeightStair >= SIMON_STAIR_PROCESSING_DONE)
 				{
-					isProcessingOnStair++;
-					if (nx == 1 && isStairUp == 1) // đi lên bên phải
-					{
-						x -= (HeightStair - 16.0f);
-						y += (HeightStair - 16.0f);
-					}
-					if (nx == -1 && isStairUp == 1) // đi lên bên trái
-					{
-						x += (HeightStair - 16.0f);
-						y += (HeightStair - 16.0f);
-					}
-
-					if (nx == 1 && isStairUp == -1) // đi xuống bên phải
-					{
-						x -= (HeightStair - 16.0f);
-						y -= (HeightStair - 16.0f);
-					}
-					if (nx == -1 && isStairUp == -1) // đi xuống bên trái
-					{
-						x += (HeightStair - 16.0f);
-						y -= (HeightStair - 16.0f);
-					}
-
-					HeightStair = 0;
+					ProcessingOnStair();
 				}
-				//	DebugOut(L"DoCaoDiDuoc = %f . dy = %f . y = %f\n", DoCaoDiDuoc, dy, y);
 			}
 			else
 			{
-				if (this->isStairUp == 1) // dang di len
+				if (this->isStairUp == 1) 
 					sprite->SelectIndex(SIMON_ANI_STAIR_STANDING_UP);
 				else
 					sprite->SelectIndex(SIMON_ANI_STAIR_STANDING_DOWN);
@@ -224,7 +200,6 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					if (isAttacking == true)
 					{
-						//if (index < SIMON_ANI_STANDING_ATTACKING_BEGIN || index > SIMON_ANI_STANDING_ATTACKING_END)
 						{
 							if (index < SIMON_ANI_SITTING_ATTACKING_BEGIN || index > SIMON_ANI_SITTING_ATTACKING_END)
 							{
@@ -232,7 +207,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 							}
 							else
 							{
-								sprite->Update(dt); // dt này được cập nhật khi gọi update; 
+								sprite->Update(dt); 
 
 								if (sprite->GetIndex() == SIMON_ANI_SITTING_ATTACKING_END + 1)
 									sprite->SelectIndex(SIMON_ANI_SITTING);
@@ -252,7 +227,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						}
 						else
 						{
-							sprite->Update(dt); // dt này được cập nhật khi gọi update; 
+							sprite->Update(dt); 
 						}
 					}
 					else
@@ -264,8 +239,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 								if (index < SIMON_ANI_WALKING_BEGIN || index > SIMON_ANI_WALKING_END)
 									sprite->SelectIndex(SIMON_ANI_WALKING_BEGIN);
 
-								//cập nhật frame mới
-								sprite->Update(dt); // dt này được cập nhật khi gọi update; 
+								sprite->Update(dt); 
 							}
 							else
 							{
@@ -290,13 +264,9 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 				
-	/* Update về sprite */
+	CGameObject::Update(dt);  
 
-	/* Xử lý va chạm*/
-
-	CGameObject::Update(dt);  	// Calculate dx, dy 
-
-	if (isOnStair == false) // ko trên cầu thang thì mới có trọng lực
+	if (isOnStair == false)
 	{
 		if (isJumping)
 		{
@@ -333,7 +303,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (!isOnStair)
 	{
 		if (!isAutoGo)
-			CollisionWithBrick(coObjects); // check Collision and update x, y for simon
+			CollisionWithBrick(coObjects); 
 		else
 		{
 			x += dx;
@@ -348,7 +318,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (Data::GetInstance()->scene >= 1)
 	{
 		mainWeapon->SetPosition(this->x, this->y);
-		mainWeapon->SetSpeed(vx, vy); // set vận tốc để kt va chạm
+		mainWeapon->SetSpeed(vx, vy); 
 		mainWeapon->UpdatePositionFitSimon();
 	}
 
@@ -715,8 +685,7 @@ void Simon::CollisionWithItem(vector<Items*> * listItem)
 		return;
 
 	for (UINT i = 0; i < listItem->size(); i++)
-		// nếu item chưa biến mất (do k collect) và item đang không phải trong thời gian của hiteffect thì xét va chạm
-		if (listItem->at(i)->GetFinish() == false && listItem->at(i)->isWaitingDisplay() == false)
+		if (listItem->at(i)->GetFinish() == false && !listItem->at(i)->isWaiting())
 		{
 			if (isCollisionWithItem(listItem->at(i))) // có va chạm
 			{
@@ -1071,4 +1040,32 @@ void Simon::RestoreBackupAutoGoX()
 	vx = 0;
 	vy = 0;
 	// đi xong thì cho simon đứng yên
+}
+
+void Simon::ProcessingOnStair()
+{
+	isProcessingOnStair++;
+	if (nx == 1 && isStairUp == 1)
+	{
+		x -= (HeightStair - 16.0f);
+		y += (HeightStair - 16.0f);
+	}
+	if (nx == -1 && isStairUp == 1)
+	{
+		x += (HeightStair - 16.0f);
+		y += (HeightStair - 16.0f);
+	}
+
+	if (nx == 1 && isStairUp == -1)
+	{
+		x -= (HeightStair - 16.0f);
+		y -= (HeightStair - 16.0f);
+	}
+	if (nx == -1 && isStairUp == -1)
+	{
+		x += (HeightStair - 16.0f);
+		y -= (HeightStair - 16.0f);
+	}
+
+	HeightStair = 0;
 }

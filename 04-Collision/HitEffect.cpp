@@ -37,6 +37,22 @@ void HitEffect::SetFinish(int b)
 	isFinish = b;
 }
 
+void HitEffect::AddHitEffect(vector <HitEffect*> *listEffect, float X_hit, float Y_hit, float X_effect, float Y_effect)
+{
+	listEffect->push_back(new Hit(X_hit, Y_hit));
+	listEffect->push_back(new Effect(X_effect, Y_effect));
+}
+
+void HitEffect::AddBrickSplash(vector <HitEffect*> *listEffect, float X, float Y)
+{
+	listEffect->push_back(new Hit(X, Y));
+
+	for (int i = 0; i < 4; i++)
+	{
+		listEffect->push_back(new BrickSplash(X, Y, i + 1));
+	}
+}
+
 /* Hit*/
 Hit::Hit(int X, int Y)
 {

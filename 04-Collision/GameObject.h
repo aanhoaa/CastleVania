@@ -33,18 +33,17 @@ class CGameObject
 protected:
 	int hp;
 	int life;
-	def_ID obj_type; // loại obj
-	bool isPush; // xét xem obj đó đã dc cho vào list chưa (xử lý với tình huống 1 obj nằm trên 2 cells trở lên)
+	def_ID obj_type; 
 	bool isDrop;
 	bool isEnabled;
 public:
 	int scene;
-	int id; // id obj
+	int id;
 	float x; 
 	float y;
 
-	float dx;	// dx = vx*dt
-	float dy;	// dy = vy*dt
+	float dx;	
+	float dy;	
 
 	float vx;
 	float vy;
@@ -79,9 +78,6 @@ public:
 	void SetHP(int _hp);
 	int GetLife();
 	void setLife(int _life);
-
-	bool GetIsPush();
-	void SetIsPush(int _isPush);
 
 	bool GetIsDrop();
 	void SetIsDrop(int _isDrop);

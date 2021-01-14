@@ -240,16 +240,6 @@ void CGameObject::SetHP(int _hp)
 	hp = _hp;
 }
 
-bool CGameObject::GetIsPush()
-{
-	return isPush;
-}
-
-void CGameObject::SetIsPush(int _isPush)
-{
-	isPush = _isPush;
-}
-
 bool CGameObject::GetIsDrop()
 {
 	return isDrop;

@@ -134,7 +134,6 @@ void Load_resources::DrawS(int X, int Y, int subX, int pivot, int alpha)
 		srect.bottom -= subX;
 	}
 
-
 	D3DXVECTOR3 p((float)X, (float)Y, 0);
 	spriteHandler->Draw(
 		_texture->Texture,

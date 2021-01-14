@@ -121,11 +121,12 @@ void Weapons::CheckCollision(vector<LPGAMEOBJECT> *listObj)
 				default:
 					break;
 				}
+
+				isSend = true;
 			}
 		}
 	}
 }
-
 
 bool Weapons::GetFinish()
 {

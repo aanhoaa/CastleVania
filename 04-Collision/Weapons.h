@@ -6,7 +6,6 @@
 #include "Load_resources.h"
 #include "GameObject.h"
 #include "Items.h"
-#include "Heart.h"
 #include "LoadTexture.h"
 #include "Sound.h"
 

@@ -204,7 +204,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	sceneManager = SceneManager::GetInstance();
 
-	sceneManager->SetScene(new Scene_2()); 
+	sceneManager->SetScene(new Scene_1()); 
 
 	game->InitKeyboard();
 	

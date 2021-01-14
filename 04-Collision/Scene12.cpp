@@ -1,6 +1,5 @@
 ﻿#include "Scene12.h"
 
-/* Scene 1*/
 Scene_2::Scene_2(Simon * _simon, CGameTime* _gameTime)
 {
 	simon = _simon;
@@ -20,32 +19,12 @@ Scene_2::~Scene_2()
 
 void Scene_2::KeyState(BYTE * state)
 {
-	if (simon->GetFreeze()) // Đang bóng băng thì không quan tâm phím
-	{
-		return;
-	}
-
-	if (simon->isDeadth || gameOver)
-	{
-		return;
-	}
-
-	if (camera->GetIsAutoGoX()) // camera đang chế độ tự đi thì ko xét phím
+	if (simon->GetFreeze() || simon->isDeadth 
+		|| gameOver || simon->isAutoGo
+		|| simon->isJumping || simon->isEnemyHit || camera->GetIsAutoGoX())
 		return;
 
-	if (simon->isAutoGoX == true) // đang chế độ tự đi thì ko xét phím
-		return;
-
-	if (simon->isAutoGo == true) // đang chế độ tự đi thì ko xét phím
-		return;
-
-	if (simon->isJumping)
-		return;
-
-	if (simon->isEnemyHit)
-		return;
-
-	if (simon->isAttacking) // đang attack
+	if (simon->isAttacking)
 	{
 		float vx, vy;
 		simon->GetSpeed(vx, vy);
@@ -62,7 +41,7 @@ void Scene_2::KeyState(BYTE * state)
 			{
 				if (listObj[i]->GetType() == def_ID::BOTTOMSTAIR)
 				{
-					if (simon->isCollitionAll(listObj[i])) // nếu va chạm với STAIR BOTOM
+					if (simon->isCollitionAll(listObj[i])) 
 					{
 						CGameObject* hidenObj = dynamic_cast<CGameObject*>(listObj[i]);
 
@@ -71,7 +50,7 @@ void Scene_2::KeyState(BYTE * state)
 						simon->isOnStair = 1;
 						simon->HeightStair = 0;
 						simon->isStairUp = 1;
-						//DebugOut(L"distance %f\n", abs(hidenObj->x - simon->x));
+						
 						if (simon->x < hidenObj->x)
 						{
 							simon->AutoGo(1, hidenObj->GetDirect(), hidenObj->x - simon->x, SIMON_WALKING_SPEED);
@@ -79,7 +58,6 @@ void Scene_2::KeyState(BYTE * state)
 						else
 							simon->AutoGo(-1, hidenObj->GetDirect(), simon->x - hidenObj->x, SIMON_WALKING_SPEED);
 
-						DebugOut(L"Collision stair\n");
 						return;
 					}
 				}
@@ -89,14 +67,11 @@ void Scene_2::KeyState(BYTE * state)
 		{
 			if (simon->isProcessingOnStair == 0 || simon->isProcessingOnStair == 3)
 			{
-				//DebugOut(L"processing in 0: = %d\n", simon->isProcessingOnStair);
 				simon->SetDirect(simon->nx_stair);
 				simon->isWalking = true;
 				simon->isStairUp = 1;
 				simon->isProcessingOnStair = 1;
-
 				simon->SetSpeed(simon->GetDirect() * SIMON_SPEED_ONSTAIR, -1 * SIMON_SPEED_ONSTAIR);
-				
 			}
 		}
 	}
@@ -111,14 +86,14 @@ void Scene_2::KeyState(BYTE * state)
 				{
 					if (listObj[i]->GetType() == def_ID::TOPSTAIR)
 					{
-						if (simon->isCollitionAll(listObj[i])) // nếu va chạm với STAIR TOP
+						if (simon->isCollitionAll(listObj[i])) 
 						{
 							CGameObject* hidenObj = dynamic_cast<CGameObject*>(listObj[i]);
-							simon->nx_stair = hidenObj->GetDirect(); // lưu hướng của cầu thang đang đi vào simon
-							simon->SetDirect(simon->nx_stair);// hướng của simon khi đi xuống là hướng của cầu thang
-							simon->isStairUp = -1;// hướng đi xuống
+							simon->nx_stair = hidenObj->GetDirect(); 
+							simon->SetDirect(simon->nx_stair);
+							simon->isStairUp = -1;
 
-							simon->isOnStair = true; // set trạng thái đang trên cầu thang
+							simon->isOnStair = true; 
 							simon->HeightStair = 0;
 
 							if (simon->x < hidenObj->x)
@@ -134,7 +109,7 @@ void Scene_2::KeyState(BYTE * state)
 					}
 				}
 
-				if (checkCollision == 0) // ko đụng stair top, tức là ngồi bt
+				if (checkCollision == 0) 
 				{
 					simon->Sit();
 					if (CGame::GetInstance()->IsKeyDown(DIK_RIGHT))
@@ -147,25 +122,22 @@ void Scene_2::KeyState(BYTE * state)
 			}
 			else
 			{
-				if (simon->isProcessingOnStair == 0 || simon->isProcessingOnStair == 3) // kết thúc xử lí trước đó
+				if (simon->isProcessingOnStair == 0 || simon->isProcessingOnStair == 3) 
 				{
 					simon->isWalking = true;
 					simon->isProcessingOnStair = 1;
-					simon->isStairUp = -1;// hướng đi xuống
+					simon->isStairUp = -1;
 					simon->HeightStair = 0;
-					simon->SetDirect(-simon->nx_stair);// hướng của simon khi đi xuóng là ngược của cầu thang
+					simon->SetDirect(-simon->nx_stair);
 					simon->SetSpeed(simon->GetDirect() * SIMON_SPEED_ONSTAIR, SIMON_SPEED_ONSTAIR);
 				}
 			}
 		}
-		else // ko nhấn phím xuống
+		else 
 		{
 			simon->Stop();
 		}
 	}
-
-	/*if (simon->isJumping)
-		return;*/
 
 	if (simon->isOnStair) 
 		return;
@@ -471,6 +443,7 @@ void Scene_2::LoadResources()
 
 	simon->SetPositionBackup(SIMON_POSITION_DEFAULT);
 
+	addHitEffect = new HitEffect();
 	gridGame = new Grid();
 
 	listItem.clear();
@@ -659,7 +632,7 @@ void Scene_2::Update(DWORD dt)
 		if (magicTime >= 2000)
 		{
 			magicTime = 0;
-			listItem.push_back(new MagicCrystal(5368, 216));
+			listItem.push_back(new Items(def_ID::MAGICCRYSTAL, 5368.0f, 216.0f));
 			magicDown = false;
 		}
 	}
@@ -676,9 +649,9 @@ void Scene_2::Update(DWORD dt)
 
 	for (UINT i = 0; i < listEffect.size(); i++)
 	{
-		//DebugOut(L"[INFO] eff: %d\n", listEffect[i]->GetFinish());
 		if (listEffect[i]->GetFinish() == false)
 			listEffect[i]->Update(dt);
+		else listEffect.erase(listEffect.begin() + i);
 	}
 
 	for (UINT i = 0; i < listEnemy.size(); i++)
@@ -952,33 +925,33 @@ void Scene_2::GenerateGhost()
 						int random = rand() % 2; // tỉ lệ 50%
 						switch (random)
 						{
-						case 0: // ở trên
+						case 0:
 						{
 							if (simon->x <= REGION_CREATE_GHOST_TOP)
 							{
-								listEnemy.push_back(new Ghost(camera->GetX_cam() + camera->GetWidth(), 185, -1));// bên phải chạy qua trái
+								listEnemy.push_back(new Ghost(camera->GetX_cam() + camera->GetWidth(), 185, -1));
 								break;
 							}
 							else
 								if (REGION_CREATE_GHOST_BOTTOM <= simon->x)
 								{
-									listEnemy.push_back(new Ghost(camera->GetX_cam() - 34, 185, 1));// bên trái qua phải
+									listEnemy.push_back(new Ghost(camera->GetX_cam() - 34, 185, 1));
 									break;
 								}
 						}
-						case 1: // ở dưới
+						case 1: 
 						{
-							if (simon->vx>0) // đang chạy về bên phải
-								listEnemy.push_back(new Ghost(camera->GetX_cam() + camera->GetWidth(), 330, -1));// bên phải chạy qua trái
+							if (simon->vx>0) 
+								listEnemy.push_back(new Ghost(camera->GetX_cam() + camera->GetWidth(), 330, -1));
 							else
-								if (simon->vx < 0) // đang chạy bên trái 
-									listEnemy.push_back(new Ghost(camera->GetX_cam() - 34, 330, 1)); // đi từ trái qua phải
+								if (simon->vx < 0) 
+									listEnemy.push_back(new Ghost(camera->GetX_cam() - 34, 330, 1)); 
 								else
 								{
 									if (rand() % 2 == 0)
-										listEnemy.push_back(new Ghost(camera->GetX_cam() + camera->GetWidth(), 330, -1));// bên phải chạy qua trái
+										listEnemy.push_back(new Ghost(camera->GetX_cam() + camera->GetWidth(), 330, -1));
 									else
-										listEnemy.push_back(new Ghost(camera->GetX_cam() - 34, 330, 1)); // đi từ trái qua phải 
+										listEnemy.push_back(new Ghost(camera->GetX_cam() - 34, 330, 1)); 
 								}
 							break;
 						}
@@ -987,12 +960,12 @@ void Scene_2::GenerateGhost()
 				}
 
 				CountEnemyGhost++;
-				if (countGhostBorn == 3) // ghost ra 3 con thì dừng
+				if (countGhostBorn == 3) 
 				{
-					isGenerateGhost = false; // Đủ 3 ghost đang sống thì dừng tạo
+					isGenerateGhost = false;
 					isExistGhost = true;
 				}
-				TimeCreateGhost = now; // set lại thời điểm đã tạo ghost
+				TimeCreateGhost = now; 
 			}
 		}
 		else
@@ -1059,7 +1032,7 @@ void Scene_2::GenerateBat()
 			TimeCreateBat = now; // đặt lại thời gian đã tạo bat
 			int bat_nx = -simon->nx;
 			float pos = bat_nx == 1 ? camera->GetX_cam() : camera->GetX_cam() + camera->GetWidth() - 10;
-			listEnemy.push_back(new Bat(pos, simon->y + 40, bat_nx));
+			listEnemy.push_back(new Bat(pos, simon->y, bat_nx));
 			TimeWaitProcessCreateBat = 6000 + (rand() % 4000);
 		}
 	}
@@ -1311,66 +1284,44 @@ void Scene_2::DropItem()
 				case def_ID::SMALLCANDLE:
 				{
 					gameObj->SetIsDrop(1);
-					listItem.push_back(GetNewItem(gameObj->GetObj_id(), def_ID::SMALLCANDLE, gameObj->x, gameObj->y));
+					listItem.push_back(GetRandomItem(gameObj->GetObj_id(), def_ID::SMALLCANDLE, gameObj->x, gameObj->y));
 					sound->Play(eSound::sHit); // sound đánh trúng obj
-					listEffect.push_back(new Hit((int)(listAllObj[i]->x), (int)(listAllObj[i]->y + 10))); // hiệu ứng lửa
-					listEffect.push_back(new Effect((int)(listAllObj[i]->x - 5), (int)(listAllObj[i]->y + 8))); // hiệu ứng lửa
+					addHitEffect->AddHitEffect(&listEffect, gameObj->x, gameObj->y + 10, gameObj->x - 5, gameObj->y + 8);
 					break;
 				}
 				case def_ID::BRICK:
 				{
 					switch (gameObj->GetObj_id())
-					{
-					case 39: // id 39 : brick 4 ô-> chỉ hiện effect
-					{
-						gameObj->LoseLife(1);
-							
-						listEffect.push_back(new Hit((int)gameObj->x + 14, (int)gameObj->y + 14)); 
-						listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 1)); 
-						listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 2)); 
-						listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 3)); 
-						listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 4)); 
-					
-						break;
-					}
-					case 40: // drop pot roast
-					{
-						gameObj->LoseLife(1);
-						listItem.push_back(GetNewItem(gameObj->GetObj_id(), gameObj->GetType(), gameObj->x, gameObj->y));
-						listEffect.push_back(new Hit((int)gameObj->x + 14, (int)gameObj->y + 14)); // hiệu ứng hit
-						listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 1)); // hiệu ứng BrickSplash
-						listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 2)); // hiệu ứng BrickSplash
-						listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 3)); // hiệu ứng BrickSplash
-						listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 4)); // hiệu ứng BrickSplash 
-						break;
-					}
-					case 51: // id 51: brick 2 -> effect
-					{
-						if (simon->mainWeapon->isCollision(listObj[i]) == true)
+						{
+						case 39:
 						{
 							gameObj->LoseLife(1);
-							listEffect.push_back(new Hit((int)gameObj->x + 14, (int)gameObj->y + 14)); // hiệu ứng hit
-							listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 1)); // hiệu ứng BrickSplash
-							listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 2)); // hiệu ứng BrickSplash
-							listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 3)); // hiệu ứng BrickSplash
-							listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 4)); // hiệu ứng BrickSplash 																											
+							break;
 						}
-						break;
-					}
-					case 72: // id 72: brick -> a bonus
-					{
-						gameObj->LoseLife(1);
-						sound->Play(eSound::sMonneyBag);
-						listItem.push_back(GetNewItem(gameObj->GetObj_id(), gameObj->GetType(), gameObj->x, gameObj->y));
-						listEffect.push_back(new Hit((int)gameObj->x + 14, (int)gameObj->y + 14)); // hiệu ứng hit
-						listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 1)); // hiệu ứng BrickSplash
-						listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 2)); // hiệu ứng BrickSplash
-						listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 3)); // hiệu ứng BrickSplash
-						listEffect.push_back(new BrickSplash((int)gameObj->x + 14, (int)gameObj->y + 14, 4)); // hiệu ứng BrickSplash  
+						case 40: 
+						{
+							gameObj->LoseLife(1);
+							listItem.push_back(GetRandomItem(gameObj->GetObj_id(), gameObj->GetType(), gameObj->x, gameObj->y));
+							break;
+						}
+						case 51:
+						{
+							if (simon->mainWeapon->isCollision(listObj[i]) == true)
+							{
+								gameObj->LoseLife(1); 																											
+							}
+							break;
+						}
+						case 72:
+						{
+							gameObj->LoseLife(1);
+							sound->Play(eSound::sMonneyBag);
+							listItem.push_back(GetRandomItem(gameObj->GetObj_id(), gameObj->GetType(), gameObj->x, gameObj->y));
 						
-						break;
+							break;
+						}
 					}
-					}
+					addHitEffect->AddBrickSplash(&listEffect, (int)gameObj->x + 14, (int)gameObj->y + 14);
 				}
 				case def_ID::GHOST:
 				{
@@ -1378,14 +1329,11 @@ void Scene_2::DropItem()
 
 					if (rand() % 2 == 1) // tỉ lệ 50%
 					{
-						listItem.push_back(GetNewItem(gameObj->GetObj_id(), gameObj->GetType(), gameObj->x + 5, gameObj->y));
+						listItem.push_back(GetRandomItem(gameObj->GetObj_id(), gameObj->GetType(), gameObj->x + 5, gameObj->y));
 					}
 
 					sound->Play(eSound::sHit); // sound đánh trúng obj
-					listEffect.push_back(new Hit((int)(listAllObj[i]->x), (int)(listAllObj[i]->y + 10))); // hiệu ứng lửa
-					listEffect.push_back(new Effect((int)(listAllObj[i]->x - 5), (int)(listAllObj[i]->y + 8))); // hiệu ứng lửa
-					DebugOut(L"[DROP]\n");
-					//RunEffectHit = true;
+
 					CountEnemyGhost--; // giảm số lượng Ghost đang hoạt động
 					if (CountEnemyGhost == 0)
 					{
@@ -1405,13 +1353,10 @@ void Scene_2::DropItem()
 
 					if (rand() % 2 == 1) // tỉ lệ 50%
 					{
-						listItem.push_back(GetNewItem(gameObj->GetObj_id(), gameObj->GetType(), gameObj->x + 5, gameObj->y));
+						listItem.push_back(GetRandomItem(gameObj->GetObj_id(), gameObj->GetType(), gameObj->x + 5, gameObj->y));
 					}
 
 					sound->Play(eSound::sHit); // sound đánh trúng obj
-					listEffect.push_back(new Hit((int)(listAllObj[i]->x), (int)(listAllObj[i]->y + 10))); // hiệu ứng lửa
-					listEffect.push_back(new Effect((int)(listAllObj[i]->x - 5), (int)(listAllObj[i]->y + 8))); // hiệu ứng lửa
-																										  //RunEffectHit = true;
 					CountEnemyPanther--; // giảm số lượng Ghost đang hoạt động
 
 					break;
@@ -1422,19 +1367,15 @@ void Scene_2::DropItem()
 					simon->SetPoint(simon->GetPoint() + 200);
 					if (rand() % 2 == 1) // tỉ lệ 50%
 					{
-						listItem.push_back(GetNewItem(gameObj->GetObj_id(), gameObj->GetType(), gameObj->x + 5, gameObj->y));
+						listItem.push_back(GetRandomItem(gameObj->GetObj_id(), gameObj->GetType(), gameObj->x + 5, gameObj->y));
 					}
 
 					sound->Play(eSound::sHit); // sound đánh trúng obj
-					listEffect.push_back(new Hit((int)(listAllObj[i]->x), (int)(listAllObj[i]->y + 10))); // hiệu ứng lửa
-					listEffect.push_back(new Effect((int)(listAllObj[i]->x - 5), (int)(listAllObj[i]->y + 8))); // hiệu ứng lửa
 
 					CountEnemyGhost--; // giảm số lượng Ghost đang hoạt động
 					if (CountEnemyGhost == 0)
 					{
-						TimeWaitProcessCreateGhost = GetTickCount(); // set thời điểm hiện tại
-																	 //isWaitProcessCreateGhost = true;
-																	 //isAllowCheckTimeWaitProcessCreateGhost = true;
+						TimeWaitProcessCreateGhost = GetTickCount(); // set thời điểm hiện tại											
 					}
 					break;
 				}
@@ -1443,7 +1384,7 @@ void Scene_2::DropItem()
 					gameObj->SetIsDrop(1);
 					simon->SetPoint(simon->GetPoint() + 200);
 					if (rand() % 2 == 1) // tỉ lệ 50% 
-						listItem.push_back(GetNewItem(gameObj->GetObj_id(), gameObj->GetType(), gameObj->x + 5, gameObj->y));
+						listItem.push_back(GetRandomItem(gameObj->GetObj_id(), gameObj->GetType(), gameObj->x + 5, gameObj->y));
 
 					//RunEffectHit = true;
 					sound->Play(eSound::sHit); // sound đánh trúng obj
@@ -1474,6 +1415,9 @@ void Scene_2::DropItem()
 				default:
 					break;
 				}
+
+				if(gameObj->GetType() != def_ID::BRICK || gameObj->GetType() != def_ID::BOSS)
+					addHitEffect->AddHitEffect(&listEffect, gameObj->x, gameObj->y + 10, gameObj->x - 5, gameObj->y + 8);
 
 				if (simon->subWeapon != NULL && !simon->subWeapon->GetFinish())
 				{
@@ -1527,7 +1471,6 @@ void Scene_2::CheckCollisionSimonWithHidenObject()
 							stateGame = 3;
 							camera->SetPositionBackup(camera->GetX_cam(), camera->GetY_cam());
 							hidenObject->LoseLife(1);
-							DebugOut(L"Xac nhan qua xong cua 2!\n");
 							break;
 						}
 						case eHidden::WATERDOWNLEFT: // id 41: object ẩn -> xuống hồ nước
@@ -1535,7 +1478,7 @@ void Scene_2::CheckCollisionSimonWithHidenObject()
 							camera->SetPosition(camera->GetX_cam(), 384-10);
 							camera->SetBoundary(CAMERA_BOUNDARY_LAKE_LEFT, CAMERA_BOUNDARY_LAKE_RIGHT);
 							simon->SetPosition(3170, 430);
-							isGenerateBat = false;  // không cho tạo Bat
+							isGenerateBat = false; 
 							isAllowCreateFishmen = true;
 							hidenObject->setLife(0);
 							gridGame->pushToCell(GRID_INSERT_OBJECT__DIRAKHOIHONUOC_LEFT);
@@ -1554,7 +1497,7 @@ void Scene_2::CheckCollisionSimonWithHidenObject()
 						case eHidden::BONUS: 
 						{
 							sound->Play(eSound::sMonneyBag);
-							listItem.push_back(GetNewItem(hidenObject->GetObj_id(), hidenObject->GetType(), simon->x, simon->y));
+							listItem.push_back(GetRandomItem(hidenObject->GetObj_id(), hidenObject->GetType(), simon->x, simon->y));
 
 							break;
 						}
@@ -1582,7 +1525,6 @@ void Scene_2::CheckCollisionSimonWithHidenObject()
 							simon->SetPosition(3825, 442);
 							isGenerateBat = false;  
 							isAllowCreateFishmen = true;
-
 							hidenObject->setLife(0);
 
 							gridGame->pushToCell(GRID_INSERT_OBJECT__DIRAKHOIHONUOC_RIGHT); 
@@ -1665,7 +1607,6 @@ void Scene_2::CheckCollisionSimonWithGate()
 						isProcessingGoThroughTheDoor2 = true; // bật trạng thái xử lí qua cửa
 						isDoneSimonGoThroughTheDoor2 = false;
 						isGenerateBat = 0;
-						DebugOut(L"Simon dung trung cua 2!\n");
 
 						break;
 					}
@@ -1688,7 +1629,7 @@ void Scene_2::CheckCollisionSimonWithGate()
 	}
 }
 
-Items * Scene_2::GetNewItem(int Id, def_ID Type, float X, float Y)
+Items * Scene_2::GetRandomItem(int Id, def_ID Type, float X, float Y)
 {
 	if (Type == def_ID::SMALLCANDLE)
 	{
@@ -1698,13 +1639,13 @@ Items * Scene_2::GetNewItem(int Id, def_ID Type, float X, float Y)
 		case 40:
 		case 71:
 			if (simon->subWeapon != NULL && simon->subWeapon->GetType() != def_ID::HOLYWATER || simon->subWeapon == NULL)
-				return new iHolyWater(X, Y);
+				return new Items(def_ID::iHOLYWATER, X, Y);
 			break;
 		case 113:
-			return new iAxe(X, Y);
+			return new Items(def_ID::iAXE, X, Y);
 			break;
 		default:
-			return new SmallHeart(X, Y);
+			return new Items(def_ID::SMALLHEART, X, Y);
 			break;
 		}
 	}
@@ -1715,28 +1656,28 @@ Items * Scene_2::GetNewItem(int Id, def_ID Type, float X, float Y)
 		switch (random)
 		{
 		case 0:
-			return new BigHeart(X, Y);
+			return new Items(def_ID::BIGHEART, X, Y);
 			break;
 		case 1:
-			return new SmallHeart(X, Y);
+			return new Items(def_ID::SMALLHEART, X, Y);
 			break;
 		case 2:
 			if (simon->subWeapon != NULL && simon->subWeapon->GetType() != def_ID::DAGGER || simon->subWeapon == NULL)
-				return new iDagger(X, Y);
+				return new Items(def_ID::iDAGGER, X, Y);
 			break;
 		case 3:
-			return new MoneyBag(X, Y);
+			return new Items(def_ID::MONNEYBAG, X, Y);
 			break;
 		case 4:
 			if (simon->mainWeapon->GetLevel() < 2)
-				return new Whip(X, Y);
+				return new Items(def_ID::MORNINGSTAR, X, Y);
 			break;
 		case 5:
 			if (simon->subWeapon != NULL && simon->subWeapon->GetType() != def_ID::HOLYWATER || simon->subWeapon == NULL)
-				return new iHolyWater(X, Y);
+				return new Items(def_ID::iHOLYWATER, X, Y);
 			break;
 		default: // 50%
-			return new SmallHeart(X, Y);
+			return new Items(def_ID::SMALLHEART, X, Y);
 			break;
 		}
 	}
@@ -1746,10 +1687,10 @@ Items * Scene_2::GetNewItem(int Id, def_ID Type, float X, float Y)
 		switch (Id)
 		{
 		case 40:
-			return new PotRoast(X, Y);
+			return new Items(def_ID::POTROAST, X, Y);
 			break;
 		case 72:
-			return new MoneyBag(X, Y);
+			return new Items(def_ID::MONNEYBAG, X, Y);
 			break;
 		default:
 			break;
@@ -1759,8 +1700,8 @@ Items * Scene_2::GetNewItem(int Id, def_ID Type, float X, float Y)
 	if (Type == def_ID::HIDDENOBJECT)
 	{
 		if (Id == 65)
-			return new MoneyBag(3763.0f, 587.0f);
+			return new Items(def_ID::MONNEYBAG, 3763.0f, 587.0f);
 	}
 
-	return new BigHeart(X, Y);
+	return new Items(def_ID::BIGHEART, X, Y);
 }

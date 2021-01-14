@@ -115,7 +115,6 @@ CGameObject * Grid::GetNewObject(int type, int x, int y, int w, int h, int updat
 	if (type == def_ID::BOTTOMSTAIR) return new Stairs(x, y, update);
 	if (type == def_ID::TOPSTAIR) return new Stairs(x, y, update);
 	if (type == def_ID::GATE) return new Gate(x, y);
-	if (type == def_ID::GHOST) return new Ghost(x, y, -1);
 	
 	return NULL;
 }

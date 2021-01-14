@@ -11,7 +11,6 @@
 
 #include "GameObject.h"
 #include "Weapons.h"
-#include "Heart.h"
 #include "HitEffect.h"
 
 

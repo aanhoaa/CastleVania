@@ -197,6 +197,7 @@ void Scene_1::LoadResources()
 
 	simon->SetPositionBackup(SIMON_POSITION_DEFAULT);
 
+	addHitEffect = new HitEffect();
 	gridGame = new Grid();
 
 	listItem.clear();
@@ -285,6 +286,7 @@ void Scene_1::Update(DWORD dt)
 	{
 		if (listEffect[i]->GetFinish() == false)
 			listEffect[i]->Update(dt);
+		else listEffect.erase(listEffect.begin() + i);
 	}
 
 	CheckCollision();
@@ -351,8 +353,8 @@ void Scene_1::DropItem()
 					gameObj->SetIsDrop(1);
 					listItem.push_back(GetNewItem(gameObj->GetObj_id(), def_ID::BIGCANDLE, gameObj->x, gameObj->y));
 					sound->Play(eSound::sHit); // sound đánh trúng obj
-					listEffect.push_back(new Hit((int)(listObj[i]->x), (int)(listObj[i]->y + 10))); // hiệu ứng lửa
-					listEffect.push_back(new Effect((int)(listObj[i]->x - 5), (int)(listObj[i]->y + 8))); // hiệu ứng lửa
+					addHitEffect->AddHitEffect(&listEffect, gameObj->x, gameObj->y + 10, gameObj->x - 5, gameObj->y + 8);
+					
 					break;
 				}
 			}
@@ -404,18 +406,18 @@ Items * Scene_1::GetNewItem(int Id, def_ID Type, float X, float Y)
 	if (Type == def_ID::BIGCANDLE)
 	{
 		if (Id == 1 || Id == 4)
-			return new BigHeart(X, Y);
+			return new Items(def_ID::BIGHEART, X, Y);
 
 		if (Id == 2 || Id == 3)
-			return new Whip(X, Y);
+			return new Items(def_ID::UPGRADEMORNINGSTAR, X, Y);
 		if (Id == 5)
-			return new iDagger(X, Y);
+			return new Items(def_ID::iDAGGER, X, Y);
 	}
 
 	if (Type == def_ID::HIDDENOBJECT)
 	{
 		if (Id == 8)
-			return new MoneyBag(1240, 305);
+			return new Items(def_ID::MONNEYBAG, 1240, 305);
 	}
-	return new BigHeart(X, Y);
+	return new Items(def_ID::BIGHEART, X, Y);
 }

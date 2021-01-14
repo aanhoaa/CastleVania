@@ -22,6 +22,8 @@ public:
 	virtual void Update(DWORD dt);
 	bool GetFinish();
 	void SetFinish(int b);
+	void AddHitEffect(vector <HitEffect*> *listEffect, float X_hit, float Y_hit, float X_effect, float Y_effect);
+	void AddBrickSplash(vector <HitEffect*> *listEffect, float X, float Y);
 };
 
 

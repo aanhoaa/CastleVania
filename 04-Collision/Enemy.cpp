@@ -241,29 +241,14 @@ void Panther::Update(DWORD dt, Simon * simon, vector<LPGAMEOBJECT>* coObjects)
 					autogo = 0;
 					x_root = x;
 					
-					if (x < simon->x) // simon ở bên phải
-					{
-						nx = 1; // đổi hướng panther qua phải 
-					}
-					else
-					{
-						nx = -1; // đổi hướng panther qua trái
-					}
-					
+					nx = x < simon->x ? 1 : -1;
+
 					Run();
 					isAutoGo = true;
 				}
 				else
 				{
-					if (x < simon->x) // simon ở bên phải
-					{
-						nx = 1; // đổi hướng panther qua phải 
-					}
-					else
-					{
-						nx = -1; // đổi hướng panther qua trái
-					}
-					//DebugOut(L"[PANTHER] end auto go X: %d\n", nx);
+					nx = x < simon->x ? 1 : -1;
 					Run();
 				}
 			}
@@ -271,8 +256,6 @@ void Panther::Update(DWORD dt, Simon * simon, vector<LPGAMEOBJECT>* coObjects)
 	}
 	for (UINT i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
-#pragma endregion
-
 
 	if (isAutoGo)
 	{
@@ -282,7 +265,7 @@ void Panther::Update(DWORD dt, Simon * simon, vector<LPGAMEOBJECT>* coObjects)
 			isAutoGo = false;
 			vx = 0;
 
-			Jump(); // Sau khi chạy xong thì nhảy
+			Jump();
 		}
 	}
 }
@@ -359,7 +342,7 @@ void Bat::GetBoundingBox(float & left, float & top, float & right, float & botto
 void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt);
-	//sprite->Update(dt);
+	
 	alpha += 1;
 	if (alpha >= 360)
 	{
@@ -379,12 +362,6 @@ void Bat::Render(Camera * camera)
 {
 	if (life < 1)
 		return;
-
-	/*
-	đáng lý ra nên để trong update nhưng do khi ghost đi khỏi màn hình sẽ chết
-	nhưng k xóa nên cho vào đây để ghost k dc update sprite
-	*/
-	
 
 	D3DXVECTOR2 pos = camera->Translate(x, y);
 	if (nx == -1)
@@ -472,11 +449,11 @@ void Fishmen::UpdateCustom(DWORD dt, vector<LPGAMEOBJECT>* listObject, Simon * s
 	if (isRunning)
 	{
 		vx = nx * 0.05f;
-		vy += 0.01f;// Gravity
+		vy += 0.01f;
 	}
 	else vx = 0;
 
-	CGameObject::Update(dt); // update dt,dx,dy 
+	CGameObject::Update(dt); 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	coEvents.clear();
@@ -492,12 +469,9 @@ void Fishmen::UpdateCustom(DWORD dt, vector<LPGAMEOBJECT>* listObject, Simon * s
 	float min_tx, min_ty, _nx = 0, ny;
 	FilterCollision(coEvents, coEventsResult, min_tx, min_ty, _nx, ny);
 	x += min_tx * dx + _nx * 0.4f;
-	/*if (nx != 0)
-		vx = 0;*/
 
 	if (ny == -1)
 	{
-		//DebugOut(L"[Accum enough] %f\n", ny);
 		vy = 0;
 		//y += min_ty * dy + ny * 0.4f;
 		isRunning = true;
@@ -536,7 +510,7 @@ void Fishmen::UpdateCustom(DWORD dt, vector<LPGAMEOBJECT>* listObject, Simon * s
 			isAttacking = false;
 			isRunning = 1;
 			if (!shoot)
-				nx *= -1; //đổi hướng đi
+				nx *= -1;
 		}
 	}
 
@@ -585,7 +559,6 @@ void Fishmen::Attack(Weapons * _enemyBullet)
 	if (enemyBullet == NULL)
 	{
 		enemyBullet = new EnemyBullet();
-		//listWeaponOfEnemy->push_back(enemyBullet);
 	}
 
 	if (enemyBullet->GetFinish() == false)
@@ -658,20 +631,19 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 		if (y >= yTarget)
 		{
 			vy = 0;
-			StatusProcessing = BOSS_PROCESS_START_2; // qua trạng thái di chuyển đến cửa sổ
+			StatusProcessing = BOSS_PROCESS_START_2; 
 
 			xBefore = x;
 			yBefore = y;
 
-			DebugOut(L"x_boss %f  . y_boss %f\n", x, y);
 			if (x <= simon->x)
 				xTarget = simon->x - 200;
 			else xTarget = simon->x + 200;
 
 			yTarget = 185;
 
-			vx = ((xTarget - xBefore) / (1500.0f)); // Vận tốc cần để đi đến target trong 1.5s
-			vy = 0.12f; // tạo độ cong
+			vx = ((xTarget - xBefore) / (1500.0f));
+			vy = 0.12f; 
 		}
 		break;
 	}
@@ -680,19 +652,17 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 	{
 		if (!isWaiting)
 		{
-			// tạo độ cong
 			vy -= 0.0001f * dt;
 			if (vy < 0)
 				vy = 0;
-			// tạo độ cong
 
-			if ((xTarget - xBefore >= 0 && x >= xTarget) || (xTarget - xBefore < 0 && x <=   xTarget)) // di chuyển xong đến mục tiêu 2
+			if ((xTarget - xBefore >= 0 && x >= xTarget) || (xTarget - xBefore < 0 && x <=   xTarget)) 
 			{
 				vx = 0;
 				vy = 0;
 
-				isWaiting = true; // bật trạng thái chờ
-				TimeWaited = 0; // reset lại time đã chờ
+				isWaiting = true; 
+				TimeWaited = 0; 
 			}
 		}
 		else
@@ -711,13 +681,12 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 	case BOSS_PROCESS_CURVES:
 	{
 		if (abs(x - xBefore) >= abs(xTarget - xBefore) || x < camera->GetX_cam() || x + GetWidth()>camera->GetX_cam() + camera->GetWidth()
-			) // đi xong hoặc chạm biên trái phải màn hình thì dừng
+			) 
 		{
 			vx = 0;
 			vy = 0;
 			isUseBezierCurves = false;
 
-			/*vượt quá camera thì đẩy lại vào cam*/
 			if (x < camera->GetX_cam())
 				x += 1.0f;
 
@@ -726,30 +695,25 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 				x -= 1.0f;
 			}
 
-			/*vượt quá camera thì đẩy lại vào cam*/
-
 			StartStaight(simon);
-
 			break;
 		}
 
-		float perc = (x - xBefore) / (xTarget - xBefore); // sử dụng phần trăm đã đi được tương ứng t của Bézier curve
+		float perc = (x - xBefore) / (xTarget - xBefore); 
 
 		float ya = getPt(y1, y2, perc);
 		float yb = getPt(y2, y3, perc);
 
 		float yy = getPt(ya, yb, perc);
 
-		vy = (yy - yLastFrame/*Khoảng cách y giữa frame trước và y dự tính đi*/) / dt;
+		vy = (yy - yLastFrame) / dt;
 
 		break;
 	}
 	case BOSS_PROCESS_STRAIGHT_1:
 	{
 		if (abs(x - xBefore) >= abs(xTarget - xBefore) ||
-			abs(y - yBefore) >= abs(yTarget - yBefore) /*||
-			x <camera->GetX_cam() ||
-			x + GetWidth()>camera->GetX_cam() + camera->GetWidth()*/) // đi xong hoặc chạm biên trái phải màn hình thì dừng
+			abs(y - yBefore) >= abs(yTarget - yBefore)) // đi xong hoặc chạm biên trái phải màn hình thì dừng
 		{
 			vx = vy = 0;
 		
@@ -763,14 +727,12 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 		if (!isWaiting)
 		{
 			if (abs(x - xBefore) >= abs(xTarget - xBefore) ||
-				abs(y - yBefore) >= abs(yTarget - yBefore) /*||
-				x <camera->GetX_cam() ||
-				x + GetWidth()>camera->GetX_cam() + camera->GetWidth()*/) // đi xong hoặc chạm biên trái phải màn hình thì dừng
+				abs(y - yBefore) >= abs(yTarget - yBefore) ) // đi xong hoặc chạm biên trái phải màn hình thì dừng
 			{
 				vx = vy = 0;
 				
-				isWaiting = true; // bật trạng thái chờ
-				TimeWaited = 0; // reset lại time đã chờ
+				isWaiting = true; 
+				TimeWaited = 0;
 			}
 		}
 		else
@@ -789,7 +751,6 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 
 				default: // 75%
 					StartCurves();
-
 					break;
 				}
 			}
@@ -804,9 +765,9 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 			TimeWaited += dt;
 			if (TimeWaited >= 3000)
 			{
-				isWaiting = false; // ngừng chờ
+				isWaiting = false; 
 				isAttacking = false;
-				StartStaight(simon); // qua trạng thái đi thẳng
+				StartStaight(simon); 
 			}
 		}
 
@@ -824,7 +785,7 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 		|| camera->GetX_cam() + camera->GetWidth() < x + GetWidth()
 		|| y < camera->GetY_cam() + 85.0f
 		|| camera->GetY_cam() + camera->GetHeight() < y + GetHeight()
-		) // ra khỏi cam thì xử lí hướng tiếp theo
+		) 
 	{
 
 		switch (StatusProcessing)
@@ -1050,7 +1011,6 @@ void Boss::StartAttack()
 	if (enemyBullet == NULL)
 	{
 		enemyBullet = new EnemyBullet();
-		//listWeaponOfEnemy->push_back(enemyBullet);
 	}
 
 	if (enemyBullet->GetFinish() == false)
@@ -1064,8 +1024,8 @@ void Boss::StartAttack()
 	float x_Bullet = x + GetWidth() / 2;
 	float y_Bullet = y + GetHeight() / 2;
 
-	float S = sqrt((x_Bullet - simon->x) *(x_Bullet - simon->x) + (y_Bullet - simon->y)*(y - simon->y)); //s=sqrt(x^2+y^2)
-																									  //																								 // thời gian bắn trúng nếu dùng vận tốc FIREBALL_SPEED
+	float S = sqrt((x_Bullet - simon->x) *(x_Bullet - simon->x) + (y_Bullet - simon->y)*(y - simon->y));
+																																																 // thời gian bắn trúng nếu dùng vận tốc FIREBALL_SPEED
 	float t = S / 0.15f;
 
 	enemyBullet->CustomCreate(x_Bullet, y_Bullet, nx, nx_Bullet* abs(x_Bullet - simon->x) / t, abs(y_Bullet - simon->y) / t);

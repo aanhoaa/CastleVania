@@ -128,7 +128,6 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="GameEnd.h" />
-    <ClInclude Include="Heart.h" />
     <ClInclude Include="BoardGame.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Camera.h" />
@@ -172,7 +171,6 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="GameEnd.cpp" />
-    <ClCompile Include="Heart.cpp" />
     <ClCompile Include="BoardGame.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Camera.cpp" />

@@ -3,10 +3,10 @@
 
 MorningStar::MorningStar()
 {
+	obj_type = def_ID::MORNINGSTAR;
 	texture = LoadTexture::GetInstance()->GetTexture(MORNINGSTAR);
 	sprite = new Load_resources(texture, 120);
 	this->level = 0;
-	obj_type = def_ID::MORNINGSTAR;
 }
 
 MorningStar::~MorningStar()
@@ -37,25 +37,24 @@ void MorningStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	Weapons::Update(dt);
 
-	// index 1 trong 3 index 3-7-11 thì dừng đánh (sprite roi cuối)
-	//DebugOut(L"[INFO] Level: %d\n", level);
-	isFinish = (sprite->GetIndex() == 3 && level == 0) + (sprite->GetIndex() == 7 && level == 1) + (sprite->GetIndex() == 11 && level == 2);
+	isFinish = (sprite->GetIndex() == 3 && level == 0) 
+		+ (sprite->GetIndex() == 7 && level == 1) 
+		+ (sprite->GetIndex() == 11 && level == 2);
 
-	int StartFrame = MORNINGSTAR_ANI_LEVEL0_START + 4 * level; // ánh xạ chỉ số frame bằng level thay vì ifelse 
+	int StartFrame = MORNINGSTAR_ANI_LEVEL0_START + 4 * level; 
 	int EndFrame = MORNINGSTAR_ANI_LEVEL0_END + 4 * level;
 	 
 	if (StartFrame <= sprite->GetIndex() && sprite->GetIndex() < EndFrame)
 	{
-		//DebugOut(L"index_r = %d\n", sprite->GetIndex());
 		sprite->Update(dt);
 	}
 	else
 	{
 		sprite->SelectIndex(StartFrame);
 	}
-	//DebugOut(L"finish = %d\n", isFinish);
-	Weapons::CheckCollision(coObjects);
-	//CheckCollision(listEnemy);
+
+	if (!isFinish)
+		Weapons::CheckCollision(coObjects);
 }
 
 void MorningStar::Render(Camera * camera)
@@ -101,14 +100,14 @@ void MorningStar::GetBoundingBox(float & left, float & top, float & right, float
 				right = x + texture->FrameWidth - (sprite->GetIndex() >= 2) * 80;
 				bottom = y + texture->FrameHeight - 35;
 			}
+
 			break;
 		case 2:
-			//if (sprite->GetIndex() == 2 || sprite->GetIndex() == 5) { // sprite simon đánh thì mới set boundingbox
 			if (nx == 1)
 			{
-				left = x + (sprite->GetIndex() >= 2) * 20; // đánh roi thì left = x + 50
+				left = x + (sprite->GetIndex() >= 2) * 80;
 				top = y + 15;
-				// Là 2 frame đầu thì right = x - 110
+				
 				right = x + texture->FrameWidth
 					+ (sprite->GetIndex() == 0 || sprite->GetIndex() == 1) * 100;
 				bottom = y + texture->FrameHeight - 40;
@@ -119,9 +118,8 @@ void MorningStar::GetBoundingBox(float & left, float & top, float & right, float
 				right = x + texture->FrameWidth - (sprite->GetIndex() >= 2) * 80;
 				bottom = y + texture->FrameHeight - 40;
 			}
-			//}
+			
 			break;
-			//case 2:
 		default:
 			break;
 		}
@@ -150,17 +148,20 @@ void MorningStar::UpgradeLevel()
 
 bool MorningStar::isCollision(CGameObject * obj)
 {
+	if (isSend)
+		return false;
+
 	if (level == 0 && sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL0_START || sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL0_START + 1)
-		return false; // frame đầu và frame chuẩn bị đánh thì ko xét va chạm
+		return false; 
 
 	if (level == 1 && sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL1_START || sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL1_START + 1)
-		return false; // frame đầu và frame chuẩn bị đánh thì ko xét va chạm
+		return false; 
 
 	if (level == 2 && sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL2_START || sprite->GetIndex() == MORNINGSTAR_ANI_LEVEL2_START + 1)
-		return false; // frame đầu và frame chuẩn bị đánh thì ko xét va chạm
+		return false; 
 
 	CGameObject *Obj = dynamic_cast<CGameObject*>(obj);
-	if (Obj->GetLife() <= 0) // vật này die rồi thì ko va chạm
+	if (Obj->GetLife() <= 0) 
 		return false;
 	
 	return isCollitionAll(Obj);

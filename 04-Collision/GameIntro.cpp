@@ -40,10 +40,6 @@ void GameIntro::OnKeyUp(int KeyCode)
 void GameIntro::LoadResources()
 {
 	LoadTexture * textureIntro = LoadTexture::GetInstance(); 
-	// load resource màn nào vào màn nấy - kp load hết all resource game
-	// code here ...
-
-
 
 	Sprite_MainMenu = new Load_resources(textureIntro->GetTexture(def_ID::MAINMENU), 0);
 	Sprite_IntroBatMenu = new Load_resources(textureIntro->GetTexture(def_ID::INTRO_BAT_MENU), 150);
@@ -56,12 +52,11 @@ void GameIntro::LoadResources()
 	isDrawTextPressStart = true;
 
 	simon = new Simon(camera);
-	//simon->SetPosition(485, 300);
 	board = new BoardGame(0, 0);
 
 	heliCopter = new HelicopterIntro(432, 146);
-	introBat1 = new BatIntro(299, 118, -0.0139, 0.0f, 2); // Đi ngang qua trái
-	introBat2 = new BatIntro(47, 224, 0.0270, -0.0182f, 1); // Đi góc dưới trái lên phải trên
+	introBat1 = new BatIntro(299.0f, 118.0f, -0.0139f, 0.0f, 2); 
+	introBat2 = new BatIntro(47.0f, 224.0f, 0.0270f, -0.0182f, 1);
 }
 
 void GameIntro::Update(DWORD dt)
@@ -89,7 +84,6 @@ void GameIntro::Update(DWORD dt)
 				camera->SetPosition(0, 0);
 				listBrick.push_back(new Brick(0, 400, 600, 32, 4));
 				simon->SetPosition(500, 336);
-				//simon->vy = -0.005f;
 				simon->SetDirect(-1);
 				simon->AutoGo((float)simon->GetDirect(), -1, 275.0f, 0.08f);
 			}
@@ -134,7 +128,6 @@ void GameIntro::Update(DWORD dt)
 		break;
 	}
 	}
-
 }
 
 void GameIntro::Render()
