@@ -119,6 +119,9 @@ void Ghost::Render(Camera * camera)
 Panther::Panther(float X, float Y, int _nx, float autoGoX_Dx)
 {
 	obj_type = def_ID::PANTHER;
+	texture = LoadTexture::GetInstance()->GetTexture(PANTHER);
+	sprite = new Load_resources(texture, 200);
+
 	life = 1;
 	vx = vy = 0;
 	nx = _nx;
@@ -126,10 +129,7 @@ Panther::Panther(float X, float Y, int _nx, float autoGoX_Dx)
 	y = Y;
 	x_root = x;
 	autoGo_dx = autoGoX_Dx;
-
-	texture = LoadTexture::GetInstance()->GetTexture(PANTHER);
-	sprite = new Load_resources(texture, 200);
-
+	
 	isSitting = 1;
 	isRunning = 0;
 	isJumping = 0;
@@ -170,7 +170,7 @@ void Panther::GetBoundingBox(float & left, float & top, float & right, float & b
 void Panther::Update(DWORD dt, Simon * simon, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt);
-	vy += SIMON_GRAVITY * dt; // Panther simple fall down
+	vy += 0.004f * dt; // Panther simple fall down
 
 	float DistanceLimit = nx == 1 ? 100.0f : 185.0f;
 
@@ -314,7 +314,7 @@ void Panther::Run()
 Bat::Bat(float X, float Y, int _nx)
 {
 	obj_type = def_ID::BAT;
-	texture = new Load_img_file("Resources\\enemy\\0.png", 4, 1, 4, 0);
+	texture = LoadTexture::GetInstance()->GetTexture(BAT);
 	sprite = new Load_resources(texture, 100);
 
 	x = X;
@@ -378,12 +378,12 @@ Fishmen::Fishmen(float X, float Y, int _nx)
 {
 	obj_type = def_ID::FISHMEN;
 	texture = LoadTexture::GetInstance()->GetTexture(def_ID::FISHMEN);
-	sprite = new Load_resources(texture, 500);
+	sprite = new Load_resources(texture, 200);
 
 	this->x = X;
 	this->y = Y;
 	this->nx = _nx;
-	//this->life = 1;
+	
 	vx = 0;
 	vy = -FISHMEN_SPEED_Y_UP;
 	y_root = y;
@@ -425,10 +425,10 @@ void Fishmen::UpdateCustom(DWORD dt, vector<LPGAMEOBJECT>* listObject, Simon * s
 		vy += FISHMEN_GRAVITY_JUMPING;
 	}
 
-	if (abs(x - x_root) >= FISHMEN_DX_LIMIT) // đi đủ khoảng cố định
+	if (abs(x - x_root) >= FISHMEN_DX_LIMIT) 
 	{
 		if ((nx == -1 && !(simon->x < x)) ||
-			(nx == 1 && !(x < simon->x))) // đi về hướng của simon mà đã vượt simon thì mới đổi hướng
+			(nx == 1 && !(x < simon->x))) 
 		{
 			Attack(enemyBullet);
 			shoot = 0;
@@ -437,7 +437,7 @@ void Fishmen::UpdateCustom(DWORD dt, vector<LPGAMEOBJECT>* listObject, Simon * s
 		}
 	}
 
-	if (distance >= 200)
+	if (distance >= 200.0f)
 	{
 		distance = 0;
 		Attack(enemyBullet);
@@ -567,7 +567,7 @@ void Fishmen::Attack(Weapons * _enemyBullet)
 	isAttacking = true;
 	TimeAttack = GetTickCount();
 
-	enemyBullet->Create(x + 20, y + 10, nx);
+	enemyBullet->Create(x + 20, y + 5, nx);
 }
 
 /* Boss */
@@ -625,9 +625,8 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 		break;
 	}
 
-	case BOSS_PROCESS_START_1: // đi xuống
+	case BOSS_PROCESS_START_1:
 	{
-		// bắt đầu thì đi xuống 1 đoạn ngắn
 		if (y >= yTarget)
 		{
 			vy = 0;
@@ -648,7 +647,7 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 		break;
 	}
 
-	case BOSS_PROCESS_START_2: // đi cong xuống ngay cửa sổ
+	case BOSS_PROCESS_START_2: 
 	{
 		if (!isWaiting)
 		{
@@ -670,8 +669,7 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 			TimeWaited += dt;
 			if (TimeWaited >= 4000)
 			{
-				isWaiting = false; // ngừng chờ
-
+				isWaiting = false;
 				StartCurves();
 			}
 		}
@@ -713,7 +711,7 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 	case BOSS_PROCESS_STRAIGHT_1:
 	{
 		if (abs(x - xBefore) >= abs(xTarget - xBefore) ||
-			abs(y - yBefore) >= abs(yTarget - yBefore)) // đi xong hoặc chạm biên trái phải màn hình thì dừng
+			abs(y - yBefore) >= abs(yTarget - yBefore)) 
 		{
 			vx = vy = 0;
 		
@@ -727,7 +725,7 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 		if (!isWaiting)
 		{
 			if (abs(x - xBefore) >= abs(xTarget - xBefore) ||
-				abs(y - yBefore) >= abs(yTarget - yBefore) ) // đi xong hoặc chạm biên trái phải màn hình thì dừng
+				abs(y - yBefore) >= abs(yTarget - yBefore) ) 
 			{
 				vx = vy = 0;
 				
@@ -820,7 +818,7 @@ void Boss::Update(DWORD dt, Simon* simon, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 
-	yLastFrame = y;// lưu lại y frame hiện tại
+	yLastFrame = y;
 }
 
 void Boss::Render(Camera * camera)
@@ -918,8 +916,6 @@ void Boss::Start()
 
 void Boss::StartCurves()
 {
-	DebugOut(L"Curves!\n");
-
 	xBefore = x;
 	yBefore = y;
 
@@ -949,8 +945,6 @@ void Boss::StartCurves()
 
 void Boss::StartStaight(Simon* simon)
 {
-	DebugOut(L"Staight!\n");
-
 	switch (StatusProcessing)
 	{
 	case BOSS_PROCESS_STRAIGHT_1:

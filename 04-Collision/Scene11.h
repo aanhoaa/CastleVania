@@ -19,7 +19,6 @@
 
 class Scene_1 : public Scenes
 {
-	bool isPassScene;
 public:
 	Simon * simon;
 	Map * TileMap;
@@ -37,7 +36,7 @@ public:
 	CGameTime * gameTime;
 	bool isghost;
 	int countghost;
-
+	bool isDone;
 public:
 	Scene_1();
 	~Scene_1();

@@ -20,6 +20,7 @@ protected:
 	int level;
 	vector <HitEffect*> listEffect;
 	vector <CGameObject*> listEnemy;
+	bool isNotBrick;
 public:
 	MorningStar();
 	~MorningStar();
@@ -29,6 +30,7 @@ public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void UpdatePositionFitSimon();
 	bool isCollision(CGameObject* obj);
+	void CheckCollision(vector<LPGAMEOBJECT> *coObjects = NULL);
 	void UpgradeLevel();
 	void RenderItem(int X, int Y);
 	int GetLevel();

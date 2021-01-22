@@ -56,7 +56,6 @@ void EnemyBullet::RenderItem(int X, int Y)
 
 bool EnemyBullet::isCollision(CGameObject * obj)
 {
-	// dt, dx, dy đã update
 	CGameObject *gameObj = dynamic_cast<CGameObject*>(obj);
 	if (gameObj->GetLife() <= 0) // vật này die rồi thì ko va chạm
 		return false;

@@ -85,7 +85,7 @@ public:
 
 	void SetEnemyHit(LPCOLLISIONEVENT e);
 	void CollisionWithBrick(vector<LPGAMEOBJECT> *coObjects = NULL);
-	void CollisionWithEnemy(vector<LPGAMEOBJECT> *coObjects = NULL);
+	void CollisionWithEnemy(vector<LPGAMEOBJECT> *listEnemy = NULL);
 	void CollisionWithItem(vector<Items*> *listItem = NULL);
 	void CollisionWithExitStair(vector<LPGAMEOBJECT> *coObjects = NULL);
 	void Attack(Weapons *weapon);

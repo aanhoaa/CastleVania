@@ -57,13 +57,13 @@ bool Weapons::isCollision(CGameObject* obj)
 	CGameObject *gameObj = dynamic_cast<CGameObject*>(obj);
 	if (gameObj->GetLife() <= 0)
 		return false;
-
+	
 	return isCollitionAll(obj);
 }
 
 void Weapons::CheckCollision(vector<LPGAMEOBJECT> *listObj)
 {
-	if (this != NULL && GetFinish() == false) // roi đang đánh
+	if (this != NULL && GetFinish() == false) 
 	{
 		for (UINT i = 0; i < listObj->size(); i++)
 		{
@@ -72,6 +72,13 @@ void Weapons::CheckCollision(vector<LPGAMEOBJECT> *listObj)
 			{
 				switch (gameObj->GetType())
 				{
+				case def_ID::BRICK:
+				{
+					if (gameObj->GetObj_id() == 39 || gameObj->GetObj_id() == 40
+						|| gameObj->GetObj_id() == 51 || gameObj->GetObj_id() == 72)
+						gameObj->LoseLife(1);
+					break;
+				}
 				case def_ID::BIGCANDLE:
 				{
 					gameObj->LoseLife(1);
@@ -82,16 +89,8 @@ void Weapons::CheckCollision(vector<LPGAMEOBJECT> *listObj)
 					gameObj->LoseLife(1);
 					break;
 				}
-				case def_ID::BRICK:
-				{
-					if (gameObj->GetObj_id() == 39 || gameObj->GetObj_id() == 40 
-						|| gameObj->GetObj_id() == 51 || gameObj->GetObj_id() == 72)
-						gameObj->LoseLife(1);
-					break;
-				}
 				case def_ID::GHOST:
 				{
-					DebugOut(L"[Hit ghost]\n");
 					gameObj->LoseLife(1);
 					break;
 				}

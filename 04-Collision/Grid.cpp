@@ -59,9 +59,6 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 	{
 		for (int col = colLeft; col <= colRight; col++) // hiện tại với w và h thì nên để col < colRight (thêm <= sẽ lấy thêm obj ngoài cam)
 		{ 
-			//DebugOut(L"[INFO] Row thu: %d\n", row);
-			//DebugOut(L"[INFO] So luong obj: %d\n", cells[row][col].size());
-
 			for (UINT i = 0; i < cells[row][col].size(); i++) // có đánh dấu 
 			{
 				
@@ -81,7 +78,7 @@ void Grid::GetListObject(vector<CGameObject*>& ListObj, Camera * camera)
 
 void Grid::pushToCell(int id, int type, int nx, int x, int y, int w, int h, int update)
 {
-	CGameObject * dataObject = GetNewObject(type, x, y, w, h, update); // sau khi load info từ file, xác định obj ->vẽ ra màn hình
+	CGameObject * dataObject = GetNewObject(type, x, y, w, h, update); 
 	if (dataObject == NULL)
 	{
 		DebugOut(L"[Insert Object GRID Fail] : Obj load fail!\n");
@@ -100,12 +97,12 @@ void Grid::pushToCell(int id, int type, int nx, int x, int y, int w, int h, int 
 	{
 		for (int col = Left; col <= Right; col++)
 		{
-			cells[row][col].push_back(dataObject); // thêm vào grid
+			cells[row][col].push_back(dataObject);
 		}
 	}
 }
 
-// check type_obj để vẽ ra màn hình
+
 CGameObject * Grid::GetNewObject(int type, int x, int y, int w, int h, int update)
 {
 	if (type == def_ID::BRICK) return new Brick(x, y, w, h, update);

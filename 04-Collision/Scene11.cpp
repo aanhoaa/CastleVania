@@ -201,16 +201,15 @@ void Scene_1::LoadResources()
 	gridGame = new Grid();
 
 	listItem.clear();
-
 	listEffect.clear();
 
-	//set time = 0
 	gameTime = new CGameTime();
 	gameTime->SetTime(0);
 
-	isPassScene = 0;
-	// bắt đầu vào -> nhạc game
+	isDone = 0;
+
 	sound->Play(eSound::smusicStage1, true);
+
 }
 
 void Scene_1::Update(DWORD dt)
@@ -234,7 +233,8 @@ void Scene_1::Update(DWORD dt)
 	giữ nguyên list cũ, add vào listall => simon update !ok => làm tiếp idea này cho roi => test => !ok
 	- triển khai test hết các enemy all map + optimze code => !ok
 	- Chuyển va chạm simon with all vào simon.cpp => ! đã xong ene + item, cần làm tiếp hidden + một số thứ => !ok
-	- Chưa set va chạm với nước 
+	- Chưa set va chạm với nước  => !ok
+	- chuyển all va chạm gộp lại - set tương tự như item bằng isdrop
 	*/
 
 	// nếu đang trong state freeze => k update simon
@@ -279,7 +279,9 @@ void Scene_1::Update(DWORD dt)
 
 	for (UINT i = 0; i < listItem.size(); i++) // update các Item
 	{
-		listItem[i]->Update(dt, &listObj); // trong các hàm update chỉ kiểm tra va chạm với đất
+		if (listItem[i]->GetFinish() == false)
+			listItem[i]->Update(dt, &listObj); 
+		else listItem.erase(listItem.begin() + i);
 	}
 
 	for (UINT i = 0; i < listEffect.size(); i++)
@@ -340,26 +342,37 @@ void Scene_1::CheckCollision()
 
 void Scene_1::DropItem()
 {
-	for (UINT i = 0; i < listObj.size(); i++)
-	{
-		CGameObject *gameObj = listObj[i];
+	if (isDone)
+		return;
 
-		if (gameObj->GetLife() <= 0 && !gameObj->GetIsDrop())
+	if (!simon->mainWeapon->GetFinish() || (simon->subWeapon != NULL && !simon->subWeapon->GetFinish()))
+	{
+		for (UINT i = 0; i < listObj.size(); i++)
 		{
-			switch (gameObj->GetType())
+			CGameObject *gameObj = listObj[i];
+
+			if (gameObj->GetLife() <= 0 && !gameObj->GetIsDrop())
 			{
+				switch (gameObj->GetType())
+				{
 				case def_ID::BIGCANDLE:
 				{
 					gameObj->SetIsDrop(1);
 					listItem.push_back(GetNewItem(gameObj->GetObj_id(), def_ID::BIGCANDLE, gameObj->x, gameObj->y));
-					sound->Play(eSound::sHit); // sound đánh trúng obj
+					sound->Play(eSound::sHit);
 					addHitEffect->AddHitEffect(&listEffect, gameObj->x, gameObj->y + 10, gameObj->x - 5, gameObj->y + 8);
-					
+
 					break;
 				}
+				}
+
+				if (simon->subWeapon != NULL && !simon->subWeapon->GetFinish())
+				{
+						simon->subWeapon->SetFinish(true);
+				}
 			}
+
 		}
-		
 	}
 }
 
@@ -387,6 +400,7 @@ void Scene_1::CheckCollisionSimonWithHidenObject()
 							sound->Play(eSound::sMonneyBag);
 							listItem.push_back(GetNewItem(hidenObject->GetObj_id(), hidenObject->GetType(), simon->x, simon->y));
 							simon->SetPoint(simon->GetPoint() + 1000);
+							isDone = true;
 							SceneManager::GetInstance()->SetScene(new Scene_2(simon, gameTime));
 							
 							return;
@@ -401,22 +415,22 @@ void Scene_1::CheckCollisionSimonWithHidenObject()
 	}
 }
 
-Items * Scene_1::GetNewItem(int Id, def_ID Type, float X, float Y)
+Items * Scene_1::GetNewItem(int _id, def_ID Type, float X, float Y)
 {
 	if (Type == def_ID::BIGCANDLE)
 	{
-		if (Id == 1 || Id == 4)
+		if (_id == 1 || _id == 4)
 			return new Items(def_ID::BIGHEART, X, Y);
 
-		if (Id == 2 || Id == 3)
+		if (_id == 2 || _id == 3)
 			return new Items(def_ID::UPGRADEMORNINGSTAR, X, Y);
-		if (Id == 5)
+		if (_id == 5)
 			return new Items(def_ID::iDAGGER, X, Y);
 	}
 
 	if (Type == def_ID::HIDDENOBJECT)
 	{
-		if (Id == 8)
+		if (_id == 8)
 			return new Items(def_ID::MONNEYBAG, 1240, 305);
 	}
 	return new Items(def_ID::BIGHEART, X, Y);

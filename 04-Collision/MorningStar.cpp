@@ -22,13 +22,13 @@ void MorningStar::Create(float simon_X, float simon_Y, int simon_nx)
 	switch (level)
 	{
 	case 0:
-			sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL0_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
+			sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL0_START - 1);
 			break;
 	case 1:
-		sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL1_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
+		sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL1_START - 1); 
 		break;
 	case 2:
-		sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL2_START - 1); // đặt sai index cho hàm update cập nhật ngay frame đầu
+		sprite->SelectIndex(MORNINGSTAR_ANI_LEVEL2_START - 1); 
 		break;
 	}
 }
@@ -54,7 +54,7 @@ void MorningStar::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 
 	if (!isFinish)
-		Weapons::CheckCollision(coObjects);
+		CheckCollision(coObjects);
 }
 
 void MorningStar::Render(Camera * camera)
@@ -165,6 +165,76 @@ bool MorningStar::isCollision(CGameObject * obj)
 		return false;
 	
 	return isCollitionAll(Obj);
+}
+
+void MorningStar::CheckCollision(vector<LPGAMEOBJECT> *listObj)
+{
+	if (GetFinish() == false)
+	{
+		for (UINT i = 0; i < listObj->size(); i++)
+		{
+			CGameObject *gameObj = dynamic_cast<CGameObject*>(listObj->at(i));
+			if (isCollision(gameObj) == true)
+			{
+				DebugOut(L"type: %d\n", gameObj->GetType());
+				switch (gameObj->GetType())
+				{
+				case def_ID::BRICK:
+				{
+					if (gameObj->GetObj_id() == 39 || gameObj->GetObj_id() == 40
+						|| gameObj->GetObj_id() == 51 || gameObj->GetObj_id() == 72)
+						gameObj->LoseLife(1);
+					else isNotBrick = true;
+					break;
+				}
+				case def_ID::BIGCANDLE:
+				{
+					gameObj->LoseLife(1);
+					break;
+				}
+				case def_ID::SMALLCANDLE:
+				{
+					gameObj->LoseLife(1);
+					break;
+				}
+				case def_ID::GHOST:
+				{
+					gameObj->LoseLife(1);
+					break;
+				}
+				case def_ID::PANTHER:
+				{
+					gameObj->LoseLife(1);
+					break;
+				}
+				case def_ID::BAT:
+				{
+					gameObj->LoseLife(1);
+					break;
+				}
+				case def_ID::FISHMEN:
+				{
+					gameObj->LoseLife(1);
+					isSend = true;
+					break;
+				}
+				case def_ID::BOSS:
+				{
+					gameObj->LoseHP(2);
+					if (gameObj->GetHP() == 0)
+						gameObj->LoseLife(1);
+					Data::GetInstance()->hpBoss -= 2;
+					break;
+				}
+				default:
+					break;
+				}
+
+				/*if (!isNotBrick)
+					isSend = true;*/
+			}
+		}
+	}
 }
 
 void MorningStar::RenderItem(int X, int Y)

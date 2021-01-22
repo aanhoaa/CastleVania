@@ -508,7 +508,6 @@ void Scene_2::Update(DWORD dt)
 	}
 	camera->Update(dt);
 
-	// nếu đang trong state freeze => k update simon
 	if (simon->GetFreeze() == true)
 	{
 		simon->UpdateFreeze(dt);
@@ -644,7 +643,9 @@ void Scene_2::Update(DWORD dt)
 
 	for (UINT i = 0; i < listItem.size(); i++) // update các Item
 	{
-		listItem[i]->Update(dt, &listObj); // trong các hàm update chỉ kiểm tra va chạm với đất
+		if (listItem[i]->GetFinish() == false)
+			listItem[i]->Update(dt, &listObj);
+		else listItem.erase(listItem.begin() + i);
 	}
 
 	for (UINT i = 0; i < listEffect.size(); i++)
@@ -1285,7 +1286,7 @@ void Scene_2::DropItem()
 				{
 					gameObj->SetIsDrop(1);
 					listItem.push_back(GetRandomItem(gameObj->GetObj_id(), def_ID::SMALLCANDLE, gameObj->x, gameObj->y));
-					sound->Play(eSound::sHit); // sound đánh trúng obj
+					sound->Play(eSound::sHit); 
 					addHitEffect->AddHitEffect(&listEffect, gameObj->x, gameObj->y + 10, gameObj->x - 5, gameObj->y + 8);
 					break;
 				}
@@ -1306,10 +1307,7 @@ void Scene_2::DropItem()
 						}
 						case 51:
 						{
-							if (simon->mainWeapon->isCollision(listObj[i]) == true)
-							{
-								gameObj->LoseLife(1); 																											
-							}
+							gameObj->LoseLife(1);
 							break;
 						}
 						case 72:
@@ -1320,8 +1318,10 @@ void Scene_2::DropItem()
 						
 							break;
 						}
+						default:
+							break;
 					}
-					addHitEffect->AddBrickSplash(&listEffect, (int)gameObj->x + 14, (int)gameObj->y + 14);
+					addHitEffect->AddBrickSplash(&listEffect, (float)gameObj->x + 14, (float)gameObj->y + 14);
 				}
 				case def_ID::GHOST:
 				{
@@ -1629,14 +1629,12 @@ void Scene_2::CheckCollisionSimonWithGate()
 	}
 }
 
-Items * Scene_2::GetRandomItem(int Id, def_ID Type, float X, float Y)
+Items * Scene_2::GetRandomItem(int _id, def_ID Type, float X, float Y)
 {
 	if (Type == def_ID::SMALLCANDLE)
 	{
-		//return new SmallHeart(X, Y);
-		switch (Id)
+		switch (_id)
 		{
-		case 40:
 		case 71:
 			if (simon->subWeapon != NULL && simon->subWeapon->GetType() != def_ID::HOLYWATER || simon->subWeapon == NULL)
 				return new Items(def_ID::iHOLYWATER, X, Y);
@@ -1676,7 +1674,7 @@ Items * Scene_2::GetRandomItem(int Id, def_ID Type, float X, float Y)
 			if (simon->subWeapon != NULL && simon->subWeapon->GetType() != def_ID::HOLYWATER || simon->subWeapon == NULL)
 				return new Items(def_ID::iHOLYWATER, X, Y);
 			break;
-		default: // 50%
+		default:
 			return new Items(def_ID::SMALLHEART, X, Y);
 			break;
 		}
@@ -1684,7 +1682,7 @@ Items * Scene_2::GetRandomItem(int Id, def_ID Type, float X, float Y)
 
 	if (Type == def_ID::BRICK)
 	{
-		switch (Id)
+		switch (_id)
 		{
 		case 40:
 			return new Items(def_ID::POTROAST, X, Y);
@@ -1699,7 +1697,7 @@ Items * Scene_2::GetRandomItem(int Id, def_ID Type, float X, float Y)
 
 	if (Type == def_ID::HIDDENOBJECT)
 	{
-		if (Id == 65)
+		if (_id == 65)
 			return new Items(def_ID::MONNEYBAG, 3763.0f, 587.0f);
 	}
 

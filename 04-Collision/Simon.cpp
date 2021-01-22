@@ -125,8 +125,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 				else
 				{
-					//cập nhật frame mới
-					sprite->Update(dt); // dt này được cập nhật khi gọi update; 
+					sprite->Update(dt); 
 				}
 			}
 			else
@@ -137,8 +136,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 				else
 				{
-					//cập nhật frame mới
-					sprite->Update(dt); // dt này được cập nhật khi gọi update; 
+					sprite->Update(dt);
 				}
 			}
 		}
@@ -146,17 +144,17 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			if (isWalking == true)
 			{
-				if (isProcessingOnStair == 1) // nếu ở giai đoạn bước chân thì set frame 12
+				if (isProcessingOnStair == 1) 
 				{
-					if (vy < 0) // ddi len
+					if (vy < 0) 
 						sprite->SelectIndex(SIMON_ANI_STAIR_GO_UP_BEGIN);
 					else
 						sprite->SelectIndex(SIMON_ANI_STAIR_GO_DOWN_BEGIN);
 				}
 
-				if (isProcessingOnStair == 2) // nếu ở giai đoạn bước chân trụ thì set frame 13
+				if (isProcessingOnStair == 2) 
 				{
-					if (vy < 0) // ddi len
+					if (vy < 0) 
 						sprite->SelectIndex(SIMON_ANI_STAIR_GO_UP_END);
 					else
 						sprite->SelectIndex(SIMON_ANI_STAIR_GO_DOWN_END);
@@ -164,7 +162,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 
 				HeightStair += abs(vy) * 16.0f;
-				//DebugOut(L"height = %f\n", HeightStair);
+				
 				if (HeightStair >= SIMON_STAIR_PROCESSING && isProcessingOnStair == 1)
 					isProcessingOnStair++;
 
@@ -248,13 +246,13 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						}
 						else
 						{
-							if (isJumping == true) // nếu ko đi mà chỉ nhảy
+							if (isJumping == true) 
 							{
 								sprite->SelectIndex(SIMON_ANI_JUMPING);
 							}
 							else
 							{
-								sprite->SelectIndex(SiMON_ANI_IDLE);		// SIMON đứng yên
+								sprite->SelectIndex(SiMON_ANI_IDLE);		
 
 							}
 						}
@@ -454,7 +452,7 @@ void Simon::Right()
 {
 	if (isOnStair == true)
 		return;
-	nx = 1; // quay qua phải
+	nx = 1; 
 }
 
 void Simon::Go()
@@ -482,18 +480,18 @@ void Simon::Sit()
 	vx = 0;
 	isWalking = 0;
 
-	if (isSitting == false) // nếu trước đó simon chưa ngồi
-		y = y + 16; // kéo simon xuống
+	if (isSitting == false) 
+		y = y + 16; 
 
 	isSitting = true;
 }
 
 void Simon::ResetSit()
 {
-	if (isSitting == true) // nếu simon đang ngồi
+	if (isSitting == true) 
 	{
-		isSitting = 0; // hủy trạng thái ngồi
-		y = y - 25; // kéo simon lên
+		isSitting = 0; 
+		y = y - 25;
 	}
 }
 
@@ -533,13 +531,11 @@ void Simon::Stop()
 	vx = 0;
 	
 	isWalking = 0;
-	if (isSitting == true) // nếu simon đang ngồi
+	if (isSitting == true) 
 	{
-		isSitting = 0; // hủy trạng thái ngồi
-		y = y - 25; // kéo simon lên
+		isSitting = 0; 
+		y = y - 25; 
 	}
-
-	//sprite->ResetTime();
 }
 
 void Simon::SetEnemyHit(LPCOLLISIONEVENT e)
@@ -582,10 +578,10 @@ void Simon::SetEnemyHit(LPCOLLISIONEVENT e)
 		isWalking = 1;
 	}
 
-	StartUntouchable(); // tàng hình không bị va chạm
+	StartUntouchable(); 
 
 	mainWeapon->SetFinish(true);
-	LoseHP(2); // chạm enemy -2 máu
+	LoseHP(2); 
 	Sound::GetInstance()->Play(eSound::sWasEnemyHit);
 }
 
@@ -613,9 +609,7 @@ void Simon::CollisionWithBrick(vector<LPGAMEOBJECT>* coObjects)
 	{
 		float min_tx, min_ty, nx = 0, ny; // cái này của brick
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
-		//DebugOut(L"VA cham brick ne\n");
-		//if (ny >= 0) y += dy;
-		// block 
+
 		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
 		if (ny == -1)
 			y += min_ty * dy + ny * 0.4f;
@@ -645,7 +639,7 @@ void Simon::CollisionWithBrick(vector<LPGAMEOBJECT>* coObjects)
 		delete coEvents[i];
 }
 
-void Simon::CollisionWithEnemy(vector<LPGAMEOBJECT>* coObjects)
+void Simon::CollisionWithEnemy(vector<LPGAMEOBJECT>* listEnemy)
 {
 	if (isUntouchable)
 	{
@@ -658,9 +652,9 @@ void Simon::CollisionWithEnemy(vector<LPGAMEOBJECT>* coObjects)
 
 	if (!isUntouchable) // mode va chạm
 	{
-		for (UINT i = 0; i < coObjects->size(); i++)
+		for (UINT i = 0; i < listEnemy->size(); i++)
 		{
-			CGameObject * enemy = dynamic_cast<CGameObject *> (coObjects->at(i));
+			CGameObject * enemy = dynamic_cast<CGameObject *> (listEnemy->at(i));
 			
 			if (enemy->GetType() == def_ID::GHOST || enemy->GetType() == def_ID::PANTHER || enemy->GetType() == def_ID::BAT ||
 				enemy->GetType() == def_ID::FISHMEN || enemy->GetType() == def_ID::BOSS)
@@ -687,7 +681,7 @@ void Simon::CollisionWithItem(vector<Items*> * listItem)
 	for (UINT i = 0; i < listItem->size(); i++)
 		if (listItem->at(i)->GetFinish() == false && !listItem->at(i)->isWaiting())
 		{
-			if (isCollisionWithItem(listItem->at(i))) // có va chạm
+			if (isCollisionWithItem(listItem->at(i))) 
 			{
 				listItem->at(i)->SetFinish(true);
 				switch (listItem->at(i)->GetType())
@@ -695,23 +689,20 @@ void Simon::CollisionWithItem(vector<Items*> * listItem)
 				case def_ID::BIGHEART:
 				{
 					SetHeartCollect(GetHeartCollect() + 5);
-					//listItem->at(i)->SetFinish(true);
 					sound->Play(eSound::sCollectItem); // sound collect item
 					break;
 				}
 				case def_ID::SMALLHEART:
 				{
 					SetHeartCollect(GetHeartCollect() + 1);
-					//listItem->at(i)->SetFinish(true);
 					sound->Play(eSound::sCollectItem);
 					break;
 				}
 				case def_ID::UPGRADEMORNINGSTAR:
 				{
 					MorningStar * objMorningStar = dynamic_cast<MorningStar*>(mainWeapon);
-					objMorningStar->UpgradeLevel(); // Nâng cấp vũ khí roi
-					//listItem[i]->SetFinish(true);
-					SetFreeze(true); // bật trạng thái đóng băng
+					objMorningStar->UpgradeLevel(); 
+					SetFreeze(true);
 					sound->Play(eSound::sCollectWeapon);
 					break;
 				}
@@ -719,13 +710,11 @@ void Simon::CollisionWithItem(vector<Items*> * listItem)
 				{
 					SAFE_DELETE(subWeapon);
 					this->subWeapon = new Dagger();
-					//listItem[i]->SetFinish(true);
 					sound->Play(eSound::sCollectWeapon);
 					break;
 				}
 				case def_ID::MONNEYBAG:
 				{
-					//listItem[i]->SetFinish(true);
 					sound->Play(eSound::sCollectItem);
 					SetPoint(1000);
 					break;
@@ -734,13 +723,11 @@ void Simon::CollisionWithItem(vector<Items*> * listItem)
 				{
 					SAFE_DELETE(subWeapon);
 					subWeapon = new HolyWater(camera);
-					//listItem[i]->SetFinish(true);
 					sound->Play(eSound::sCollectWeapon);
 					break;
 				}
 				case def_ID::POTROAST:
 				{
-					//listItem[i]->SetFinish(true);
 					sound->Play(eSound::sCollectWeapon);
 					SetHP(min(GetHP() + 6, 16)); // tăng 6 đơn vị máu
 					break;
@@ -749,13 +736,11 @@ void Simon::CollisionWithItem(vector<Items*> * listItem)
 				{
 					SAFE_DELETE(subWeapon);
 					subWeapon = new Axe(camera);
-					//listItem[i]->SetFinish(true);
 					sound->Play(eSound::sCollectWeapon);
 					break;
 				}
 				case def_ID::MAGICCRYSTAL:
 				{
-					//listItem[i]->SetFinish(true);
 					Data::GetInstance()->passBoss = 1;
 					break;
 				}
@@ -896,13 +881,9 @@ void Simon::Attack(Weapons * weapon)
 	if (isAttacking == true && dynamic_cast<MorningStar*>(weapon) != NULL) // đang tấn công mà là roi thì bỏ qua
 		return;
 
-	isAttacking = true; // set trang thái tấn công
+	isAttacking = true; 
 	
-	//if (isJumping)
-	//{
-	//	weapon->Create(this->x, this->y + 60, this->nx); // set vị trí weapon theo simon
-	//}
-	 weapon->Create(this->x, this->y, this->nx); // set vị trí weapon theo simon
+	 weapon->Create(this->x, this->y, this->nx);
 }
 
 void Simon::SetHeartCollect(int HeartP)

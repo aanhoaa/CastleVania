@@ -15,16 +15,15 @@ Brick::Brick(int X, int Y, int W, int H, int updateBrick)
 	case 3:
 		texture = LoadTexture::GetInstance()->GetTexture(BRICK_TYPE_3);
 		break;
-	case 4: // loại trong suốt 
+	case 4:  
 		texture = LoadTexture::GetInstance()->GetTexture(BRICK_TRANSPARENT);
 		break;
 	case 5:
-		texture = LoadTexture::GetInstance()->GetTexture(BRICK_3X32);// loại 3 ô nhỏ - 32px 
+		texture = LoadTexture::GetInstance()->GetTexture(BRICK_3X32);
 		break;
 	case 6:
-		texture = LoadTexture::GetInstance()->GetTexture(BRICK_4X32);// loại đủ 4 ô nhỏ - 32px
+		texture = LoadTexture::GetInstance()->GetTexture(BRICK_4X32);
 	default:
-		DebugOut(L"[BRICK] Stage fail!\n");
 		break;
 	}
 	
@@ -42,7 +41,11 @@ void Brick::Render(Camera * camera)
 
 	for (int i = 0; i < (int)ceil(width / texture->FrameWidth); i++)
 		for (int j = 0; j < (int)ceil(height / texture->FrameHeight); j++)
+		{
+			if (GetObj_id() != 125)
 			sprite->Draw((int)pos.x + i * texture->FrameWidth, (int)pos.y + j * texture->FrameHeight);
+			
+		}
 
 	if (IS_DEBUG_RENDER_BBOX)
 		RenderBoundingBox(camera);
@@ -54,5 +57,4 @@ void Brick::GetBoundingBox(float &l, float &t, float &r, float &b)
 	t = y;
 	r = x + (float)ceil(width / texture->FrameWidth)*texture->FrameWidth;
 	b = y + (float)ceil(height / texture->FrameHeight)*texture->FrameHeight;
-	//b = y;
 }
